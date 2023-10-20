@@ -1,3 +1,3 @@
-# RPi-Cafeteria
+# School cafeteria kiosk
 
 ReadMe is work in progress

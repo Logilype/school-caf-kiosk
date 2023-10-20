@@ -1,3 +1,3 @@
-# School cafeteria kiosk
+# School Cafeteria Kiosk
 
-ReadMe is work in progress
+Currently, the project is work in progress.

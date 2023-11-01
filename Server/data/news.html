@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nachrichten</title>
+    <style>
+        /* Your CSS styles here */
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Verdana, sans-serif;
+            font-size: 150%;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .container-table {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .offers-container {
+            width: 80%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+        }
+
+        .offer-content {
+            text-align: center;
+        }
+
+        #offerImage {
+            
+            
+            border-radius: 20px;
+            
+            
+            width: calc(100% - 190px);
+            object-fit: cover;
+            
+        }
+
+        h2 {
+            font-size: 225%;
+            
+            padding-left:20px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Apply transition for opacity */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        #readall{
+            position: absolute;
+        
+        }
+        .bottomlinecontainer{
+            display: flex;
+            
+            margin-top: -5px;
+            margin-bottom: 10px;
+            width: calc(100% - 190px);
+            margin-left: auto;
+            margin-right: auto;
+            
+        }
+        #seemoreimg{
+            
+            width: 180px;
+            
+            height: 180px;
+            object-fit: cover;
+            
+            margin-right: 0;
+            margin-left: auto;
+        }
+        #headline{
+            font-weight: bold;
+            font-size: 150%;
+            text-align: left;
+        }
+        #firstsentence{
+            font-size: 100%;
+            margin-top: 0;
+            margin-bottom: 0;
+            text-align: left;
+            
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container-table">
+        <div class="offers-container">
+            <h2>Nachrichten: Inland</h2>
+            <div class="offer-content" id="offerContent">
+                <img id="offerImage" src="https://images.tagesschau.de/image/af69e28b-a10d-4947-a2e2-c732eb5fd3c4/AAABi2fDFUA/AAABibBxrfI/16x9-1920.jpg" alt="Angebotsbild">
+                
+                <div class="bottomlinecontainer">
+                    <div class="texts">
+                    <p id="headline">Habeck zu schärferen Abschieberegeln</p>
+                    <p id="firstsentence">Die Bundesregierung hat die Regeln zur Abschiebung ausreisepflichtiger Ausländer verschärft.</p>
+                </div>
+                    <img id="seemoreimg" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=https://www.tagesschau.de/inland/innenpolitik/tagesthemen-habeck-interview-100.html&choe=UTF-8" alt="Angebotsbild">
+                    
+                </div>
+            
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Your JavaScript code here
+        // Define your offer data and cycling logic here
+        var offers = (datainsertanchor)
+
+        var currentOfferIndex = 0;
+        var reloadses = 0
+        var seemoreimg = document.getElementById("seemoreimg");
+        var offerImage = document.getElementById("offerImage");
+        var headline = document.getElementById("headline");
+        var firstsentence = document.getElementById("firstsentence");
+        
+
+        function fadeIn(element) {
+            element.style.opacity = 0;
+            element.style.transition = 'opacity 0s';
+            requestAnimationFrame(function () {
+                element.style.transition = 'opacity 0.5s';
+                element.style.opacity = 1;
+            });
+        }
+
+        function updateOffer() {
+            var offer = offers[currentOfferIndex];
+
+            // Apply a fade-out effect before changing the content
+            offerContent.style.opacity = 0;
+
+            setTimeout(function () {
+                offerImage.src = offer.image;
+                seemoreimg.src = "https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=" + offer.url + "&choe=UTF-8";
+                headline.textContent = offer.headline;
+                firstsentence.textContent = offer.firstsentence;
+
+                // Apply a fade-in effect after changing the content
+                fadeIn(offerContent);
+                reloadses = reloadses + 1
+                if (reloadses == 70) {
+                    console.log("reload")
+                    
+                    location.reload();
+                    
+                }
+
+                currentOfferIndex = (currentOfferIndex + 1) % offers.length;
+                
+            }, 500); // Adjust the delay (in milliseconds) based on your preference
+        }
+
+        // Initial call to set the first offer
+        updateOffer();
+
+        // Set an interval to cycle through offers
+        setInterval(updateOffer, 15000); // Change offers every 15 seconds
+    </script>
+</body>
+
+</html>

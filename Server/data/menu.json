@@ -1,0 +1,3 @@
+[{ "name": "Bratwurst im Brötchen", "price": "€1,70", "image": "/media/bratwurst.jpg", "days": "Montag, Dienstag, Mittwoch, Donnerstag", "id": 0 },
+            { "name": "Waffeln mit Puderzucker", "price": "€1,00", "image": "/media/waffeln-puderzucker.jpg", "days": "Donnerstag", "id": 1 },
+            { "name": "Waffeln mit Nutella oder Marmelade", "price": "€1,50", "image": "/media/waffeln-nutella-marmelade.jpg", "days": "Donnerstag", "id": 3 }]

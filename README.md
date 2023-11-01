@@ -1,3 +1,3 @@
 # School Cafeteria Kiosk
 
-Currently, the project is work in progress.
+Currently, the project is WIP.

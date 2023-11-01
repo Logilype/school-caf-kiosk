@@ -1,69 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ses</title>
 </head>
+
 <body>
-    <input type="text" id="timestamp" placeholder="Enter timestamp" maxlength="4" >
+    <input type="text" id="timestamp" placeholder="Enter timestamp" maxlength="4">
     <button id="btn">Convert</button>
     <p id="result"></p>
     <script>
-        function translatetime(x){
-        var y = x.split("");
-        var z = "";
-        for (var i = 0; i < y.length; i++){
-            
-            switch (y[i]){
-            case "0":
-                z += "A"
-                break;
-            case "1":
-                z += "B";
-                break;
-            case "2":
-                z += "C";
-                break;
-            case "3":
-                z += "D";
-                break;
-            case "4":
-                z += "E";
-                break;
-            case "5":
-                z += "F";
-                break;
-            case "6":
-                z += "G";
-                break;
-            case "7":
-                z += "H";
-                break;
-            case "8":
-                z += "I";
-                break;
-            case "9":
-                z += "J";
-                break;
-                
-        }
-        }
-        z = z.toString();
-        return z;
-        
-    }
+        function translatetime(x) {
+            var y = x.split("");
+            var z = "";
+            for (var i = 0; i < y.length; i++) {
 
-    input = document.getElementById("timestamp");
-    btn = document.getElementById("btn");
-    result = document.getElementById("result");
+                switch (y[i]) {
+                    case "0":
+                        z += "A"
+                        break;
+                    case "1":
+                        z += "B";
+                        break;
+                    case "2":
+                        z += "C";
+                        break;
+                    case "3":
+                        z += "D";
+                        break;
+                    case "4":
+                        z += "E";
+                        break;
+                    case "5":
+                        z += "F";
+                        break;
+                    case "6":
+                        z += "G";
+                        break;
+                    case "7":
+                        z += "H";
+                        break;
+                    case "8":
+                        z += "I";
+                        break;
+                    case "9":
+                        z += "J";
+                        break;
 
-    btn.addEventListener("click", function(){
-        var timestamp = input.value;
-        
-        
-        result.innerHTML = translatetime(timestamp);
-    })
+                }
+            }
+            z = z.toString();
+            return z;
+
+        }
+
+        input = document.getElementById("timestamp");
+        btn = document.getElementById("btn");
+        result = document.getElementById("result");
+
+        btn.addEventListener("click", function () {
+            var timestamp = input.value;
+
+
+            result.innerHTML = translatetime(timestamp);
+        })
     </script>
 </body>
+
 </html>

@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Panel - Menü bearbeiten</title>
     <style>
-        body{
+        body {
             background-color: rgb(36, 36, 36);
             color: white;
             font-family: Arial, Helvetica, sans-serif;
         }
-        .headder{
+
+        .headder {
             font-size: 300%;
             font-weight: bold;
             margin-bottom: 20px;
         }
-        .navbar{
+
+        .navbar {
             width: 100%;
             height: 50px;
             background-color: rgb(71, 71, 71);
@@ -23,24 +26,28 @@
             justify-content: center;
             align-items: center;
         }
-        .navbar-item{
+
+        .navbar-item {
             margin-left: 20px;
             margin-right: 20px;
             font-size: 150%;
             text-decoration: none;
         }
-        .navbar-item-selected{
+
+        .navbar-item-selected {
             margin-left: 20px;
             margin-right: 20px;
             font-size: 150%;
             text-decoration: none;
             border-bottom: 2px solid white;
         }
-        a{
+
+        a {
             color: white;
             text-decoration: none;
         }
-        .content{
+
+        .content {
             width: 100%;
             height: 100%;
             display: flex;
@@ -48,7 +55,8 @@
             align-items: center;
             flex-direction: column;
         }
-        .footer{
+
+        .footer {
             width: 100%;
             height: 50px;
             background-color: rgb(71, 71, 71);
@@ -56,15 +64,18 @@
             justify-content: center;
             align-items: center;
         }
-        p{
+
+        p {
             font-size: 150%;
         }
-        .actionbuttons{
+
+        .actionbuttons {
             margin-top: 30px;
             margin-bottom: 30px;
         }
     </style>
 </head>
+
 <body>
     <div class="headder">
         Cafeteria Panel
@@ -102,12 +113,13 @@
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
     </div>
     <script>
-        document.querySelector("#newbtn").addEventListener("click", function(){
+        document.querySelector("#newbtn").addEventListener("click", function () {
             window.location.href = "/panel/menu/new";
         });
-        document.querySelector("#uploadimgbtn").addEventListener("click", function(){
+        document.querySelector("#uploadimgbtn").addEventListener("click", function () {
             window.location.href = "/panel/upload";
         });
     </script>
 </body>
+
 </html>

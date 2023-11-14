@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Panel</title>
     <style>
-        body{
+        body {
             background-color: rgb(36, 36, 36);
             color: white;
             font-family: Arial, Helvetica, sans-serif;
         }
-        .headder{
+
+        .headder {
             font-size: 300%;
             font-weight: bold;
             margin-bottom: 20px;
         }
-        .navbar{
+
+        .navbar {
             width: 100%;
             height: 50px;
             background-color: rgb(71, 71, 71);
@@ -23,24 +26,28 @@
             justify-content: center;
             align-items: center;
         }
-        .navbar-item{
+
+        .navbar-item {
             margin-left: 20px;
             margin-right: 20px;
             font-size: 150%;
             text-decoration: none;
         }
-        .navbar-item-selected{
+
+        .navbar-item-selected {
             margin-left: 20px;
             margin-right: 20px;
             font-size: 150%;
             text-decoration: none;
             border-bottom: 2px solid white;
         }
-        a{
+
+        a {
             color: white;
             text-decoration: none;
         }
-        .content{
+
+        .content {
             width: 100%;
             height: 100%;
             display: flex;
@@ -48,7 +55,8 @@
             align-items: center;
             flex-direction: column;
         }
-        .footer{
+
+        .footer {
             width: 100%;
             height: 50px;
             background-color: rgb(71, 71, 71);
@@ -56,12 +64,15 @@
             justify-content: center;
             align-items: center;
         }
-        p{
+
+        p {
             font-size: 150%;
         }
+
         input[type="file"] {
-        display: none;
+            display: none;
         }
+
         .imageselector {
             margin: auto;
             display: block;
@@ -69,6 +80,7 @@
             width: 500px;
             height: 50px;
         }
+
         .custom-file-upload {
             margin: auto;
             display: block;
@@ -83,21 +95,55 @@
             font-size: 20px;
             cursor: pointer;
         }
+
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="headder">
         Cafeteria Panel
@@ -116,11 +162,12 @@
     <div class="content">
         <label class="custom-file-upload" id="uisw">
             <div id="uploadingtext" style="visibility: hidden;">Hochladen...</div>
-            <div id="uploadingtextb" >Datei wählen</div>
-        <input class="imageselector" id="selectors" type="file" accept="image/png, image/jpeg">
+            <div id="uploadingtextb">Datei wählen</div>
+            <input class="imageselector" id="selectors" type="file" accept="image/png, image/jpeg">
         </label>
         <p> Maximum: 3MB</p>
-        <p> Benen sie die Datei vor dem upload um, um die übersicht zu behalten. Das spätere umbenen ist nicht möglich.</p>
+        <p> Benennen sie die Datei vor dem Upload um, um die Übersicht zu behalten. Das spätere Umbenennen ist nicht
+            möglich.</p>
     </div>
     <div class="footer">
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
@@ -132,7 +179,7 @@
         const inputElement = document.getElementById("selectors");
         inputElement.addEventListener("change", handleFiles, false);
 
-       
+
 
         function handleFiles() {
             const fileList = this.files; /* now you can work with the file list */
@@ -143,8 +190,8 @@
             uist.style.color = "white";
 
             //check if there even is a file
-            if(fileList.length == 0){
-                
+            if (fileList.length == 0) {
+
                 uist.style.visibility = "visible";
                 uistb.style.visibility = "visible";
                 uist.innerHTML = "Keine Datei ausgewählt!";
@@ -153,8 +200,8 @@
                 return;
             }
             //check if file is under 3mb
-            if(fileList[0].size > 3000000){
-                
+            if (fileList[0].size > 3000000) {
+
                 uist.style.visibility = "visible";
                 uistb.style.visibility = "visible";
                 uist.innerHTML = "datei ist zu Groß (Max 3MB)";
@@ -163,8 +210,8 @@
                 return;
             }
 
-            
-        
+
+
             //upload file as form data
             var formData = new FormData();
             formData.append("file", fileList[0]);
@@ -172,26 +219,26 @@
             request.open("POST", "/api/upload");
             console.log(formData);
             request.send(formData);
-            request.onreadystatechange = function() {
+            request.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     console.log(this.responseText);
                     var response = JSON.parse(this.responseText);
                     var path = response.path;
-                    if(this.status == 200){
+                    if (this.status == 200) {
                         uist.style.visibility = "visible";
                         uistb.style.visibility = "hidden";
                         uist.innerHTML = "hochgeladen!";
                         uist.style.color = "green";
                         uist.style.animation = "none";
-                        setTimeout(function(){
+                        setTimeout(function () {
                             uist.style.visibility = "hidden";
                             uistb.style.visibility = "visible";
                             uist.innerHTML = "Datei wählen";
                             uist.style.color = "white";
                             uist.style.animation = "none";
-                        }, 1000);	
-                        
-                    }else{
+                        }, 1000);
+
+                    } else {
                         uist.style.visibility = "visible";
                         uistb.style.visibility = "visible";
                         uist.innerHTML = "Error! " + this.responseText;
@@ -202,8 +249,9 @@
             };
 
 
-            
+
         }
     </script>
 </body>
+
 </html>

@@ -4,12 +4,12 @@
   "description": "electron.js clinet to display current offers in the school cafeteria ",
   "main": "index.js",
   "scripts": {
-    "test": "electron ."
+    "start": "electron ."
   },
   "author": "FelixmaxYT",
   "license": "ISC",
   "dependencies": {
-    "electron": "^27.0.0",
+    "electron": "^27.0.4",
     "xhr2": "^0.2.1"
   }
 }

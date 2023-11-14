@@ -8,6 +8,8 @@ This project consists of a client app (Electron app that is being run from npm) 
 
 ## Tutorial
 
-To run the client app, run ```npm start```
+To run the client app, go to the folder ```client``` and run ```npm start```
 
-To run the server, run ```node .```
+To run the server, go to the folder ```Server``` and run ```node .```
+
+For the client app to work, the server must be running!

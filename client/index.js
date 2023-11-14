@@ -36,7 +36,7 @@ app.whenReady().then(() => {
     
     
     // setInterval(changewindow, 225000)
-    setInterval(changewindow, 225000)
+    setInterval(changewindow, 150000)
     
 
 

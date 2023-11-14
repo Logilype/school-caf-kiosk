@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Panel - Login</title>
     <style>
-        body {
+        body{
             background-color: rgb(36, 36, 36);
             color: white;
             font-family: Arial, Helvetica, sans-serif;
         }
-
-        .window {
+        .window{
             width: 100%;
             height: 100%;
             display: flex;
@@ -20,16 +18,14 @@
             align-items: center;
             flex-direction: column;
             margin-top: 20%;
-
+            
         }
-
-        .headder {
+        .headder{
             font-size: 300%;
             font-weight: bold;
             margin-bottom: 20px;
         }
-
-        .content {
+        .content{
             width: 50%;
             height: 50%;
             display: flex;
@@ -37,8 +33,7 @@
             align-items: center;
             flex-direction: column;
         }
-
-        input {
+        input{
             width: 300px;
             height: 40px;
             margin-bottom: 10px;
@@ -47,8 +42,7 @@
             padding-left: 10px;
             font-size: 100%;
         }
-
-        input[type="button"] {
+        input[type="button"]{
             background-color: rgb(71, 71, 71);
             color: white;
             font-weight: bold;
@@ -57,51 +51,49 @@
         }
     </style>
 </head>
-
 <body>
     <div class="window">
         <div class="headder">
             Cafeteria Panel
         </div>
         <div class="content">
+            
+                <input type="text" name="username" placeholder="Nutzername" required>
+                <input type="password" name="password" placeholder="Passwort" required>
+                <input type="button"  value="Anmelden">
+            
+    </div>
+    <div class="footer">
+        <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
+    </div>
+    <script>
+        document.querySelector("input[type='button']").addEventListener("click", function(){
+            var username = document.querySelector("input[name='username']").value;
+            var password = document.querySelector("input[name='password']").value;
+            console.log(username);
+            console.log(password);
+            xml = new XMLHttpRequest();
+            xml.open("POST", "/api/login", true);    
+            xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xml.send("username="+username+"&password="+password);
+            xml.onreadystatechange = function(){
+                if(xml.readyState == 4 && xml.status == 200){
+                    console.log(xml.responseText);
+                    // set response as across domains token in cookie
+                    document.cookie = "token="+xml.responseText + ";path=/";
 
-            <input type="text" name="username" placeholder="Nutzername" required>
-            <input type="password" name="password" placeholder="Passwort" required>
-            <input type="button" value="Anmelden">
 
-        </div>
-        <div class="footer">
-            <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
-        </div>
-        <script>
-            document.querySelector("input[type='button']").addEventListener("click", function () {
-                var username = document.querySelector("input[name='username']").value;
-                var password = document.querySelector("input[name='password']").value;
-                console.log(username);
-                console.log(password);
-                xml = new XMLHttpRequest();
-                xml.open("POST", "/api/login", true);
-                xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xml.send("username=" + username + "&password=" + password);
-                xml.onreadystatechange = function () {
-                    if (xml.readyState == 4 && xml.status == 200) {
-                        console.log(xml.responseText);
-                        // set response as across domains token in cookie
-                        document.cookie = "token=" + xml.responseText + ";path=/";
-
-
-                        window.location.href = "/panel?intent=authorize";
-
-                    }
-                    else if (xml.readyState == 4 && xml.status == 401) {
-                        alert("Falscher Nutzername oder Passwort");
-                    }
-                    else if (xml.readyState == 4 && xml.status == 500) {
-                        alert("Interner Serverfehler");
-                    }
+                    window.location.href = "/panel?intent=authorize";
+                    
                 }
-            });
-        </script>
+                else if(xml.readyState == 4 && xml.status == 401){
+                    alert("Falscher Nutzername oder Passwort");
+                }
+                else if(xml.readyState == 4 && xml.status == 500){
+                    alert("Interner Serverfehler");
+                }
+            }
+        });
+    </script>
 </body>
-
 </html>

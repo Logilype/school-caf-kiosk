@@ -14,7 +14,7 @@ function createWindow() {
         
         
         resizable: false,
-        title: "Cafeteria Monitor",
+        title: "Cafeteria monitor",
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -36,7 +36,7 @@ app.whenReady().then(() => {
     
     
     // setInterval(changewindow, 225000)
-    setInterval(changewindow, 150000)
+    setInterval(changewindow, 25000)
     
 
 
@@ -44,7 +44,7 @@ app.whenReady().then(() => {
 
 function changewindow() {
     pageindex = pageindex + 1;
-    if (pageindex == 3) {
+    if (pageindex == 4) {
         pageindex = 0;
     }
 
@@ -59,6 +59,10 @@ function changewindow() {
     }
     else if (pageindex == 2) {
         win.loadURL("https://mese.webuntis.com/WebUntis/monitor?school=kopernikus-rs&monitorType=subst&format=Schüler")
+        
+    }
+    else if (pageindex == 3) {
+        win.loadFile(__dirname + '/webfiles/splash.html')
         
     }
 }

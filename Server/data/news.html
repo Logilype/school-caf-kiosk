@@ -10,7 +10,7 @@
         body,
         html {
             height: 100%;
-            margin: 0%;
+            margin: 0;
             padding: 0;
         }
 
@@ -34,7 +34,6 @@
 
         .offers-container {
             width: 80%;
-            height: 90%;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -46,22 +45,22 @@
         }
 
         #offerImage {
-
-
+            
+            
             border-radius: 20px;
-
-
-            width: calc(90% - 190px);
+            
+            
+            width: calc(100% - 190px);
             object-fit: cover;
-
+            
         }
 
         h2 {
             font-size: 225%;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            padding-left: 20px;
-            margin-top: 25px;
-            margin-bottom: 25px;
+            
+            padding-left:20px;
+            margin-top: 10px;
+            margin-bottom: 15px;
         }
 
         /* Apply transition for opacity */
@@ -69,47 +68,43 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
-
-        #readall {
+        #readall{
             position: absolute;
-
+        
         }
-
-        .bottomlinecontainer {
+        .bottomlinecontainer{
             display: flex;
-
+            
             margin-top: -5px;
             margin-bottom: 10px;
             width: calc(100% - 190px);
             margin-left: auto;
             margin-right: auto;
-
+            
         }
-
-        #seemoreimg {
-
+        #seemoreimg{
+            
             width: 180px;
-
+            
             height: 180px;
             object-fit: cover;
-
+            
             margin-right: 0;
             margin-left: auto;
         }
-
-        #headline {
+        #headline{
             font-weight: bold;
             font-size: 150%;
             text-align: left;
         }
-
-        #firstsentence {
+        #firstsentence{
             font-size: 100%;
             margin-top: 0;
             margin-bottom: 0;
             text-align: left;
-
+            
         }
+        
     </style>
 </head>
 
@@ -118,23 +113,18 @@
         <div class="offers-container">
             <h2>Nachrichten: Inland</h2>
             <div class="offer-content" id="offerContent">
-                <img id="offerImage"
-                    src="https://images.tagesschau.de/image/af69e28b-a10d-4947-a2e2-c732eb5fd3c4/AAABi2fDFUA/AAABibBxrfI/16x9-1920.jpg"
-                    alt="Nachrichten: Inland Bild">
-
+                <img id="offerImage" src="https://images.tagesschau.de/image/af69e28b-a10d-4947-a2e2-c732eb5fd3c4/AAABi2fDFUA/AAABibBxrfI/16x9-1920.jpg" alt="Angebotsbild">
+                
                 <div class="bottomlinecontainer">
                     <div class="texts">
-                        <p id="headline">Habeck zu schärferen Abschieberegeln (Tagesschau API oder Caf-Server kaputt?)</p>
-                        <p id="firstsentence">Die Bundesregierung hat die Regeln zur Abschiebung ausreisepflichtiger
-                            Ausländer verschärft.</p>
-                    </div>
-                    <img id="seemoreimg"
-                        src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=https://www.tagesschau.de/inland/innenpolitik/tagesthemen-habeck-interview-100.html&choe=UTF-8"
-                        alt="Angebotsbild">
-
+                    <p id="headline">Habeck zu schärferen Abschieberegeln</p>
+                    <p id="firstsentence">Die Bundesregierung hat die Regeln zur Abschiebung ausreisepflichtiger Ausländer verschärft.</p>
                 </div>
-
-
+                    <img id="seemoreimg" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=https://www.tagesschau.de/inland/innenpolitik/tagesthemen-habeck-interview-100.html&choe=UTF-8" alt="Angebotsbild">
+                    
+                </div>
+            
+                
             </div>
         </div>
     </div>
@@ -150,7 +140,7 @@
         var offerImage = document.getElementById("offerImage");
         var headline = document.getElementById("headline");
         var firstsentence = document.getElementById("firstsentence");
-
+        
 
         function fadeIn(element) {
             element.style.opacity = 0;
@@ -178,13 +168,13 @@
                 reloadses = reloadses + 1
                 if (reloadses == 70) {
                     console.log("reload")
-
+                    
                     location.reload();
-
+                    
                 }
 
                 currentOfferIndex = (currentOfferIndex + 1) % offers.length;
-
+                
             }, 500); // Adjust the delay (in milliseconds) based on your preference
         }
 

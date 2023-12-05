@@ -85,37 +85,58 @@
     </div>
     <div class="content">
         <div class="tables">
+            <h1>Hinzufügen</h1>
             <table>
                 <tr>
                     <th>Name</th>
                     <th>Preis</th>
                     <th>Bild</th>
                     <th>Tage</th>
-                    <th>Befehle</th>
+                    
                 </tr>
-                (renderanchor)
+                <tr>
+                    <td><input type="text" name="name" placeholder="Name" required></td>
+                    <td><input type="text" name="price" placeholder="Preis" required></td>
+                    <td><select id="imgkey" style="width: 200px;">
+                        (allimgs)
+
+                    </select></td>
+                    <td><input type="text" name="days" placeholder="Verfügbar an" required style="width: 300px;"></td>
+                    
+                </tr> 
             </table>
+            <button type="button" id="savebtn" style="width: 500px; height: 60px;">Hinzufügen</button>
         </div>
-        <div class="actionbuttons">
-            <input type="button" value="Hinzufügen" id="newbtn">
-            <input type="button" value="Bilder verwalten" id="uploadimgbtn">
-            <input type="button" value="Aktualisieren Senden" id="refreshbtn">
-        </div>
+        
     </div>
     <div class="footer">
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
     </div>
-    <script>
-        document.querySelector("#newbtn").addEventListener("click", function(){
-            window.location.href = "/panel/menu/new";
-        });
-        document.querySelector("#uploadimgbtn").addEventListener("click", function(){
-            window.location.href = "/panel/media";
-        });
-        document.querySelector("#refreshbtn").addEventListener("click", function(){
-            
-            window.location.href = "/panel?intent=refresh";
-        });
-    </script>
 </body>
+<script>
+    savebtn = document.getElementById("savebtn");
+    savebtn.addEventListener("click", function(){
+        var name = document.querySelector("input[name='name']").value;
+        var price = document.querySelector("input[name='price']").value;
+        var imgkey = document.getElementById("imgkey").value;
+        var days = document.querySelector("input[name='days']").value;
+        
+        var data = "name=" + name + "&price=" + price + "&image=" + imgkey + "&days=" + days;
+        console.log(data);
+        xml = new XMLHttpRequest();
+        xml.open("POST", "/api/newentry", true);
+        xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xml.send(data);
+        xml.onreadystatechange = function(){
+            if(xml.readyState == 4){
+                if(xml.status == 200){
+                    window.location.href = "/panel/menu";
+                }
+                else{
+                    alert("Fehler: " + xml.status);
+                }
+            }
+        }
+    })
+</script>
 </html>

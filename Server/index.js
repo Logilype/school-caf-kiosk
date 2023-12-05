@@ -72,11 +72,13 @@ app.get('/news', (req, res) => {
 
 app.get('/panel', (req, res) => {
     //get token from cookies and check if it is valid
+    intent = req.query.intent;
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
         res.sendFile(__dirname + '/data/panel.html');
+        console.log(intent);
     } else {
         //if not valid send login.html
         res.redirect('/ui/login');
@@ -90,6 +92,36 @@ app.get('/panel/upload', (req, res) => {
     if (checktoken(token)) {
         //if valid send panel.html
         res.sendFile(__dirname + '/data/uploadmedia.html');
+    } else {
+        //if not valid send login.html
+        res.redirect('/ui/login');
+    }
+    
+});
+app.get('/panel/media', (req, res) => {
+    //get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        //if valid send panel.html
+        //index all files in media folder and add them to the table
+        fs.readdir('media', (err, files) => {
+            if (err) {
+                res.send(err);
+            }
+            replacementdata = ""
+            for (var i = 0; i < files.length; i++) {
+                replacementdata = replacementdata + "<tr><td>" + files[i] + "</td><td><img src='/media/"+ files[i] +"' style='max-width: 200px; max-height: 200px;'></img></td></tr>";
+            }
+            fs.readFile('data/media.html', (err, data) => {
+                if (err) {
+                    res.send(err);
+                };
+                replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
+                res.send(replacementdata);
+            });
+        }
+        );
     } else {
         //if not valid send login.html
         res.redirect('/ui/login');
@@ -205,12 +237,79 @@ app.get('/panel/menu/edit/:id', (req, res) => {
     
 });
 
+app.get('/panel/menu/new', (req, res) => {
+    //get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        //if valid send panel.html
+        fs.readFile('data/newentry.html', (err, data) => {
+            if (err) {
+                res.send(err);
+            };
+            //index all files in media folder and add them to the dropdown
+            fs.readdir('media', (err, files) => {
+                if (err) {
+                    res.send(err);
+                };
+                var dropdown = "";
+                for (var i = 0; i < files.length; i++) {
+                    dropdown = dropdown + "<option value='" + files[i] + "'>" + files[i] + "</option>";
+                }
+                replacementdata = data.toString().replace("(allimgs)", dropdown);
+                res.send(replacementdata);
+            });
+        });
+    } else {
+        //if not valid send login.html
+        res.redirect('/ui/login');
+    }
+    
+});
+
+app.post('/api/newentry', (req, res) => {
+    var id = makeresultid(10);
+    var name = req.body.name;
+    var price = req.body.price;
+    var image =  "/media/" + req.body.image;
+    var days = req.body.days;
+    console.log(id);
+    console.log(name);
+    console.log(price);
+    console.log(image);
+    console.log(days);
+    
+
+    //edit entry in menu.json with the id from the parameters
+    fs.readFile('data/menu.json', (err, data) => {
+        if (err) {
+            res.send(err);
+        };
+        var menu = JSON.parse(data);
+        
+        menu.push({
+            id: id,
+            name: name,
+            price: price,
+            image: image,
+            days: days
+        });
+        fs.writeFile('data/menu.json', JSON.stringify(menu), (err) => {
+            if (err) {
+                res.send(err);
+            };
+            res.send("success");
+        });
+    });
+});
+
+
 app.post('/api/editentry', (req, res) => {
     // get username and pw from form data
     var id = req.body.id;
     var name = req.body.name;
     var price = req.body.price;
-    var image = req.body.image;
+    var image =  "/media/" + req.body.image;
     var days = req.body.days;
     console.log(id);
     console.log(name);
@@ -292,5 +391,16 @@ function checktoken(token) {
     return false;
 }
 
+function makeresultid(length) {
+    let result = '';
+    const characters = '0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return result
+}
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));

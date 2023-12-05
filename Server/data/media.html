@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cafeteria Panel - Menü bearbeiten</title>
+    <title>Cafeteria Panel - Medien verwalten</title>
     <style>
         body{
             background-color: rgb(36, 36, 36);
@@ -73,13 +73,13 @@
         <div class="navbar-item">
             <a href="/panel">Home</a>
         </div>
-        <div class="navbar-item-selected">
+        <div class="navbar-item">
             <a href="/panel/menu">Menü bearbeiten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
         </div>
-        <div class="navbar-item">
+        <div class="navbar-item-selected">
             <a href="/panel/media">Media verwalten</a>
         </div>
     </div>
@@ -88,18 +88,17 @@
             <table>
                 <tr>
                     <th>Name</th>
-                    <th>Preis</th>
-                    <th>Bild</th>
-                    <th>Tage</th>
-                    <th>Befehle</th>
+                    
+                    <th>Vorschau</th>
+                    
+                    
                 </tr>
                 (renderanchor)
             </table>
         </div>
         <div class="actionbuttons">
-            <input type="button" value="Hinzufügen" id="newbtn">
-            <input type="button" value="Bilder verwalten" id="uploadimgbtn">
-            <input type="button" value="Aktualisieren Senden" id="refreshbtn">
+            <input type="button" value="Hochladen" id="newbtn">
+            
         </div>
     </div>
     <div class="footer">
@@ -107,7 +106,7 @@
     </div>
     <script>
         document.querySelector("#newbtn").addEventListener("click", function(){
-            window.location.href = "/panel/menu/new";
+            window.location.href = "/panel/upload";
         });
         document.querySelector("#uploadimgbtn").addEventListener("click", function(){
             window.location.href = "/panel/media";

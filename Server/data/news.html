@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nachrichten</title>
     <style>
-        /* Your CSS styles here */
+        
         body,
         html {
             height: 100%;
@@ -33,7 +33,7 @@
         }
 
         .offers-container {
-            width: 80%;
+            width: 75%;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -44,23 +44,17 @@
             text-align: center;
         }
 
-        #offerImage {
-            
-            
-            border-radius: 20px;
-            
-            
+        #offerImage {         
+            border-radius: 20px;            
             width: calc(100% - 190px);
             object-fit: cover;
-            
         }
 
         h2 {
             font-size: 225%;
-            
             padding-left:20px;
-            margin-top: 10px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         /* Apply transition for opacity */
@@ -68,62 +62,61 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
-        #readall{
+
+        #readall {
             position: absolute;
-        
         }
-        .bottomlinecontainer{
+
+        .bottomlinecontainer {
             display: flex;
-            
             margin-top: -5px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             width: calc(100% - 190px);
             margin-left: auto;
-            margin-right: auto;
-            
+            margin-right: auto;   
         }
-        #seemoreimg{
-            
+
+        #seemoreimg {
             width: 180px;
-            
             height: 180px;
             object-fit: cover;
-            
-            margin-right: 0;
+            margin-right: -15px;
             margin-left: auto;
         }
-        #headline{
+
+        #headline {
             font-weight: bold;
             font-size: 150%;
             text-align: left;
         }
-        #firstsentence{
+
+        #firstsentence {
             font-size: 100%;
             margin-top: 0;
             margin-bottom: 0;
             text-align: left;
-            
         }
-        
+
     </style>
 </head>
 
 <body>
     <div class="container-table">
+
         <div class="offers-container">
+
             <h2>Nachrichten: Inland</h2>
             <div class="offer-content" id="offerContent">
-                <img id="offerImage" src="https://images.tagesschau.de/image/af69e28b-a10d-4947-a2e2-c732eb5fd3c4/AAABi2fDFUA/AAABibBxrfI/16x9-1920.jpg" alt="Angebotsbild">
+                
+                <img id="offerImage" src="https://images.tagesschau.de/image/af69e28b-a10d-4947-a2e2-c732eb5fd3c4/AAABi2fDFUA/AAABibBxrfI/16x9-1920.jpg" alt="Artikelbild">
                 
                 <div class="bottomlinecontainer">
                     <div class="texts">
                     <p id="headline">Habeck zu schärferen Abschieberegeln</p>
                     <p id="firstsentence">Die Bundesregierung hat die Regeln zur Abschiebung ausreisepflichtiger Ausländer verschärft.</p>
                 </div>
-                    <img id="seemoreimg" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=https://www.tagesschau.de/inland/innenpolitik/tagesthemen-habeck-interview-100.html&choe=UTF-8" alt="Angebotsbild">
-                    
-                </div>
-            
+
+                <img id="seemoreimg" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=https://www.tagesschau.de/inland/innenpolitik/tagesthemen-habeck-interview-100.html&choe=UTF-8" alt="QR-Code">
                 
             </div>
         </div>

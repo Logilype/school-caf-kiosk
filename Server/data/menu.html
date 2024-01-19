@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Angebote</title>
     <style>
-        /* Your CSS styles here */
+
         body,
         html {
             height: 100%;
@@ -22,6 +22,8 @@
             font-size: 150%;
             background-color: #f0f0f0;
             text-align: center;
+            flex-direction: column;
+            position: relative;
         }
 
         .container-table {
@@ -60,10 +62,22 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
+
+        .title-of-caf-institute-thing {
+            /* Mainly make the title of caf institute thing overlay on top of other things */
+            position: absolute;
+            top: 0.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            font-size: 10pt;
+        }
+
     </style>
 </head>
 
 <body>
+    <h3 class="title-of-caf-institute-thing">Cafeteria im Schulzentrum</h3>
     <div class="container-table">
         <div class="offers-container">
             <h2>Angebote</h2>
@@ -108,17 +122,13 @@
                 offerName.textContent = offer.name;
                 offerPrice.textContent = offer.price;
                 offerDays.textContent = "Verfügbar an: " + offer.days;
-
                 // Apply a fade-in effect after changing the content
                 fadeIn(offerContent);
-
                 currentOfferIndex = (currentOfferIndex + 1) % offers.length;
             }, 500); // Adjust the delay (in milliseconds) based on your preference
         }
-
         // Initial call to set the first offer
         updateOffer();
-
         // Set an interval to cycle through offers
         setInterval(updateOffer, 15000); // Change offers every 15 seconds
     </script>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            display: flex;
+            align-items: flex-start;
+            transition: transform 1s ease;
+        }
+
+        #mainContainer {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            position: relative;
+            z-index: 1;
+        }
+
+        #iframesContainer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Change from auto to hidden */
+            scroll-snap-type: y mandatory; /* Added scroll-snap-type for smoother scrolling */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            scroll-snap-align: start; /* Added scroll-snap-align for smoother scrolling */
+        }
+
+        .scroll-indicator-container {
+            position: fixed;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+        }
+
+        .scroll-indicator-point {
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            margin-bottom: 5px;
+            border-radius: 50%;
+            opacity: 0.5;
+            transition: opacity 0.5s;
+        }
+
+        .scroll-indicator-point.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mainContainer">
+        <div id="iframesContainer">
+            <iframe src="/server/data/menu.html" id="offersFrame"></iframe>
+            <iframe src="/server/data/news.html" id="newsFrame"></iframe>
+            <iframe src="/client/webfiles/advertisement.html" id="advertisementFrame"></iframe>
+            <iframe src="https://mese.webuntis.com/WebUntis/monitor?school=kopernikus-rs&monitorType=subst&format=Sch%C3%BCler" id="substitutionFrame"></iframe>
+            <!-- Add more iframe elements for additional pages -->
+        </div>
+    </div>
+
+    <div class="scroll-indicator-container">
+        <!-- Add scroll indicator points dynamically based on the number of iframes -->
+    </div>
+
+    <script>
+        const iframes = document.querySelectorAll('#iframesContainer iframe');
+        const scrollIndicatorContainer = document.querySelector('.scroll-indicator-container');
+        const indicatorPoints = [];
+        let currentPage = 0;
+        const timeoutDuration = 5000; // Set the initial timeout duration
+
+        function createScrollIndicatorPoints() {
+            for (let i = 0; i < iframes.length; i++) {
+                const point = document.createElement('div');
+                point.className = 'scroll-indicator-point';
+                scrollIndicatorContainer.appendChild(point);
+                indicatorPoints.push(point);
+            }
+        }
+
+        createScrollIndicatorPoints();
+
+        function updateScrollIndicator() {
+            indicatorPoints.forEach((point, index) => {
+                point.classList.toggle('active', index === currentPage);
+            });
+        }
+
+        function scrollToNextSection() {
+            currentPage = (currentPage + 1) % iframes.length;
+
+            iframes[currentPage].scrollIntoView({
+                behavior: 'smooth'
+            });
+
+            // Update scroll indicator after a short delay to ensure proper tracking
+            setTimeout(() => {
+                updateScrollIndicator();
+            }, 500);
+        }
+
+        // Scroll to the first section initially
+        setTimeout(() => scrollToNextSection(), timeoutDuration);
+
+        // Set an interval for scrolling to the next section
+        setInterval(() => {
+            scrollToNextSection();
+        }, timeoutDuration);
+
+    </script>
+
+</body>
+
+</html>

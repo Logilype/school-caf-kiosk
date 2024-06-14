@@ -1,4 +1,5 @@
-# School Cafeteria Kiosk
+# School Cafeteria Digital Signage Software
+dumb name, ik, what should i call it
 
 Currently, the project is work in progress.
 

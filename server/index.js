@@ -1,6 +1,6 @@
 const express = require('express');
-fs = require('fs');
-var XMLHttpRequest = require('xhr2');
+const fs = require('fs');
+const XMLHttpRequest = require('xhr2');
 const multer = require('multer');
 
 const app = express();
@@ -23,12 +23,12 @@ app.get('/getmenu', (req, res) => {
         if (err) {
             res.send(err);
         };
-        replacementdata = data
+        const replacementdata = data
         fs.readFile('data/menu.html', (err, data) => {
             if (err) {
                 res.send(err);
             };
-            replacementdata = data.toString().replace("(datarenderplace)", replacementdata.toString());
+            const replacementdata = data.toString().replace("(datarenderplace)", replacementdata.toString());
             res.send(replacementdata);
         });
     });
@@ -40,16 +40,16 @@ app.get('/getdisplaysequence', (req, res) => {
 });
 
 app.get('/news', (req, res) => {
-    xmlht = new XMLHttpRequest();
+    const xmlht = new XMLHttpRequest();
     xmlht.open("GET", "https://www.tagesschau.de/api2/news/?regions=1&ressort=inland", true);
     xmlht.send();
     xmlht.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             //for every news item make a new json object with the title, image, firstSentence and shareurl
-            var news = JSON.parse(this.responseText);
-            var newsarray = [];
-            for (var i = 0; i < 16; i++) {
-                var newsitem = {
+            const news = JSON.parse(this.responseText);
+            const newsarray = [];
+            for (let i = 0; i < 16; i++) {
+                const newsitem = {
                     headline: news.news[i].title,
                     image: news.news[i].teaserImage.imageVariants['16x9-1920'],
                     firstsentence: news.news[i].firstSentence,
@@ -62,7 +62,7 @@ app.get('/news', (req, res) => {
                 if (err) {
                     res.send(err);
                 };
-                replacementdata = data.toString().replace("(datainsertanchor)", JSON.stringify(newsarray));
+                const replacementdata = data.toString().replace("(datainsertanchor)", JSON.stringify(newsarray));
                 res.send(replacementdata);
             });
         }
@@ -72,8 +72,8 @@ app.get('/news', (req, res) => {
 
 app.get('/panel', (req, res) => {
     //get token from cookies and check if it is valid
-    intent = req.query.intent;
-    var token = req.cookies.token;
+    const intent = req.query.intent;
+    const token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
@@ -87,7 +87,7 @@ app.get('/panel', (req, res) => {
 });
 app.get('/panel/upload', (req, res) => {
     //get token from cookies and check if it is valid
-    var token = req.cookies.token;
+    const token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
@@ -100,7 +100,7 @@ app.get('/panel/upload', (req, res) => {
 });
 app.get('/panel/media', (req, res) => {
     //get token from cookies and check if it is valid
-    var token = req.cookies.token;
+    const token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
@@ -109,15 +109,15 @@ app.get('/panel/media', (req, res) => {
             if (err) {
                 res.send(err);
             }
-            replacementdata = ""
-            for (var i = 0; i < files.length; i++) {
+            let replacementdata = ""
+            for (let i = 0; i < files.length; i++) {
                 replacementdata = replacementdata + "<tr><td>" + files[i] + "</td><td><img src='/media/"+ files[i] +"' style='max-width: 200px; max-height: 200px;'></img></td></tr>";
             }
             fs.readFile('data/media.html', (err, data) => {
                 if (err) {
                     res.send(err);
                 };
-                replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
+                const replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
                 res.send(replacementdata);
             });
         }
@@ -130,7 +130,7 @@ app.get('/panel/media', (req, res) => {
 });
 app.get('/panel/menu', (req, res) => {
     //get token from cookies and check if it is valid
-    var token = req.cookies.token;
+    const token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
@@ -139,9 +139,9 @@ app.get('/panel/menu', (req, res) => {
             if (err) {
                 res.send(err);
             };
-            replacementdata = ""
-            var menu = JSON.parse(data);
-            for (var i = 0; i < menu.length; i++) {
+            let replacementdata = ""
+            const menu = JSON.parse(data);
+            for (let i = 0; i < menu.length; i++) {
                 replacementdata = replacementdata + "<tr><td>" + menu[i].name + "</td><td>" + menu[i].price + "</td><td>" + menu[i].image + "</td><td>" + menu[i].days + "</td><td><a href='/panel/menu/edit/" + menu[i].id + "'>Bearbeiten</a></td></tr>";
             }
 
@@ -149,7 +149,7 @@ app.get('/panel/menu', (req, res) => {
                 if (err) {
                     res.send(err);
                 };
-                replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
+                const replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
                 res.send(replacementdata);
             });
         });
@@ -167,7 +167,7 @@ const storage = multer.diskStorage({
         cb(null, 'media/');
     },
     filename: (req, file, cb) => {
-        filename = "/media/" + file.originalname;
+        const filename = "/media/" + file.originalname;
         
         cb(null, file.originalname);
 
@@ -188,8 +188,8 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 app.get('/panel/menu/edit/:id', (req, res) => {
     //get token from cookies and check if it is valid
-    id = req.params.id;
-    var token = req.cookies.token;
+    const id = req.params.id;
+    const token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
@@ -198,15 +198,15 @@ app.get('/panel/menu/edit/:id', (req, res) => {
             if (err) {
                 res.send(err);
             };
-            var menu = JSON.parse(data);
-            for (var i = 0; i < menu.length; i++) {
+            const menu = JSON.parse(data);
+            for (let i = 0; i < menu.length; i++) {
                 if (menu[i].id == id) {
-                    menuitem = menu[i];
+                    const menuitem = menu[i];
                     fs.readFile('data/editentry.html', (err, data) => {
                         if (err) {
                             res.send(err);
                         };
-                        replacementdata = data.toString().replace("(id)", menuitem.id);
+                        let replacementdata = data.toString().replace("(id)", menuitem.id);
                         replacementdata = replacementdata.toString().replace("(name)", menuitem.name);
                         replacementdata = replacementdata.toString().replace("(price)", menuitem.price);
                         
@@ -216,10 +216,7 @@ app.get('/panel/menu/edit/:id', (req, res) => {
                             if (err) {
                                 res.send(err);
                             };
-                            var dropdown = "";
-                            for (var i = 0; i < files.length; i++) {
-                                dropdown = dropdown + "<option value='" + files[i] + "'>" + files[i] + "</option>";
-                            }
+                            let dropdown = files.map(file => `<option value='${file}'>${file}</option>`).join('');
                             replacementdata = replacementdata.toString().replace("(allimgs)", dropdown);
                             res.send(replacementdata);
                         });
@@ -239,7 +236,7 @@ app.get('/panel/menu/edit/:id', (req, res) => {
 
 app.get('/panel/menu/new', (req, res) => {
     //get token from cookies and check if it is valid
-    var token = req.cookies.token;
+    const token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         //if valid send panel.html
@@ -252,11 +249,8 @@ app.get('/panel/menu/new', (req, res) => {
                 if (err) {
                     res.send(err);
                 };
-                var dropdown = "";
-                for (var i = 0; i < files.length; i++) {
-                    dropdown = dropdown + "<option value='" + files[i] + "'>" + files[i] + "</option>";
-                }
-                replacementdata = data.toString().replace("(allimgs)", dropdown);
+                let dropdown = files.map(file => `<option value='${file}'>${file}</option>`).join('');
+                let replacementdata = data.toString().replace("(allimgs)", dropdown);
                 res.send(replacementdata);
             });
         });
@@ -268,11 +262,11 @@ app.get('/panel/menu/new', (req, res) => {
 });
 
 app.post('/api/newentry', (req, res) => {
-    var id = makeresultid(10);
-    var name = req.body.name;
-    var price = req.body.price;
-    var image =  "/media/" + req.body.image;
-    var days = req.body.days;
+    const id = makeresultid(10);
+    const name = req.body.name;
+    const price = req.body.price;
+    const image =  "/media/" + req.body.image;
+    const days = req.body.days;
     console.log(id);
     console.log(name);
     console.log(price);
@@ -285,7 +279,7 @@ app.post('/api/newentry', (req, res) => {
         if (err) {
             res.send(err);
         };
-        var menu = JSON.parse(data);
+        const menu = JSON.parse(data);
         
         menu.push({
             id: id,
@@ -306,11 +300,11 @@ app.post('/api/newentry', (req, res) => {
 
 app.post('/api/editentry', (req, res) => {
     // get username and pw from form data
-    var id = req.body.id;
-    var name = req.body.name;
-    var price = req.body.price;
-    var image =  "/media/" + req.body.image;
-    var days = req.body.days;
+    const id = req.body.id;
+    const name = req.body.name;
+    const price = req.body.price;
+    const image =  "/media/" + req.body.image;
+    const days = req.body.days;
     console.log(id);
     console.log(name);
     console.log(price);
@@ -323,8 +317,8 @@ app.post('/api/editentry', (req, res) => {
         if (err) {
             res.send(err);
         };
-        var menu = JSON.parse(data);
-        for (var i = 0; i < menu.length; i++) {
+        const menu = JSON.parse(data);
+        for (let i = 0; i < menu.length; i++) {
             if (menu[i].id == id) {
                 menu[i].name = name;
                 menu[i].price = price;
@@ -345,8 +339,8 @@ app.post('/api/editentry', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     // get username and pw from form data
-    var username = req.body.username;
-    var password = req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
     //check if username and pw are correct
     //read accounts.json
     fs.readFile('data/accounts.json', (err, data) => {
@@ -354,12 +348,12 @@ app.post('/api/login', (req, res) => {
             res.send(err);
         };
         //parse json
-        var accounts = JSON.parse(data);
+        const accounts = JSON.parse(data);
         //check if username and pw are correct
-        for (var i = 0; i < accounts.length; i++) {
+        for (let i = 0; i < accounts.length; i++) {
             if (accounts[i].username == username && accounts[i].password == password) {
                 //if correct make a token and send it to the user
-                var token = maketoken();
+                const token = maketoken();
                 res.send(token);
                 return;
             }
@@ -373,9 +367,9 @@ app.get("/ui/login", (req, res) => {
 });
 
 function maketoken() {
-    var token = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 32; i++)
+    let token = "";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (let i = 0; i < 32; i++)
         token += possible.charAt(Math.floor(Math.random() * possible.length));
 
     tokenst.push(token);
@@ -383,12 +377,8 @@ function maketoken() {
 }
 
 function checktoken(token) {
-    for (var i = 0; i < tokenst.length; i++) {
-        if (tokenst[i] == token) {
-            return true;
-        }
-    }
-    return false;
+    // Implement your token checking logic here
+    return tokenst.includes(token);
 }
 
 function makeresultid(length) {
@@ -403,4 +393,4 @@ function makeresultid(length) {
     return result
 }
 
-app.listen(port, () => console.log(`Server listening on port ${port}!`));
+app.listen(port, () => console.log(`Server running on port ${port}`));

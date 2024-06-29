@@ -1,4 +1,6 @@
 [
-    {"username":"admin","password":"sesmaster"}
-    
+  {
+    "username": "admin",
+    "password": "sesmaster"
+  }
 ]

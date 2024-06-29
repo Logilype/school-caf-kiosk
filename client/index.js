@@ -27,34 +27,34 @@ function toggleCursor() {
   isCursorHidden = !isCursorHidden;
   const cursorStyle = isCursorHidden ? 'none' : 'auto';
   win.webContents.executeJavaScript(`document.documentElement.style.cursor = "${cursorStyle}";`);
-  win.focus(); // Set focus to the window after changing cursor style
+  win.focus();
 }
 
 app.whenReady().then(() => {
   createWindow();
   changewindow();
 
-  // Register a global shortcut to toggle the mouse pointer visibility
   globalShortcut.register('Ctrl+H', toggleCursor);
 
-  // setInterval(changewindow, 225000)
   setInterval(changewindow, 180000);
 });
 
 function changewindow() {
-  pageindex = pageindex + 1;
-  if (pageindex == 4) {
-    pageindex = 0;
-  }
+  pageindex = (pageindex + 1) % 4;
 
-  if (pageindex == 0) {
-    win.loadURL(hostname + '/news');
-  } else if (pageindex == 1) {
-    win.loadURL(hostname + '/getmenu');
-  } else if (pageindex == 2) {
-    win.loadURL("https://mese.webuntis.com/WebUntis/monitor?school=kopernikus-rs&monitorType=subst&format=Schüler");
-  } else if (pageindex == 3) {
-    win.loadFile(__dirname + '/webfiles/splash.html');
+  switch (pageindex) {
+    case 0:
+      win.loadURL(hostname + '/news');
+      break;
+    case 1:
+      win.loadURL(hostname + '/getmenu');
+      break;
+    case 2:
+      win.loadURL("https://mese.webuntis.com/WebUntis/monitor?school=kopernikus-rs&monitorType=subst&format=Schüler");
+      break;
+    case 3:
+      win.loadFile(__dirname + '/webfiles/splash.html');
+      break;
   }
 }
 
@@ -69,5 +69,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// Note: No need to unregister the global shortcut in the 'closed' event, as it will be automatically unregistered when the app quits.

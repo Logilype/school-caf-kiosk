@@ -36,8 +36,7 @@
     fetch('/getmenu')
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched data:', data); // Log fetched data
-        var offers = data;
+        const offers = data;
         var currentOfferIndex = 0;
         var offerContent = document.getElementById("offerContent");
         var offerImage = document.getElementById("offerImage");

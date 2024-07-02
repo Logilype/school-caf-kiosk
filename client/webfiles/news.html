@@ -20,10 +20,13 @@
 
     <script>
         fetch('/news')
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+                const news = JSON.parse(doc.querySelector('body').textContent);
                 const newsContainer = document.getElementById('newsContainer');
-                data.forEach(newsItem => {
+                news.forEach(newsItem => {
                     const newsElement = document.createElement('div');
                     newsElement.className = 'news-item';
                     newsElement.innerHTML = `

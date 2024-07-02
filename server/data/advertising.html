@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Panel - Werbung bearbeiten</title>
+    <link rel="stylesheet" href="/assets/admin-panel.css">
+</head>
+<body>
+    <div class="header">
+        Cafeteria Panel
+    </div>
+    <div class="navbar">
+        <div class="navbar-item">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Menü bearbeiten</a>
+        </div>
+        <div class="navbar-item-selected">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Media verwalten</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="tables">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Bild</th>
+                    <th>Aktionen</th>
+                </tr>
+                (renderanchor)
+            </table>
+        </div>
+        <div class="actionbuttons">
+            <input type="button" value="Hinzufügen" id="newbtn">
+        </div>
+    </div>
+    <div class="footer">
+        <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
+    </div>
+    <script>
+        document.querySelector("#newbtn").addEventListener("click", function(){
+            window.location.href = "/panel/advertising/new";
+        });
+    </script>
+</body>
+</html>

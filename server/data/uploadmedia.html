@@ -4,113 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Panel</title>
-    <style>
-
-        body {
-            background-color: rgb(36, 36, 36);
-            color: white;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-        }
-
-        .header {
-            font-size: 300%;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .navbar {
-            width: 100%;
-            height: 50px;
-            background-color: rgb(71, 71, 71);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar-item {
-            margin-left: 20px;
-            margin-right: 20px;
-            font-size: 150%;
-            text-decoration: none;
-        }
-
-        .navbar-item-selected {
-            margin-left: 20px;
-            margin-right: 20px;
-            font-size: 150%;
-            text-decoration: none;
-            border-bottom: 2px solid white;
-        }
-
-        a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .footer {
-            width: 100%;
-            height: 50px;
-            background-color: rgb(71, 71, 71);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        p {
-            font-size: 150%;
-        }
-
-        input [type="file"] {
-            display: none;
-        }
-
-        .imageselector {
-            margin: auto;
-            display: block;
-            margin-top: 20px;
-            width: 500px;
-            height: 50px;
-        }
-
-        .custom-file-upload {
-            margin: auto;
-            display: block;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            width: 500px;
-            height: 50px;
-            background-color: #5c5c5c;
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-        
-    </style>
+    <link rel="stylesheet" href="/assets/admin-panel.css">
 </head>
 <body>
     <div class="header">
@@ -126,101 +20,34 @@
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
         </div>
-        <div class="navbar-item">
+        <div class="navbar-item-selected">
             <a href="/panel/media">Media verwalten</a>
         </div>
     </div>
     <div class="content">
-        <label class="custom-file-upload" id="uisw">
-            <div id="uploadingtext" style="visibility: hidden;">Hochladen...</div>
-            <div id="uploadingtextb" >Datei wählen</div>
-        <input class="imageselector" id="selectors" type="file" accept="image/png, image/jpeg">
-        </label>
-        <p>Maximum: 3MB</p>
-        <p>Benennen sie die Datei vor dem Upload um, um die Übersicht zu behalten. Das spätere Umbenennen ist nicht möglich.</p>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput">
+            <button type="button" id="uploadBtn">Hochladen</button>
+        </form>
     </div>
     <div class="footer">
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
     </div>
     <script>
-        const uis = document.getElementById("uisw");
-        const uist = document.getElementById("uploadingtext");
-        const uistb = document.getElementById("uploadingtextb");
-        const inputElement = document.getElementById("selectors");
-        inputElement.addEventListener("change", handleFiles, false);
-
-       
-
-        function handleFiles() {
-            const fileList = this.files; /* now you can work with the file list */
-            console.log(fileList);
-            uist.style.visibility = "visible";
-            uistb.style.visibility = "hidden";
-            uist.innerHTML = "Hochladen...";
-            uist.style.color = "white";
-
-            //check if there even is a file
-            if(fileList.length == 0){
-                
-                uist.style.visibility = "visible";
-                uistb.style.visibility = "visible";
-                uist.innerHTML = "Keine Datei ausgewählt!";
-                uist.style.color = "red";
-                uist.style.animation = "shake 0.5s";
-                return;
-            }
-            //check if file is under 3mb
-            if(fileList[0].size > 3000000){
-                
-                uist.style.visibility = "visible";
-                uistb.style.visibility = "visible";
-                uist.innerHTML = "datei ist zu Groß (Max 3MB)";
-                uist.style.color = "red";
-                uist.style.animation = "shake 0.5s";
-                return;
-            }
-
-            
-        
-            //upload file as form data
-            var formData = new FormData();
-            formData.append("file", fileList[0]);
-            var request = new XMLHttpRequest();
-            request.open("POST", "/api/upload");
-            console.log(formData);
-            request.send(formData);
-            request.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    var response = JSON.parse(this.responseText);
-                    var path = response.path;
-                    if(this.status == 200){
-                        uist.style.visibility = "visible";
-                        uistb.style.visibility = "hidden";
-                        uist.innerHTML = "hochgeladen!";
-                        uist.style.color = "green";
-                        uist.style.animation = "none";
-                        setTimeout(function(){
-                            uist.style.visibility = "hidden";
-                            uistb.style.visibility = "visible";
-                            uist.innerHTML = "Datei wählen";
-                            uist.style.color = "white";
-                            uist.style.animation = "none";
-                        }, 1000);	
-                        
-                    }else{
-                        uist.style.visibility = "visible";
-                        uistb.style.visibility = "visible";
-                        uist.innerHTML = "Error! " + this.responseText;
-                        uist.style.color = "red";
-                        uist.style.animation = "shake 0.5s";
-                    }
+        document.getElementById("uploadBtn").addEventListener("click", function() {
+            var formData = new FormData(document.getElementById("uploadForm"));
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/upload", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert("Upload erfolgreich!");
+                    window.location.href = "/panel/media";
+                } else if (xhr.readyState == 4) {
+                    alert("Fehler beim Hochladen: " + xhr.status);
                 }
             };
-
-
-            
-        }
+            xhr.send(formData);
+        });
     </script>
 </body>
 </html>

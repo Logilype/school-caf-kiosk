@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Angebote</title>
     <style>
-
         body,
         html {
             height: 100%;
@@ -72,7 +71,6 @@
             z-index: 1;
             font-size: 10pt;
         }
-
     </style>
 </head>
 
@@ -91,46 +89,52 @@
     </div>
 
     <script>
-        // Your JavaScript code here
-        // Define your offer data and cycling logic here
-        var offers = (datarenderplace);
+        // Fetch the menu data from the server
+        fetch('/getmenu')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched data:', data); // Log fetched data
+                var offers = data;
+                var currentOfferIndex = 0;
+                var offerContent = document.getElementById("offerContent");
+                var offerImage = document.getElementById("offerImage");
+                var offerName = document.getElementById("offerName");
+                var offerPrice = document.getElementById("offerPrice");
+                var offerDays = document.getElementById("offerDays");
 
-        var currentOfferIndex = 0;
-        var offerContent = document.getElementById("offerContent");
-        var offerImage = document.getElementById("offerImage");
-        var offerName = document.getElementById("offerName");
-        var offerPrice = document.getElementById("offerPrice");
-        var offerDays = document.getElementById("offerDays");
+                function fadeIn(element) {
+                    element.style.opacity = 0;
+                    element.style.transition = 'opacity 0s';
+                    requestAnimationFrame(function () {
+                        element.style.transition = 'opacity 0.5s';
+                        element.style.opacity = 1;
+                    });
+                }
 
-        function fadeIn(element) {
-            element.style.opacity = 0;
-            element.style.transition = 'opacity 0s';
-            requestAnimationFrame(function () {
-                element.style.transition = 'opacity 0.5s';
-                element.style.opacity = 1;
-            });
-        }
+                function updateOffer() {
+                    var offer = offers[currentOfferIndex];
+                    console.log('Current offer:', offer); // Log current offer
 
-        function updateOffer() {
-            var offer = offers[currentOfferIndex];
+                    // Apply a fade-out effect before changing the content
+                    offerContent.style.opacity = 0;
 
-            // Apply a fade-out effect before changing the content
-            offerContent.style.opacity = 0;
+                    setTimeout(function () {
+                        offerImage.src = offer.image;
+                        offerName.textContent = offer.name;
+                        offerPrice.textContent = offer.price;
+                        offerDays.textContent = "Verfügbar an: " + offer.days;
+                        // Apply a fade-in effect after changing the content
+                        fadeIn(offerContent);
+                        currentOfferIndex = (currentOfferIndex + 1) % offers.length;
+                    }, 500); // Adjust the delay (in milliseconds) based on your preference
+                }
 
-            setTimeout(function () {
-                offerImage.src = offer.image;
-                offerName.textContent = offer.name;
-                offerPrice.textContent = offer.price;
-                offerDays.textContent = "Verfügbar an: " + offer.days;
-                // Apply a fade-in effect after changing the content
-                fadeIn(offerContent);
-                currentOfferIndex = (currentOfferIndex + 1) % offers.length;
-            }, 500); // Adjust the delay (in milliseconds) based on your preference
-        }
-        // Initial call to set the first offer
-        updateOffer();
-        // Set an interval to cycle through offers
-        setInterval(updateOffer, 15000); // Change offers every 15 seconds
+                // Initial call to set the first offer
+                updateOffer();
+                // Set an interval to cycle through offers
+                setInterval(updateOffer, 15000); // Change offers every 15 seconds
+            })
+            .catch(error => console.error('Error fetching menu:', error));
     </script>
 </body>
 

@@ -79,8 +79,40 @@
             <h2>Hier könnte ihre Werbung stehen</h2>
             <div class="offer-content" id="offerContent">
                 <p id="offerName"> Interesse? </p>
+                <img id="offerImage" src="" alt="Werbung">
             </div>
         </div>
     </div>
+    <script>
+        const offerContent = document.getElementById('offerContent');
+        const offerName = document.getElementById('offerName');
+        const offerImage = document.getElementById('offerImage');
+        let currentOfferIndex = 0;
+        let offers = [];
+
+        function fetchOffers() {
+            fetch('/api/advertisements')
+                .then(response => response.json())
+                .then(data => {
+                    offers = data;
+                    updateOffer();
+                    setInterval(updateOffer, 15000); // Change offers every 15 seconds
+                });
+        }
+
+        function updateOffer() {
+            if (offers.length === 0) return;
+            const offer = offers[currentOfferIndex];
+            offerContent.style.opacity = 0;
+            setTimeout(() => {
+                offerName.textContent = offer.name;
+                offerImage.src = offer.image;
+                offerContent.style.opacity = 1;
+                currentOfferIndex = (currentOfferIndex + 1) % offers.length;
+            }, 500);
+        }
+
+        fetchOffers();
+    </script>
 </body>
 </html>

@@ -3,63 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menü Bearbeiten</title>
-    <style>
-        body {
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-            font-size: 24px;
-            background-color: #333;
-            color: white;
-        }
-        .navbar {
-            display: flex;
-            justify-content: center;
-            background-color: #444;
-            padding: 10px;
-        }
-        .navbar-item, .navbar-item-selected {
-            margin: 0 10px;
-            color: white;
-            text-decoration: none;
-        }
-        .navbar-item-selected {
-            font-weight: bold;
-        }
-        .content {
-            padding: 20px;
-        }
-        .tables {
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .actionbuttons {
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-        .footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-        }
-    </style>
+    <title>Cafeteria Panel - Menü Bearbeiten</title>
+    <link rel="stylesheet" href="/assets/admin-panel.css">
 </head>
 <body>
     <div class="header">
@@ -80,37 +25,45 @@
         </div>
     </div>
     <div class="content">
-        <div class="tables">
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Preis</th>
-                    <th>Bild</th>
-                    <th>Tage</th>
-                    <th>Befehle</th>
-                </tr>
-                (renderanchor)
-            </table>
-        </div>
-        <div class="actionbuttons">
-            <input type="button" value="Hinzufügen" id="newbtn">
-            <input type="button" value="Bilder verwalten" id="uploadimgbtn">
-            <input type="button" value="Aktualisieren Senden" id="refreshbtn">
-        </div>
+        <form id="editForm">
+            <input type="hidden" name="id" value="(id)">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="(name)">
+            <label for="price">Preis:</label>
+            <input type="text" id="price" name="price" value="(price)">
+            <label for="days">Tage:</label>
+            <input type="text" id="days" name="days" value="(days)">
+            <label for="image">Bild:</label>
+            <select id="image" name="image">
+                <option value="image1.jpg">image1.jpg</option>
+                <option value="image2.jpg">image2.jpg</option>
+                <option value="image3.jpg">image3.jpg</option>
+            </select>
+            <button type="submit">Speichern</button>
+        </form>
     </div>
+    <script>
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = new URLSearchParams(formData);
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/editmenu", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(data);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        window.location.href = "/panel/menu";
+                    } else {
+                        alert("Fehler: " + xhr.status);
+                    }
+                }
+            }
+        });
+    </script>
     <div class="footer">
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
     </div>
-    <script>
-        document.querySelector("#newbtn").addEventListener("click", function(){
-            window.location.href = "/panel/menu/new";
-        });
-        document.querySelector("#uploadimgbtn").addEventListener("click", function(){
-            window.location.href = "/panel/media";
-        });
-        document.querySelector("#refreshbtn").addEventListener("click", function(){
-            window.location.href = "/panel?intent=refresh";
-        });
-    </script>
 </body>
 </html>

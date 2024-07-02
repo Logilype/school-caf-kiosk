@@ -4,77 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Panel - Menü bearbeiten</title>
-    <style>
-
-        body {
-            background-color: rgb(36, 36, 36);
-            color: white;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-        }
-
-        .header {
-            font-size: 300%;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .navbar {
-            width: 100%;
-            height: 50px;
-            background-color: rgb(71, 71, 71);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar-item {
-            margin-left: 20px;
-            margin-right: 20px;
-            font-size: 150%;
-            text-decoration: none;
-        }
-
-        .navbar-item-selected {
-            margin-left: 20px;
-            margin-right: 20px;
-            font-size: 150%;
-            text-decoration: none;
-            border-bottom: 2px solid white;
-        }
-
-        a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .footer {
-            width: 100%;
-            height: 50px;
-            background-color: rgb(71, 71, 71);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        p {
-            font-size: 150%;
-        }
-
-        .actionbuttons {
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="/assets/admin-panel.css">
 </head>
 <body>
     <div class="header">
@@ -96,58 +26,49 @@
     </div>
     <div class="content">
         <div class="tables">
-            <h1>Hinzufügen</h1>
             <table>
                 <tr>
                     <th>Name</th>
                     <th>Preis</th>
                     <th>Bild</th>
                     <th>Tage</th>
-                    
                 </tr>
                 <tr>
                     <td><input type="text" name="name" placeholder="Name" required></td>
                     <td><input type="text" name="price" placeholder="Preis" required></td>
                     <td><select id="imgkey" style="width: 200px;">
                         (allimgs)
-
                     </select></td>
-                    <td><input type="text" name="days" placeholder="Verfügbar an" required style="width: 300px;"></td>
-                    
+                    <td><input type="text" name="days" placeholder="Tage" required></td>
                 </tr> 
             </table>
-            <button type="button" id="savebtn" style="width: 500px; height: 60px;">Hinzufügen</button>
+            <button type="button" id="savebtn" style="width: 500px; height: 60px;">Speichern</button>
         </div>
-        
     </div>
     <div class="footer">
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
     </div>
-</body>
-<script>
-    savebtn = document.getElementById("savebtn");
-    savebtn.addEventListener("click", function(){
-        var name = document.querySelector("input[name='name']").value;
-        var price = document.querySelector("input[name='price']").value;
-        var imgkey = document.getElementById("imgkey").value;
-        var days = document.querySelector("input[name='days']").value;
-        
-        var data = "name=" + name + "&price=" + price + "&image=" + imgkey + "&days=" + days;
-        console.log(data);
-        xml = new XMLHttpRequest();
-        xml.open("POST", "/api/newentry", true);
-        xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xml.send(data);
-        xml.onreadystatechange = function(){
-            if(xml.readyState == 4){
-                if(xml.status == 200){
-                    window.location.href = "/panel/menu";
-                }
-                else{
-                    alert("Fehler: " + xml.status);
+    <script>
+        document.getElementById("savebtn").addEventListener("click", function(){
+            var name = document.querySelector("input[name='name']").value;
+            var price = document.querySelector("input[name='price']").value;
+            var imgkey = document.getElementById("imgkey").value;
+            var days = document.querySelector("input[name='days']").value;
+            var data = "name=" + encodeURIComponent(name) + "&price=" + encodeURIComponent(price) + "&image=" + encodeURIComponent(imgkey) + "&days=" + encodeURIComponent(days);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/newentry", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(data);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        window.location.href = "/panel/menu";
+                    } else {
+                        alert("Fehler: " + xhr.status);
+                    }
                 }
             }
-        }
-    })
-</script>
+        });
+    </script>
+</body>
 </html>

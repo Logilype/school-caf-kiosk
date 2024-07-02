@@ -1,30 +1,16 @@
 [
-  {
-    "name": "house maid",
-    "price": "400 dollars per hour",
-    "image": "/media/FDEMq42WYAkpy_z (1).jpg",
-    "days": "only on friday",
-    "id": 0
-  },
-  {
-    "name": "Waffeln mit Puderzucker",
-    "price": "€1,00",
-    "image": "/media/waffeln-puderzucker.jpg",
-    "days": "Donnerstag",
-    "id": 1
-  },
-  {
-    "name": "Waffeln mit Nutella oder Marmelade",
-    "price": "€1,50",
-    "image": "/media/waffeln-nutella-marmelade.jpg",
-    "days": "Donnerstag",
-    "id": 3
-  },
-  {
-    "id": "6423673169",
-    "name": "test",
-    "price": "10 dollars",
-    "image": "/media/channels4_profile.jpg",
-    "days": "kirchlich sonntag"
-  }
+    {
+        "id": 1,
+        "name": "Spaghetti Bolognese",
+        "price": "€5.00",
+        "days": "Monday to Friday",
+        "image": "spaghetti.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Caesar Salad",
+        "price": "€4.00",
+        "days": "Monday to Friday",
+        "image": "salad.jpg"
+    }
 ]

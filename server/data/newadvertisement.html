@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Panel - Neue Werbung</title>
+    <link rel="stylesheet" href="/assets/admin-panel.css">
+</head>
+<body>
+    <div class="header">
+        Cafeteria Panel
+    </div>
+    <div class="navbar">
+        <div class="navbar-item">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Menü bearbeiten</a>
+        </div>
+        <div class="navbar-item-selected">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Media verwalten</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="tables">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Bild</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="name" placeholder="Name" required></td>
+                    <td><select id="imgkey" style="width: 200px;">
+                        (allimgs)
+                    </select></td>
+                </tr> 
+            </table>
+            <button type="button" id="savebtn" style="width: 500px; height: 60px;">Hinzufügen</button>
+        </div>
+    </div>
+    <div class="footer">
+        <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
+    </div>
+    <script>
+        document.getElementById("savebtn").addEventListener("click", function(){
+            var name = document.querySelector("input[name='name']").value;
+            var imgkey = document.getElementById("imgkey").value;
+            var data = "name=" + encodeURIComponent(name) + "&image=" + encodeURIComponent(imgkey);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/newadvertisement", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(data);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        window.location.href = "/panel/advertising";
+                    } else {
+                        alert("Fehler: " + xhr.status);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

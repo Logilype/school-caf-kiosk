@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
 app.use(express.json()); // Add this line to parse JSON request bodies
+app.use(express.static('data'));
 
 tokenst = [];
 
@@ -141,7 +142,7 @@ app.get('/panel/menu', (req, res) => {
                 <tr>
                     <td>${item.name}</td>
                     <td>${item.price}</td>
-                    <td><img src="${item.image}" alt="${item.name}" style="width: 50px;"></td>
+                    <td style="text-align: center;"><img src="${item.image}" alt="${item.name}" style="max-width: 100px; max-height: 100px;"></td>
                     <td>${item.days}</td>
                     <td>
                         <button onclick="window.location.href='/panel/menu/edit/${item.id}'">Bearbeiten</button>

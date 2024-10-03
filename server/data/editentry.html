@@ -79,6 +79,7 @@
 <body>
     <div class="header">
         Cafeteria Panel
+        <button id="logoutBtn" style="float: right; background-color: #ff4d4d; color: white; border: none; cursor: pointer; font-size: 50%; padding: 7px 15px; border-radius: 5px;">Ausloggen</button>
     </div>
     <div class="navbar">
         <div class="navbar-item">
@@ -148,5 +149,11 @@
             }
         }
     })
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+        // Clear the token cookie
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // Redirect to the login page
+        window.location.href = "/ui/login";
+    });
 </script>
 </html>

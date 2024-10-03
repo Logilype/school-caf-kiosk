@@ -9,34 +9,19 @@
 <body>
     <div class="header">
         Cafeteria Panel
-        <button id="logoutBtn" style="float: right; background-color: #ff4d4d; color: white; border: none; cursor: pointer; font-size: 50%; padding: 7px 15px; border-radius: 5px;">Ausloggen</button>
+        <button id="logoutBtn">Ausloggen</button>
     </div>
     <div class="navbar">
-        <div class="navbar-item">
-            <a href="/panel">Home</a>
-        </div>
-        <div class="navbar-item-selected">
-            <a href="/panel/menu">Menü bearbeiten</a>
-        </div>
-        <div class="navbar-item">
-            <a href="/panel/advertising">Werbung bearbeiten</a>
-        </div>
-        <div class="navbar-item">
-            <a href="/panel/media">Media verwalten</a>
-        </div>
+        <div class="navbar-item"><a href="/panel">Home</a></div>
+        <div class="navbar-item-selected"><a href="/panel/menu">Menü bearbeiten</a></div>
+        <div class="navbar-item"><a href="/panel/advertising">Werbung bearbeiten</a></div>
+        <div class="navbar-item"><a href="/panel/media">Media verwalten</a></div>
     </div>
     <div class="content">
         <div class="tables">
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Preis</th>
-                    <th>Bild</th>
-                    <th>Tage</th>
-                    <th>Befehle</th>
-                </tr>
+            <div class="grid-container">
                 (renderanchor) <!-- This will be replaced with the actual entries -->
-            </table>
+            </div>
         </div>
         <div class="actionbuttons">
             <input type="button" value="Hinzufügen" id="newbtn">
@@ -44,7 +29,7 @@
         </div>
     </div>
     <div class="footer">
-        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
+        <a href="https://github.com/logilype/cafeteria-digital-signage">© Logilype & Felixmax_ 2024</a>
     </div>
     <script>
         document.getElementById("newbtn").addEventListener("click", function() {

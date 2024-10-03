@@ -139,16 +139,18 @@ app.get('/panel/menu', (req, res) => {
             }
             const menu = JSON.parse(data);
             const entries = menu.map(item => `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>${item.price}</td>
-                    <td style="text-align: center;"><img src="${item.image}" alt="${item.name}" style="max-width: 100px; max-height: 100px;"></td>
-                    <td>${item.days}</td>
-                    <td>
+                <div class="grid-item">
+                    <p class="item-name">${item.name}</p>
+                    <p class="item-price">${item.price}</p>
+                    <div class="image-container">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <p class="item-days">${item.days}</p>
+                    <div class="buttons">
                         <button onclick="window.location.href='/panel/menu/edit/${item.id}'">Bearbeiten</button>
                         <button onclick="deleteEntry(${item.id})">Löschen</button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `).join('');
             
             const html = fs.readFileSync('data/menuedit.html', 'utf8').replace('(renderanchor)', entries);
@@ -203,12 +205,16 @@ app.get('/panel/menu/edit/:id', (req, res) => {
                     .replace("(name)", menuitem.name)
                     .replace("(price)", menuitem.price)
                     .replace("(days)", menuitem.days);
-                // Populate dropdown for images
+
+                // Populate dropdown for images and preselect the current image
                 fs.readdir('media', (err, files) => {
                     if (err) {
                         return res.status(500).send(err);
                     }
-                    let dropdown = files.map(file => `<option value="${file}">${file}</option>`).join('');
+                    let dropdown = files.map(file => {
+                        const selected = `/media/${file}` === menuitem.image ? 'selected' : '';
+                        return `<option value="${file}" ${selected}>${file}</option>`;
+                    }).join('');
                     replacementdata = replacementdata.replace("(allimgs)", dropdown);
                     res.send(replacementdata);
                 });

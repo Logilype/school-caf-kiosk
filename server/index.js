@@ -5,10 +5,11 @@ const multer = require('multer');
 
 const app = express();
 const port = 3000;
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
+app.use(express.json()); // Add this line to parse JSON request bodies
 
 tokenst = [];
 
@@ -129,35 +130,32 @@ app.get('/panel/media', (req, res) => {
     
 });
 app.get('/panel/menu', (req, res) => {
-    //get token from cookies and check if it is valid
     var token = req.cookies.token;
-    console.log(token);
     if (checktoken(token)) {
-        //if valid send panel.html
-        // render out data from menu.json and insert it into the html table
         fs.readFile('data/menu.json', (err, data) => {
             if (err) {
-                res.send(err);
-            };
-            replacementdata = ""
-            var menu = JSON.parse(data);
-            for (var i = 0; i < menu.length; i++) {
-                replacementdata = replacementdata + "<tr><td>" + menu[i].name + "</td><td>" + menu[i].price + "</td><td>" + menu[i].image + "</td><td>" + menu[i].days + "</td><td><a href='/panel/menu/edit/" + menu[i].id + "'>Bearbeiten</a></td></tr>";
+                return res.status(500).send(err);
             }
-
-            fs.readFile('data/menuedit.html', (err, data) => {
-                if (err) {
-                    res.send(err);
-                };
-                replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
-                res.send(replacementdata);
-            });
+            const menu = JSON.parse(data);
+            const entries = menu.map(item => `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.price}</td>
+                    <td><img src="${item.image}" alt="${item.name}" style="width: 50px;"></td>
+                    <td>${item.days}</td>
+                    <td>
+                        <button onclick="window.location.href='/panel/menu/edit/${item.id}'">Bearbeiten</button>
+                        <button onclick="deleteEntry(${item.id})">Löschen</button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            const html = fs.readFileSync('data/menuedit.html', 'utf8').replace('(renderanchor)', entries);
+            res.send(html);
         });
     } else {
-        //if not valid send login.html
         res.redirect('/ui/login');
     }
-    
 });
 
 const storage = multer.diskStorage({
@@ -187,54 +185,37 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 
 app.get('/panel/menu/edit/:id', (req, res) => {
-    //get token from cookies and check if it is valid
-    id = req.params.id;
-    var token = req.cookies.token;
-    console.log(token);
-    if (checktoken(token)) {
-        //if valid send panel.html
-        // get id from menu.json and send raw data to the user
-        fs.readFile('data/menu.json', (err, data) => {
-            if (err) {
-                res.send(err);
-            };
-            var menu = JSON.parse(data);
-            for (var i = 0; i < menu.length; i++) {
-                if (menu[i].id == id) {
-                    menuitem = menu[i];
-                    fs.readFile('data/editentry.html', (err, data) => {
-                        if (err) {
-                            res.send(err);
-                        };
-                        replacementdata = data.toString().replace("(id)", menuitem.id);
-                        replacementdata = replacementdata.toString().replace("(name)", menuitem.name);
-                        replacementdata = replacementdata.toString().replace("(price)", menuitem.price);
-                        
-                        replacementdata = replacementdata.toString().replace("(days)", menuitem.days);
-                        //index all files in media folder and add them to the dropdown
-                        fs.readdir('media', (err, files) => {
-                            if (err) {
-                                res.send(err);
-                            };
-                            var dropdown = "";
-                            for (var i = 0; i < files.length; i++) {
-                                dropdown = dropdown + "<option value='" + files[i] + "'>" + files[i] + "</option>";
-                            }
-                            replacementdata = replacementdata.toString().replace("(allimgs)", dropdown);
-                            res.send(replacementdata);
-                        });
-                    });
-                    return;
+    const id = req.params.id;
+    fs.readFile('data/menu.json', (err, data) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        const menu = JSON.parse(data);
+        const menuitem = menu.find(item => item.id == id);
+        if (menuitem) {
+            fs.readFile('data/editentry.html', (err, data) => {
+                if (err) {
+                    return res.status(500).send(err);
                 }
-            }
-            res.send("error");
-        });
-        
-    } else {
-        //if not valid send login.html
-        res.redirect('/ui/login');
-    }
-    
+                let replacementdata = data.toString()
+                    .replace("(id)", menuitem.id)
+                    .replace("(name)", menuitem.name)
+                    .replace("(price)", menuitem.price)
+                    .replace("(days)", menuitem.days);
+                // Populate dropdown for images
+                fs.readdir('media', (err, files) => {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                    let dropdown = files.map(file => `<option value="${file}">${file}</option>`).join('');
+                    replacementdata = replacementdata.replace("(allimgs)", dropdown);
+                    res.send(replacementdata);
+                });
+            });
+        } else {
+            res.send("Entry not found");
+        }
+    });
 });
 
 app.get('/panel/menu/new', (req, res) => {
@@ -402,5 +383,31 @@ function makeresultid(length) {
     }
     return result
 }
+
+app.post('/api/deleteentry', (req, res) => {
+    const id = req.body.id;
+    console.log('Request body:', req.body);
+    console.log(`Received request to delete entry with id: ${id}`);
+
+    fs.readFile('data/menu.json', (err, data) => {
+        if (err) {
+            console.error('Error reading menu.json:', err);
+            return res.status(500).send(err);
+        }
+
+        let menu = JSON.parse(data);
+        const initialLength = menu.length;
+        menu = menu.filter(item => String(item.id) !== String(id));
+        console.log(`Entries before deletion: ${initialLength}, after deletion: ${menu.length}`);
+
+        fs.writeFile('data/menu.json', JSON.stringify(menu, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing to menu.json:', err);
+                return res.status(500).send(err);
+            }
+            res.send("success");
+        });
+    });
+});
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));

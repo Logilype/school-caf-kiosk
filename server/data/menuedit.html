@@ -103,12 +103,11 @@
                     <th>Tage</th>
                     <th>Befehle</th>
                 </tr>
-                (renderanchor)
+                (renderanchor) <!-- This will be replaced with the actual entries -->
             </table>
         </div>
         <div class="actionbuttons">
             <input type="button" value="Hinzufügen" id="newbtn">
-            <input type="button" value="Bilder verwalten" id="uploadimgbtn">
             <input type="button" value="Aktualisieren Senden" id="refreshbtn">
         </div>
     </div>
@@ -116,16 +115,32 @@
         <a href="https://solo.to/felixmax_" style="color: white; text-decoration: none;">© Felixmax_ 2023</a>
     </div>
     <script>
-        document.querySelector("#newbtn").addEventListener("click", function(){
-            window.location.href = "/panel/menu/new";
+        document.getElementById("newbtn").addEventListener("click", function() {
+            window.location.href = "/panel/menu/new"; // Redirect to new entry page
         });
-        document.querySelector("#uploadimgbtn").addEventListener("click", function(){
-            window.location.href = "/panel/media";
+
+        document.getElementById("refreshbtn").addEventListener("click", function() {
+            window.location.href = "/panel?intent=refresh"; // Refresh the page
         });
-        document.querySelector("#refreshbtn").addEventListener("click", function(){
-            
-            window.location.href = "/panel?intent=refresh";
-        });
+
+        function deleteEntry(id) {
+            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
+                fetch(`/api/deleteentry`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: id }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Reload the page to see changes
+                    } else {
+                        alert("Fehler beim Löschen des Eintrags.");
+                    }
+                });
+            }
+        }
     </script>
 </body>
 </html>

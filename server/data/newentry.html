@@ -103,18 +103,20 @@
                     <th>Preis</th>
                     <th>Bild</th>
                     <th>Tage</th>
-                    
+                    <th>Befehle</th>
                 </tr>
                 <tr>
-                    <td><input type="text" name="name" placeholder="Name" required></td>
-                    <td><input type="text" name="price" placeholder="Preis" required></td>
+                    <td><input type="text" name="name" placeholder="(name)" required></td>
+                    <td><input type="text" name="price" placeholder="(price)" required></td>
                     <td><select id="imgkey" style="width: 200px;">
                         (allimgs)
-
                     </select></td>
-                    <td><input type="text" name="days" placeholder="Verfügbar an" required style="width: 300px;"></td>
-                    
-                </tr> 
+                    <td><input type="text" name="days" placeholder="(days)" required style="width: 300px;"></td>
+                    <td id="ids">(id)</td>
+                    <td>
+                        <button onclick="deleteEntry(id)">Löschen</button>
+                    </td>
+                </tr>
             </table>
             <button type="button" id="savebtn" style="width: 500px; height: 60px;">Hinzufügen</button>
         </div>
@@ -149,5 +151,24 @@
             }
         }
     })
+
+    function deleteEntry(id) {
+        if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
+            fetch(`/api/deleteentry`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: id }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload(); // Reload the page to see changes
+                } else {
+                    alert("Fehler beim Löschen des Eintrags.");
+                }
+            });
+        }
+    }
 </script>
 </html>

@@ -1,26 +1,38 @@
+html, body {
+    height: 100%; /* Ensure the body takes the full height of the viewport */
+    margin: 0; /* Remove default margin */
+}
+
 body {
-    background-color: rgb(36, 36, 36);
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    background-color: rgb(20, 20, 20);
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 0; /* Remove default padding */
 }
 
 .header {
     font-size: 300%;
     font-weight: bold;
-    margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Center the header text */
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 20px; /* Padding for header */
+    position: relative; /* Position relative for absolute positioning of logout button */
 }
 
 .navbar {
-    width: 100%;
     height: 50px;
-    background-color: rgb(71, 71, 71);
+    justify-self: center;
+    align-self: center;
+    background-color: rgb(38, 52, 71);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0px 20px; /* Add padding to navbar */
+    margin: 10pt;
+    border-radius: 20pt;
 }
 
 .navbar-item, .navbar-item-selected {
@@ -28,6 +40,8 @@ body {
     margin-right: 20px;
     font-size: 150%;
     text-decoration: none;
+    padding: 10px 0px;
+    white-space: nowrap;
 }
 
 .navbar-item-selected {
@@ -40,21 +54,26 @@ a {
 }
 
 .content {
-    width: 100%;
-    height: 100%;
+    flex: 1; /* Allow the content area to grow and take available space */
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 20px; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width */
 }
 
 .footer {
     width: 100%;
-    height: 50px;
-    background-color: rgb(71, 71, 71);
+    background-color: rgb(25, 35, 48);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0; /* Add padding to footer */
+}
+
+.footer a {
+    padding: 10px 0;
 }
 
 p {
@@ -67,7 +86,8 @@ p {
 }
 
 #logoutBtn {
-    float: right;
+    position: absolute; /* Position the logout button absolutely */
+    right: 20px; /* Align it to the right */
     background-color: #ff4d4d;
     color: white;
     border: none;
@@ -75,6 +95,10 @@ p {
     font-size: 50%;
     padding: 7px 15px;
     border-radius: 5px;
+}
+
+#logoutBtn:hover {
+    background-color: #b92929;
 }
 
 /* Updated grid styles */
@@ -89,7 +113,7 @@ p {
 }
 
 .grid-item {
-    background-color: #2c2c2c; /* Updated background color */
+    background-color: #17293d; /* Updated background color */
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -169,4 +193,171 @@ p {
     height: 100%;
     object-fit: contain; /* Cover the container while maintaining aspect ratio */
     border-radius: 10px;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: hidden; /* Prevent scrolling */
+    background-color: rgba(0, 0, 0, 0.8); /* Darker background with opacity */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #252525; /* White background for content */
+    margin: 0%;
+    padding: 20px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    width: 90%; /* Responsive width */
+    max-width: 600px; /* Max width for larger screens */
+    max-height: 80%; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000; /* Change color on hover */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content label {
+    font-weight: bold; /* Bold labels */
+    margin-top: 10px; /* Spacing above labels */
+    display: block; /* Make labels block elements */
+}
+
+.modal-content input[type="text"] {
+    display: flex;
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding for input */
+    margin: 5px 0 15px; /* Spacing around inputs */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.selected-image {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background */
+    margin-bottom: 15px; /* Spacing below */
+}
+
+.dropdown-list {
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive grid */
+    gap: 10px; /* Space between grid items */
+    background-color: white; /* Background color */
+    border: 1px solid #ccc; /* Border */
+    border-radius: 4px; /* Rounded corners */
+    max-height: 300px; /* Max height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px; /* Padding inside the dropdown */
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Style for each image option */
+.dropdown-list div {
+    cursor: pointer; /* Pointer cursor on hover */
+    text-align: center; /* Center the text */
+}
+
+.dropdown-list img {
+    max-width: 100%; /* Responsive image */
+    max-height: 100px; /* Set a max height for images */
+    border-radius: 4px; /* Rounded corners for images */
+}
+
+.modal-content button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 16px; /* Font size */
+    margin-top: 10px; /* Spacing above button */
+    display: block; /* Make button block element */
+    width: 100%; /* Full width */
+}
+
+.modal-content button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.custom-dropdown {
+    position: relative;
+}
+
+.selected-image {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px; /* Rounded corners */
+    background-color: #001d3b; /* Dark background */
+    margin-bottom: 15px; /* Spacing below */
+}
+
+/* Preview Image */
+#previewImage {
+    max-width: 100%; /* Responsive width */
+    max-height: 300px; /* Set a maximum height for the preview */
+    border-radius: 4px; /* Rounded corners for the preview */
+    display: block; /* Ensure it behaves like a block element */
+    margin: 0 auto; /* Center the image */
+}
+
+.dropdown-list {
+    position: absolute;
+    z-index: 10;
+    background-color: rgb(58, 58, 58);
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Rounded corners */
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.dropdown-list div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-list div:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+
+/* Increase specificity by using a more specific selector */
+#editModal.modal {
+    display: none; /* Hidden by default */
+}
+
+.tables-media tr {
+    background-color: #1e344b;
+    margin: 10pt;
+    border-radius: 10pt;
 }

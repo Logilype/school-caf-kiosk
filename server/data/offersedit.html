@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Panel - Angebote bearbeiten</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="header">
+        Cafeteria Panel
+        <button id="logoutBtn">Ausloggen</button>
+    </div>
+    <div class="navbar">
+        <div class="navbar-item"><a href="/panel">Home</a></div>
+        <div class="navbar-item-selected"><a href="/panel/offers">Angebote bearbeiten</a></div>
+        <div class="navbar-item"><a href="/panel/advertising">Werbung bearbeiten</a></div>
+        <div class="navbar-item"><a href="/panel/media">Media verwalten</a></div>
+    </div>
+    <div class="content">
+        <div class="tables">
+            <div class="grid-container">
+                (renderanchor) <!-- This will be replaced with the actual entries -->
+            </div>
+        </div>
+        <div class="actionbuttons">
+            <input type="button" value="Hinzufügen" id="newbtn">
+            <input type="button" value="Aktualisieren Senden" id="refreshbtn">
+        </div>
+    </div>
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage">© Logilype & Felixmax_ 2024</a>
+    </div>
+    <!-- Modal for editing entry -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Eintrag bearbeiten</h2>
+            <form id="editForm">
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name" required>
+                <label for="editPrice">Preis:</label>
+                <input type="text" id="editPrice" name="price" required>
+                <label for="editImage">Bild:</label>
+                <div class="custom-dropdown">
+                    <div class="selected-image" id="selectedImage" onclick="toggleDropdown()">
+                        <img id="previewImage" src="" alt="Selected Image" style="display: none;">
+                    </div>
+                    <div class="dropdown-list" id="imageDropdownList" style="display: none;">
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+                <input type="hidden" id="editImage" name="image"> <!-- Hidden input to store the selected image path -->
+                <label for="editDays">Tage:</label>
+                <input type="text" id="editDays" name="days" required>
+                <input type="hidden" id="editId" name="id">
+                <button type="button" id="saveEditBtn">Speichern</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById("editModal");
+            const closeModal = document.getElementsByClassName("close")[0];
+
+            // Function to open the modal
+            window.openEditModal = function(item) {
+                console.log("Opening modal for item:", item); // Debugging line
+                document.getElementById("editName").value = item.name; // Set name
+                document.getElementById("editPrice").value = item.price; // Set price
+                document.getElementById("editDays").value = item.days; // Set days
+                document.getElementById("editId").value = item.id; // Set ID
+
+                // Clear and fetch images for the dropdown
+                const imageDropdownList = document.getElementById("imageDropdownList");
+                imageDropdownList.innerHTML = ''; // Clear existing options
+
+                // Fetch images from the server
+                fetch('/api/getImages')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(images => {
+                        const dropdownList = document.getElementById("imageDropdownList");
+                        dropdownList.innerHTML = ''; // Clear existing options
+                        images.forEach(image => {
+                            const option = document.createElement("div");
+                            option.innerHTML = `<img src="${image}" alt="${image}">`; // Add image to the option
+                            option.onclick = function() {
+                                const selectedImagePath = image; // Get the image path directly
+                                document.getElementById("previewImage").src = selectedImagePath; // Set the preview image
+                                document.getElementById("previewImage").style.display = "block"; // Show the preview
+                                document.getElementById("editImage").value = selectedImagePath; // Store the selected image path in the hidden input
+                                console.log("Selected image path:", selectedImagePath); // Log the selected image path
+                                dropdownList.style.display = "none"; // Hide the dropdown
+                            };
+                            dropdownList.appendChild(option);
+                        });
+
+                        // Set the current image as selected
+                        const currentImage = item.image;
+                        document.getElementById("previewImage").src = currentImage; // Set the preview image
+                        document.getElementById("previewImage").style.display = "block"; // Show the preview
+                        document.getElementById("editImage").value = currentImage; // Set the hidden input with the current image path
+                    })
+                    .catch(error => {
+                        console.error('Error fetching images:', error);
+                        alert("Could not load images. Please try again later.");
+                    });
+
+                modal.style.display = "flex"; // Show the modal
+            };
+
+            // Close the modal when the close button is clicked
+            closeModal.onclick = function() {
+                modal.style.display = "none"; // Hide the modal
+            };
+
+            // Close the modal when clicking outside of it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none"; // Hide the modal if clicked outside
+                }
+            };
+
+            // Reset modal fields on page load
+            document.getElementById("editName").value = '';
+            document.getElementById("editPrice").value = '';
+            document.getElementById("editDays").value = '';
+            document.getElementById("editImage").value = '';
+            document.getElementById("previewImage").src = ''; // Clear the preview image
+            document.getElementById("previewImage").style.display = "none"; // Hide the preview
+
+            // Save button functionality
+            document.getElementById("saveEditBtn").addEventListener("click", function() {
+                const id = document.getElementById("editId").value;
+                const name = document.getElementById("editName").value;
+                const price = document.getElementById("editPrice").value;
+                const image = document.getElementById("editImage").value; // Get the selected image
+                const days = document.getElementById("editDays").value;
+
+                // Debugging: Log the image path to see if it's being set correctly
+                console.log("Image path before sending:", image); // Log the image path before sending
+
+                const data = { id, name, price, image, days };
+
+                console.log("Data being sent to server:", data); // Log the data
+
+                // Send the data to the server
+                fetch('/api/editentry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Reset the modal fields
+                        document.getElementById("editName").value = '';
+                        document.getElementById("editPrice").value = '';
+                        document.getElementById("editDays").value = '';
+                        document.getElementById("editImage").value = ''; // Clear the hidden input
+                        document.getElementById("previewImage").src = ''; // Clear the preview image
+                        document.getElementById("previewImage").style.display = "none"; // Hide the preview
+                        modal.style.display = "none"; // Hide the modal
+                        window.location.reload(); // Reload the page to see changes
+                    } else {
+                        alert("Fehler beim Speichern des Eintrags."); // Error message
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Ein Fehler ist aufgetreten."); // General error message
+                });
+            });
+        });
+
+        document.getElementById("newbtn").addEventListener("click", function() {
+            window.location.href = "/panel/offers/new"; // Redirect to new entry page
+        });
+
+        document.getElementById("refreshbtn").addEventListener("click", function() {
+            window.location.href = "/panel?intent=refresh"; // Refresh the page
+        });
+
+        function deleteEntry(id) {
+            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
+                fetch(`/api/deleteentry`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: id }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Reload the page to see changes
+                    } else {
+                        alert("Fehler beim Löschen des Eintrags.");
+                    }
+                });
+            }
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            // Clear the token cookie
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Redirect to the login page
+            window.location.href = "/ui/login";
+        });
+
+        // On page load, check if the modal should be opened
+        if (localStorage.getItem('modalOpen') === 'true') {
+            // Open the modal if needed
+            // You can call openEditModal with the appropriate item here
+            localStorage.removeItem('modalOpen'); // Clear the flag after opening
+        }
+    </script>
+    <script>
+        function toggleDropdown() {
+            const dropdownList = document.getElementById("imageDropdownList");
+            dropdownList.style.display = dropdownList.style.display === "none" ? "block" : "none";
+        }
+
+        // Attach the toggle function to the selected image area
+        document.getElementById("selectedImage").onclick = toggleDropdown;
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cafeteria Panel - Menü bearbeiten</title>
+    <title>Cafeteria Panel - Angebote bearbeiten</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -11,12 +11,12 @@
         Cafeteria Panel
         <button id="logoutBtn">Ausloggen</button>
     </div>
-    <div class="navbar">
+    <div class="navbar" id="navbar">
         <div class="navbar-item">
             <a href="/panel">Home</a>
         </div>
         <div class="navbar-item-selected">
-            <a href="/panel/menu">Menü bearbeiten</a>
+            <a href="/panel/offers">Angebote bearbeiten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -74,7 +74,7 @@
         xml.onreadystatechange = function(){
             if(xml.readyState == 4){
                 if(xml.status == 200){
-                    window.location.href = "/panel/menu";
+                    window.location.href = "/panel/offers";
                 }
                 else{
                     alert("Fehler: " + xml.status);

@@ -26,7 +26,7 @@ app.get('/getmenu', (req, res) => {
             res.send(err);
         };
         replacementdata = data
-        fs.readFile('data/menu.html', (err, data) => {
+        fs.readFile('data/offers.html', (err, data) => {
             if (err) {
                 res.send(err);
             };
@@ -130,7 +130,7 @@ app.get('/panel/media', (req, res) => {
     }
     
 });
-app.get('/panel/menu', (req, res) => {
+app.get('/panel/offers', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
         fs.readFile('data/menu.json', (err, data) => {
@@ -147,13 +147,13 @@ app.get('/panel/menu', (req, res) => {
                     </div>
                     <p class="item-days">${item.days}</p>
                     <div class="buttons">
-                        <button onclick="window.location.href='/panel/menu/edit/${item.id}'">Bearbeiten</button>
+                        <button type="button" onclick="openEditModal({ id: '${item.id}', name: '${item.name}', price: '${item.price}', image: '${item.image}', days: '${item.days}' })">Bearbeiten</button>
                         <button onclick="deleteEntry(${item.id})">Löschen</button>
                     </div>
                 </div>
             `).join('');
             
-            const html = fs.readFileSync('data/menuedit.html', 'utf8').replace('(renderanchor)', entries);
+            const html = fs.readFileSync('data/offersedit.html', 'utf8').replace('(renderanchor)', entries);
             res.send(html);
         });
     } else {
@@ -187,7 +187,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 
-app.get('/panel/menu/edit/:id', (req, res) => {
+app.get('/panel/offers/edit/:id', (req, res) => {
     const id = req.params.id;
     fs.readFile('data/menu.json', (err, data) => {
         if (err) {
@@ -225,7 +225,7 @@ app.get('/panel/menu/edit/:id', (req, res) => {
     });
 });
 
-app.get('/panel/menu/new', (req, res) => {
+app.get('/panel/offers/new', (req, res) => {
     //get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
@@ -293,41 +293,35 @@ app.post('/api/newentry', (req, res) => {
 
 
 app.post('/api/editentry', (req, res) => {
-    // get username and pw from form data
     var id = req.body.id;
     var name = req.body.name;
     var price = req.body.price;
-    var image =  "/media/" + req.body.image;
+    var image = req.body.image; // Get the image path directly from the request
     var days = req.body.days;
-    console.log(id);
-    console.log(name);
-    console.log(price);
-    console.log(image);
-    console.log(days);
-    
+    console.log("Received data:", req.body); // Log the received data
 
-    //edit entry in menu.json with the id from the parameters
+    // Edit entry in menu.json with the id from the parameters
     fs.readFile('data/menu.json', (err, data) => {
         if (err) {
-            res.send(err);
-        };
+            return res.status(500).send(err); // Send error response if reading fails
+        }
         var menu = JSON.parse(data);
         for (var i = 0; i < menu.length; i++) {
             if (menu[i].id == id) {
                 menu[i].name = name;
                 menu[i].price = price;
-                menu[i].image = image;
+                menu[i].image = image; // Save the image path directly
                 menu[i].days = days;
                 fs.writeFile('data/menu.json', JSON.stringify(menu), (err) => {
                     if (err) {
-                        res.send(err);
-                    };
-                    res.send("success");
+                        return res.status(500).send(err); // Send error response if writing fails
+                    }
+                    res.send("success"); // Send success response
                 });
                 return;
             }
         }
-        res.send("error");
+        res.send("error"); // Send error if id not found
     });
 });
 
@@ -414,6 +408,18 @@ app.post('/api/deleteentry', (req, res) => {
             }
             res.send("success");
         });
+    });
+});
+
+app.get('/api/getImages', (req, res) => {
+    fs.readdir('media', (err, files) => {
+        if (err) {
+            console.error('Error reading media directory:', err);
+            return res.status(500).send(err);
+        }
+        const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif)$/.test(file));
+        const imagePaths = imageFiles.map(file => `/media/${file}`); // Create full paths
+        res.json(imagePaths); // Send the list of image paths as JSON
     });
 });
 

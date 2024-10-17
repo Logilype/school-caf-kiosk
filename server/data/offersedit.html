@@ -54,6 +54,11 @@
                 <label for="editDays">Tage:</label>
                 <input type="text" id="editDays" name="days" required>
                 <input type="hidden" id="editId" name="id">
+                <span class="toggleVisibilityTxt">Wird nicht angezeigt</span>
+                <label class="toggle">
+                    <input type="checkbox" id="toggleVisibilityBtn">
+                    <span class="slider round"></span>
+                </label>
                 <button type="button" id="saveEditBtn">Speichern</button>
             </form>
         </div>
@@ -219,8 +224,6 @@
             // You can call openEditModal with the appropriate item here
             localStorage.removeItem('modalOpen'); // Clear the flag after opening
         }
-    </script>
-    <script>
         function toggleDropdown() {
             const dropdownList = document.getElementById("imageDropdownList");
             dropdownList.style.display = dropdownList.style.display === "none" ? "block" : "none";
@@ -228,6 +231,19 @@
 
         // Attach the toggle function to the selected image area
         document.getElementById("selectedImage").onclick = toggleDropdown;
+
+        const toggle = document.querySelector('.toggle input'); // First declaration
+
+        toggle.addEventListener('click', () => {
+            const onOff = toggle.parentNode.querySelector('.onoff')
+            onOff.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt'
+        });
+
+        const toggleText = document.querySelector('.toggleVisibilityTxt');
+
+        toggle.addEventListener('change', () => {
+            toggleText.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt';
+        });
     </script>
 </body>
 </html>

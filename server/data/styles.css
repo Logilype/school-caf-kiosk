@@ -362,3 +362,58 @@ p {
     margin: 10pt;
     border-radius: 10pt;
 }
+
+.toggle {
+    position: relative;
+}
+
+#toggleVisibilityBtn {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle .onoff {
+    font-size: 30pt;
+    text-align: center;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.slider {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    background-color: #bd2525;
+    transition: 0.4s;
+    width: 80px;
+    height: 40px;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    background-color: #fff;
+    transition: 0.4s;
+    top: 5px;
+    left: 5px;
+}
+
+input:checked + .slider {
+    background-color: #24a82b;
+}
+
+input:checked + .slider:before {
+    transform: translateX(40px);
+}
+
+.slider.round {
+    border-radius: 40px;
+}
+
+.slider.round::before {
+    border-radius: 40px;
+}

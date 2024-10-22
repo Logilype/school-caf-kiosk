@@ -19,7 +19,7 @@ app.get('/', (req, res) => res.send('i dont get paid enough for this'));
 //set media as static folder
 app.use('/media', express.static('media'));
 
-app.get('/getmenu', (req, res) => {
+app.get('/getoffers', (req, res) => {
 
     fs.readFile('data/menu.json', (err, data) => {
         if (err) {

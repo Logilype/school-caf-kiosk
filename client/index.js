@@ -1,73 +1,53 @@
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow } = require("electron");
 
-const hostname = "http://localhost:3000";
-let win;
-let pageindex = 0;
-let isCursorHidden = false;
+let win; // Main application window
 
-function createWindow() {
-  win = new BrowserWindow({
-    width: 800,
-    height: 800,
-    frame: false,
-    fullscreen: true,
-    resizable: false,
-    title: "Cafeteria monitor",
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      enableRemoteModule: true,
-    },
-  });
+// Create the main application window
+function createMainWindow() {
+    win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        frame: false,
+        fullscreen: true, // Start in full-screen mode
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        }
+    });
 
-  win.loadFile(__dirname + '/webfiles/news.html');
+    loadPage(0); // Load the initial page
 }
 
-function toggleCursor() {
-  isCursorHidden = !isCursorHidden;
-  const cursorStyle = isCursorHidden ? 'none' : 'auto';
-  win.webContents.executeJavaScript(`document.documentElement.style.cursor = "${cursorStyle}";`);
-  win.focus(); // Set focus to the window after changing cursor style
+// Load a specific page based on the index
+function loadPage(index) {
+    const pageUrls = [
+        '/getoffers', // Page 1
+        "https://mese.webuntis.com/WebUntis/monitor?school=kopernikus-rs&monitorType=subst&format=Schüler", // Page 2
+    ];
+
+    if (index >= 0 && index < pageUrls.length) {
+        const urlToLoad = pageUrls[index].startsWith('http') ? pageUrls[index] : `http://localhost:3000${pageUrls[index]}`;
+        console.log(`Loading page: ${urlToLoad}`); // Log the URL being loaded
+        win.loadURL(urlToLoad);
+    } else {
+        console.error("Invalid page index:", index);
+    }
 }
 
+// Initialize the application
 app.whenReady().then(() => {
-  createWindow();
-  changewindow();
+    createMainWindow(); // Directly create the main application window
 
-  // Register a global shortcut to toggle the mouse pointer visibility
-  globalShortcut.register('Ctrl+H', toggleCursor);
-
-  // setInterval(changewindow, 225000)
-  setInterval(changewindow, 180000);
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createMainWindow();
+        }
+    });
 });
 
-function changewindow() {
-  pageindex = pageindex + 1;
-  if (pageindex == 4) {
-    pageindex = 0;
-  }
-
-  if (pageindex == 0) {
-    win.loadURL(hostname + '/news');
-  } else if (pageindex == 1) {
-    win.loadURL(hostname + '/getmenu');
-  } else if (pageindex == 2) {
-    win.loadURL("https://mese.webuntis.com/WebUntis/monitor?school=kopernikus-rs&monitorType=subst&format=Schüler");
-  } else if (pageindex == 3) {
-    win.loadFile(__dirname + '/webfiles/splash.html');
-  }
-}
-
+// Clean up when all windows are closed
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
-
-app.on('activate', () => {
-  if (win === null) {
-    createWindow();
-  }
-});
-
-// Note: No need to unregister the global shortcut in the 'closed' event, as it will be automatically unregistered when the app quits.

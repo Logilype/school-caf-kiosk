@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
     <style>
-        
         body {
             background-color: black;
             color: white;
             user-select: none;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-family: 'Open Sans', sans-serif;
         }
-
         .centeredcontainer {
             position: absolute;
             top: 50%;
@@ -21,7 +22,6 @@
             font-size: 30px;
             text-align: center;
         }
-        
         .copyrightfooter {
             position: absolute;
             bottom: 0;
@@ -31,7 +31,6 @@
             padding: 10px;
             font-size: 10px;
         }
-
     </style>
 </head>
 <body>
@@ -44,6 +43,11 @@
     <div class="copyrightfooter">
         © 2024 by logilype und felixmax_ 
     </div>
-    
+    <script>
+        // Redirect to the main application after a delay
+        setTimeout(() => {
+            window.location.href = '/getoffers'; // Change to your main application URL
+        }, 3000); // 3 seconds delay
+    </script>
 </body>
 </html>

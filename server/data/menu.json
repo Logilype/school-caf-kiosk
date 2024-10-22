@@ -79,6 +79,7 @@
     "name": "Waffeln mit Puderzucker",
     "price": "1,00 €",
     "image": "/media/waffeln-puderzucker.jpg",
-    "days": "Donnerstag"
+    "days": "Donnerstag",
+    "visibility": false
   }
 ]

@@ -8,7 +8,7 @@ body {
     flex-direction: column; /* Stack children vertically */
     background-color: rgb(20, 20, 20);
     color: white;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Open Sans', sans-serif;
     padding: 0; /* Remove default padding */
     font-size: 90%;
 }
@@ -261,7 +261,7 @@ p {
     border: 1px solid #ccc; /* Light border */
     border-radius: 4px; /* Rounded corners */
     box-sizing: border-box; /* Include padding in width calculation */
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Open Sans', sans-serif;
     text-align: center; /* Center the text inside the input */
     font-size: 14pt; /* Set a default font size */
     width: 270px; /* Fixed width */

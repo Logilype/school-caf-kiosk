@@ -54,6 +54,7 @@
                 <label for="editDays">Tage:</label>
                 <input type="text" id="editDays" name="days" required>
                 <input type="hidden" id="editId" name="id">
+                <input type="hidden" id="editVisibility" name="visibility"> <!-- Hidden input to store the visibility state -->
                 <span class="toggleVisibilityTxt">Wird nicht angezeigt</span>
                 <label class="toggle">
                     <input type="checkbox" id="toggleVisibilityBtn">
@@ -75,6 +76,12 @@
                 document.getElementById("editPrice").value = item.price; // Set price
                 document.getElementById("editDays").value = item.days; // Set days
                 document.getElementById("editId").value = item.id; // Set ID
+                document.getElementById("editVisibility").value = item.visibility; // Set visibility state
+                document.getElementById("toggleVisibilityBtn").checked = item.visibility; // Set toggle state
+
+                // Update the visibility text based on the current state
+                const toggleText = document.querySelector('.toggleVisibilityTxt');
+                toggleText.textContent = item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt';
 
                 // Clear and fetch images for the dropdown
                 const imageDropdownList = document.getElementById("imageDropdownList");
@@ -117,27 +124,42 @@
                     });
 
                 modal.style.display = "flex"; // Show the modal
+
+                // Check for overflow on input fields
+                checkTextOverflow("editName");
+                checkTextOverflow("editPrice");
+                checkTextOverflow("editDays");
             };
+
+            // Function to check and adjust text overflow
+            function checkTextOverflow(elementId) {
+                var container = document.getElementById(elementId);
+                let originalFontSize = 14; // Set the original font size in pt
+                const minFontSize = 10; // Set a minimum font size in pt
+
+                // Reset font-size to original
+                container.style.fontSize = `${originalFontSize}pt`;
+
+                // Check if the text is wider than its container
+                while (container.scrollWidth > container.clientWidth && originalFontSize > minFontSize) {
+                    originalFontSize -= 1; // Decrease font size by 1pt
+                    container.style.fontSize = `${originalFontSize}pt`; // Apply new font size
+                }
+            }
 
             // Close the modal when the close button is clicked
             closeModal.onclick = function() {
+                clearModalFields(); // Clear fields before hiding
                 modal.style.display = "none"; // Hide the modal
             };
 
             // Close the modal when clicking outside of it
             window.onclick = function(event) {
                 if (event.target == modal) {
+                    clearModalFields(); // Clear fields before hiding
                     modal.style.display = "none"; // Hide the modal if clicked outside
                 }
             };
-
-            // Reset modal fields on page load
-            document.getElementById("editName").value = '';
-            document.getElementById("editPrice").value = '';
-            document.getElementById("editDays").value = '';
-            document.getElementById("editImage").value = '';
-            document.getElementById("previewImage").src = ''; // Clear the preview image
-            document.getElementById("previewImage").style.display = "none"; // Hide the preview
 
             // Save button functionality
             document.getElementById("saveEditBtn").addEventListener("click", function() {
@@ -146,11 +168,9 @@
                 const price = document.getElementById("editPrice").value;
                 const image = document.getElementById("editImage").value; // Get the selected image
                 const days = document.getElementById("editDays").value;
+                const visibility = document.getElementById("toggleVisibilityBtn").checked; // Get visibility state
 
-                // Debugging: Log the image path to see if it's being set correctly
-                console.log("Image path before sending:", image); // Log the image path before sending
-
-                const data = { id, name, price, image, days };
+                const data = { id, name, price, image, days, visibility }; // Include visibility in the data
 
                 console.log("Data being sent to server:", data); // Log the data
 
@@ -164,13 +184,7 @@
                 })
                 .then(response => {
                     if (response.ok) {
-                        // Reset the modal fields
-                        document.getElementById("editName").value = '';
-                        document.getElementById("editPrice").value = '';
-                        document.getElementById("editDays").value = '';
-                        document.getElementById("editImage").value = ''; // Clear the hidden input
-                        document.getElementById("previewImage").src = ''; // Clear the preview image
-                        document.getElementById("previewImage").style.display = "none"; // Hide the preview
+                        clearModalFields(); // Clear fields after saving
                         modal.style.display = "none"; // Hide the modal
                         window.location.reload(); // Reload the page to see changes
                     } else {
@@ -180,6 +194,26 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alert("Ein Fehler ist aufgetreten."); // General error message
+                });
+            });
+
+            // Function to clear modal fields
+            function clearModalFields() {
+                document.getElementById("editName").value = '';
+                document.getElementById("editPrice").value = '';
+                document.getElementById("editDays").value = '';
+                document.getElementById("editImage").value = ''; // Clear the hidden input
+                document.getElementById("previewImage").src = ''; // Clear the preview image
+                document.getElementById("previewImage").style.display = "none"; // Hide the preview
+                document.getElementById("toggleVisibilityBtn").checked = false; // Reset toggle state
+                document.querySelector('.toggleVisibilityTxt').textContent = 'Wird nicht angezeigt'; // Reset visibility text
+            }
+
+            // Attach input event listeners to check for overflow
+            const inputs = document.querySelectorAll('.modal-content input[type="text"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    checkTextOverflow(input.id); // Check overflow on input change
                 });
             });
         });
@@ -232,16 +266,10 @@
         // Attach the toggle function to the selected image area
         document.getElementById("selectedImage").onclick = toggleDropdown;
 
-        const toggle = document.querySelector('.toggle input'); // First declaration
-
-        toggle.addEventListener('click', () => {
-            const onOff = toggle.parentNode.querySelector('.onoff')
-            onOff.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt'
-        });
-
-        const toggleText = document.querySelector('.toggleVisibilityTxt');
+        const toggle = document.querySelector('#toggleVisibilityBtn'); // Get the toggle input
 
         toggle.addEventListener('change', () => {
+            const toggleText = document.querySelector('.toggleVisibilityTxt');
             toggleText.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt';
         });
     </script>

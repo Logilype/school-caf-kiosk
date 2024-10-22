@@ -10,6 +10,7 @@ body {
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     padding: 0; /* Remove default padding */
+    font-size: 90%;
 }
 
 .header {
@@ -212,15 +213,25 @@ p {
 }
 
 .modal-content {
-    background-color: #252525; /* White background for content */
-    margin: 0%;
-    padding: 20px;
+    background-color: #252525; /* Background color for content */
+    margin: 0; /* Remove default margin */
+    padding: 20px; /* Add padding inside the modal content */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-    width: 90%; /* Responsive width */
-    max-width: 600px; /* Max width for larger screens */
-    max-height: 80%; /* Set a maximum height */
+    max-height: 90%; /* Set a maximum height */
     overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+    width: 270px; /* Set a responsive width for the modal */
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+#editForm {
+    margin: 20px 0; /* Add margin above and below the form */
+    width: 100%; /* Ensure the form takes the full width of the modal */
+    display: flex; /* Use flexbox for the form */
+    flex-direction: column; /* Stack form elements vertically */
+    align-items: center; /* Center form elements */
 }
 
 .close {
@@ -232,7 +243,7 @@ p {
 
 .close:hover,
 .close:focus {
-    color: #000; /* Change color on hover */
+    color: #960c0c; /* Change color on hover */
     text-decoration: none;
     cursor: pointer;
 }
@@ -241,28 +252,23 @@ p {
     font-weight: bold; /* Bold labels */
     margin-top: 10px; /* Spacing above labels */
     display: block; /* Make labels block elements */
+    text-align: center; /* Center the text of labels */
 }
 
 .modal-content input[type="text"] {
-    display: flex;
-    width: 100%; /* Full width */
     padding: 10px; /* Padding for input */
     margin: 5px 0 15px; /* Spacing around inputs */
     border: 1px solid #ccc; /* Light border */
     border-radius: 4px; /* Rounded corners */
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box; /* Include padding in width calculation */
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-.selected-image {
-    cursor: pointer;
-    border: 1px solid #ccc;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    border-radius: 4px; /* Rounded corners */
-    background-color: #f9f9f9; /* Light background */
-    margin-bottom: 15px; /* Spacing below */
+    text-align: center; /* Center the text inside the input */
+    font-size: 14pt; /* Set a default font size */
+    width: 270px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    overflow: hidden; /* Hide overflow text */
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Show ellipses for overflow text */
 }
 
 .dropdown-list {
@@ -272,7 +278,7 @@ p {
     background-color: white; /* Background color */
     border: 1px solid #ccc; /* Border */
     border-radius: 4px; /* Rounded corners */
-    max-height: 300px; /* Max height for scrolling */
+    max-height: 100%; /* Max height for scrolling */
     overflow-y: auto; /* Enable vertical scrolling */
     padding: 10px; /* Padding inside the dropdown */
     z-index: 1000; /* Ensure it appears above other elements */
@@ -317,16 +323,23 @@ p {
     padding: 10px;
     display: flex;
     align-items: center;
+    justify-content: center; /* Center the image within the container */
     border-radius: 4px; /* Rounded corners */
     background-color: #001d3b; /* Dark background */
     margin-bottom: 15px; /* Spacing below */
+    height: auto;
+    max-height: 500px;
+    overflow: hidden; /* Hide overflow to prevent image from spilling out */
+    width: auto; /* Allow width to be determined by content */
 }
 
 /* Preview Image */
 #previewImage {
-    max-width: 100%; /* Responsive width */
-    max-height: 300px; /* Set a maximum height for the preview */
-    border-radius: 4px; /* Rounded corners for the preview */
+    max-height: 100%; /* Ensure the image does not exceed the container height */
+    max-width: 100%; /* Ensure the image does not exceed the container width */
+    height: auto; /* Maintain aspect ratio */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Maintain aspect ratio while fitting inside the container */
     display: block; /* Ensure it behaves like a block element */
     margin: 0 auto; /* Center the image */
 }

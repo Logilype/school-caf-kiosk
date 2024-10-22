@@ -147,7 +147,7 @@ app.get('/panel/offers', (req, res) => {
                     </div>
                     <p class="item-days">${item.days}</p>
                     <div class="buttons">
-                        <button type="button" onclick="openEditModal({ id: '${item.id}', name: '${item.name}', price: '${item.price}', image: '${item.image}', days: '${item.days}' })">Bearbeiten</button>
+                        <button type="button" onclick="openEditModal({ id: '${item.id}', name: '${item.name}', price: '${item.price}', image: '${item.image}', days: '${item.days}', visibility: ${item.visibility} })">Bearbeiten</button>
                         <button onclick="deleteEntry(${item.id})">Löschen</button>
                     </div>
                 </div>
@@ -259,33 +259,33 @@ app.post('/api/newentry', (req, res) => {
     var id = makeresultid(10);
     var name = req.body.name;
     var price = req.body.price;
-    var image =  "/media/" + req.body.image;
+    var image = "/media/" + req.body.image;
     var days = req.body.days;
-    console.log(id);
-    console.log(name);
-    console.log(price);
-    console.log(image);
-    console.log(days);
-    
+    var visibility = req.body.visibility || true; // Default to true if not provided
 
-    //edit entry in menu.json with the id from the parameters
+    // Log the received data
+    console.log(id, name, price, image, days, visibility);
+
+    // Edit entry in menu.json with the id from the parameters
     fs.readFile('data/menu.json', (err, data) => {
         if (err) {
-            res.send(err);
-        };
+            return res.status(500).send(err);
+        }
         var menu = JSON.parse(data);
-        
+
         menu.push({
             id: id,
             name: name,
             price: price,
             image: image,
-            days: days
+            days: days,
+            visibility: visibility // Add visibility property
         });
-        fs.writeFile('data/menu.json', JSON.stringify(menu), (err) => {
+
+        fs.writeFile('data/menu.json', JSON.stringify(menu, null, 2), (err) => {
             if (err) {
-                res.send(err);
-            };
+                return res.status(500).send(err);
+            }
             res.send("success");
         });
     });
@@ -298,7 +298,10 @@ app.post('/api/editentry', (req, res) => {
     var price = req.body.price;
     var image = req.body.image; // Get the image path directly from the request
     var days = req.body.days;
-    console.log("Received data:", req.body); // Log the received data
+    var visibility = req.body.visibility; // Get the visibility state from the request
+
+    // Log the received data
+    console.log("Received data:", req.body);
 
     // Edit entry in menu.json with the id from the parameters
     fs.readFile('data/menu.json', (err, data) => {
@@ -312,7 +315,8 @@ app.post('/api/editentry', (req, res) => {
                 menu[i].price = price;
                 menu[i].image = image; // Save the image path directly
                 menu[i].days = days;
-                fs.writeFile('data/menu.json', JSON.stringify(menu), (err) => {
+                menu[i].visibility = visibility; // Save the visibility state
+                fs.writeFile('data/menu.json', JSON.stringify(menu, null, 2), (err) => {
                     if (err) {
                         return res.status(500).send(err); // Send error response if writing fails
                     }

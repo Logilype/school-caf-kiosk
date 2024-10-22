@@ -430,3 +430,12 @@ input:checked + .slider:before {
 .slider.round::before {
     border-radius: 40px;
 }
+
+.item-visibility {
+    font-weight: bold;
+    color: green; /* Color for active */
+}
+
+.item-visibility.inactive {
+    color: red; /* Color for inactive */
+}

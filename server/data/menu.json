@@ -12,7 +12,8 @@
     "name": "Belegtes Brötchen mit Salami",
     "price": "1,00 €",
     "image": "/media/belegtes-broetchen-mit-salami.jpg",
-    "days": "Täglich"
+    "days": "Täglich",
+    "visibility": true
   },
   {
     "id": "7889351367",
@@ -27,14 +28,16 @@
     "name": "Butterbrezel",
     "price": "1,10 €",
     "image": "/media/butterbrezel.jpg",
-    "days": "Täglich"
+    "days": "Täglich",
+    "visibility": true
   },
   {
     "id": "2621227561",
     "name": "Döner Kebab mit Fleisch oder Fetakäse",
     "price": "3,00 €; 2,50 €",
     "image": "/media/doener.jpg",
-    "days": "Donnerstag"
+    "days": "Donnerstag",
+    "visibility": true
   },
   {
     "id": "3289878573",

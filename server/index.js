@@ -146,6 +146,7 @@ app.get('/panel/offers', (req, res) => {
                         <img src="${item.image}" alt="${item.name}">
                     </div>
                     <p class="item-days">${item.days}</p>
+                    <p class="item-visibility ${item.visibility ? '' : 'inactive'}">${item.visibility ? 'Aktiv' : 'Inaktiv'}</p> <!-- Visibility indicator -->
                     <div class="buttons">
                         <button type="button" onclick="openEditModal({ id: '${item.id}', name: '${item.name}', price: '${item.price}', image: '${item.image}', days: '${item.days}', visibility: ${item.visibility} })">Bearbeiten</button>
                         <button onclick="deleteEntry(${item.id})">Löschen</button>
@@ -428,3 +429,4 @@ app.get('/api/getImages', (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
+

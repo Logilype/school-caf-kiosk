@@ -5,7 +5,7 @@
     "price": "1,00 €",
     "image": "/media/belegtes-broetchen-mit-kaese.jpg",
     "days": "Täglich",
-    "visibility": true
+    "visibility": false
   },
   {
     "id": "6723224624",
@@ -13,7 +13,7 @@
     "price": "1,00 €",
     "image": "/media/belegtes-broetchen-mit-salami.jpg",
     "days": "Täglich",
-    "visibility": true
+    "visibility": false
   },
   {
     "id": "7889351367",
@@ -21,7 +21,7 @@
     "price": "1,50 €",
     "image": "/media/bratwurst.jpg",
     "days": "Täglich",
-    "visibility": true
+    "visibility": false
   },
   {
     "id": "0025652579",
@@ -58,7 +58,8 @@
     "name": "Tee",
     "price": "Kostenlos",
     "image": "/media/tee.jpg",
-    "days": "Täglich"
+    "days": "Täglich",
+    "visibility": true
   },
   {
     "id": "2979288923",

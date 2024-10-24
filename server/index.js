@@ -19,22 +19,47 @@ app.get('/', (req, res) => res.send('i dont get paid enough for this'));
 //set media as static folder
 app.use('/media', express.static('media'));
 
-app.get('/getoffers', (req, res) => {
+app.get('/panel/settings', (req, res) => {
+    //get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        //if valid send settings.html
+        res.sendFile(__dirname + '/data/settings.html');
+    } else {
+        //if not valid send login.html
+        res.redirect('/ui/login');
+    }
+    
+});
 
+app.get('/getoffers', (req, res) => {
     fs.readFile('data/menu.json', (err, data) => {
         if (err) {
-            res.send(err);
-        };
-        replacementdata = data
+            return res.send(err);
+        }
+
+        // Parse the JSON data
+        let menuItems = JSON.parse(data);
+
+        // Filter the items where visibility is true
+        let visibleItems = menuItems.filter(item => item.visibility);
+
+        // Convert the filtered data back to JSON
+        let replacementdata = JSON.stringify(visibleItems, null, 2);
+
         fs.readFile('data/offers.html', (err, data) => {
             if (err) {
-                res.send(err);
-            };
-            replacementdata = data.toString().replace("(datarenderplace)", replacementdata.toString());
-            res.send(replacementdata);
+                return res.send(err);
+            }
+
+            // Replace the placeholder with the filtered menu data
+            let renderedData = data.toString().replace("(datarenderplace)", replacementdata);
+            res.send(renderedData);
         });
     });
 });
+
 
 app.get('/getdisplaysequence', (req, res) => {
     res.sendFile(__dirname + '/data/displayseq.json');
@@ -92,7 +117,7 @@ app.get('/panel/upload', (req, res) => {
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send panel.html
+        //if valid send uploadmedia.html
         res.sendFile(__dirname + '/data/uploadmedia.html');
     } else {
         //if not valid send login.html
@@ -105,7 +130,7 @@ app.get('/panel/media', (req, res) => {
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send panel.html
+        //if valid send media.html
         //index all files in media folder and add them to the table
         fs.readdir('media', (err, files) => {
             if (err) {
@@ -231,7 +256,7 @@ app.get('/panel/offers/new', (req, res) => {
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send panel.html
+        //if valid send newentry.html
         fs.readFile('data/newentry.html', (err, data) => {
             if (err) {
                 res.send(err);

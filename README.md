@@ -3,6 +3,8 @@
 
 The project is a digital signage system designed for a school cafeteria, which displays current offers and other relevant information on a monitor. It consists of a client-side application built with Electron.js and a server-side application using Express.js.
 
+Thanks to Felixmax_ for providing the starting code/concept. Now I (Logilype) am the only one working on it and I am commited to finishing this project. ETA for the initial 1.0 version is mid November 2024.
+
 ### Key Features:
 
 1. **Client-Side Application:**
@@ -28,6 +30,14 @@ The project is a digital signage system designed for a school cafeteria, which d
 5. **User Interface:**
    - The user interface is designed to be simple and intuitive, with a focus on displaying information clearly and attractively.
    - The system uses HTML, CSS, and JavaScript to render the content, with a consistent design theme across different pages.
+
+### Planned features:
+
+- Audit log system for tracking changes, meaning which user made what changes in the dashboard.
+- Language selector (I have marked the part in settings that it's a placeholder.)
+- Edit menu table
+- Manage menu entries and sort by type (i.e. cafeteria menu, ToGo menu, salads etc.)
+- Manage advertisements to display on the monitor (i.e. a class in the school is going to sell cakes in the break on a particular day)
 
 ### How It Works:
 

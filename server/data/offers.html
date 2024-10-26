@@ -94,10 +94,7 @@
     </div>
 
     <script>
-        // Your JavaScript code here
-        // Define your offer data and cycling logic here
         var offers = (datarenderplace);
-
         var currentOfferIndex = 0;
         var offerContent = document.getElementById("offerContent");
         var offerImage = document.getElementById("offerImage");
@@ -117,7 +114,6 @@
         function updateOffer() {
             var offer = offers[currentOfferIndex];
 
-            // Apply a fade-out effect before changing the content
             offerContent.style.opacity = 0;
 
             setTimeout(function () {
@@ -125,15 +121,28 @@
                 offerName.textContent = offer.name;
                 offerPrice.textContent = offer.price;
                 offerDays.textContent = "Im Angebot: " + offer.days;
-                // Apply a fade-in effect after changing the content
                 fadeIn(offerContent);
                 currentOfferIndex = (currentOfferIndex + 1) % offers.length;
-            }, 500); // Adjust the delay (in milliseconds) based on your preference
+            }, 500);
         }
-        // Initial call to set the first offer
-        updateOffer();
-        // Set an interval to cycle through offers
-        setInterval(updateOffer, 5000); // Change offers every 10 seconds
+
+        // Fetch settings from the server
+        fetch('http://localhost:3000/api/settings')
+            .then(response => response.json())
+            .then(settings => {
+                var offerDisplayDuration = parseInt(settings.offerDisplayDuration, 10) * 1000; // Convert to milliseconds
+                // Initial call to set the first offer
+                updateOffer();
+                // Set an interval to cycle through offers
+                setInterval(updateOffer, offerDisplayDuration);
+            })
+            .catch(error => {
+                console.error('Error fetching settings:', error);
+                // Fallback to a default duration if fetching settings fails
+                var defaultDuration = 8000; // 8 seconds
+                updateOffer();
+                setInterval(updateOffer, defaultDuration);
+            });
     </script>
 </body>
 

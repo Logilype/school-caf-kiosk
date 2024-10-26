@@ -21,7 +21,7 @@
     "price": "1,50 €",
     "image": "/media/bratwurst.jpg",
     "days": "Täglich",
-    "visibility": false
+    "visibility": true
   },
   {
     "id": "0025652579",

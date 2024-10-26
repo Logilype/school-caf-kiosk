@@ -1,24 +1,25 @@
 const express = require('express');
-fs = require('fs');
 var XMLHttpRequest = require('xhr2');
+const fs = require('fs');
 const multer = require('multer');
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = 3000;
 app.use(express.urlencoded({ extended: true }));
-const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
-app.use(express.json()); // Add this line to parse JSON request bodies
+app.use(express.json());
 app.use(express.static('data'));
 
 tokenst = [];
 
 app.get('/', (req, res) => res.send('i dont get paid enough for this'));
 
-//set media as static folder
+// Set media as static folder
 app.use('/media', express.static('media'));
 
+// Endpoint to serve settings page
 app.get('/panel/settings', (req, res) => {
     //get token from cookies and check if it is valid
     var token = req.cookies.token;
@@ -30,11 +31,33 @@ app.get('/panel/settings', (req, res) => {
         //if not valid send login.html
         res.redirect('/ui/login');
     }
-    
+});
+
+// Endpoint to get current settings
+app.get('/api/settings', (req, res) => {
+    fs.readFile('data/settings.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading settings file:', err);
+            return res.status(500).send('Error reading settings');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Endpoint to update settings
+app.post('/api/settings', (req, res) => {
+    const updatedSettings = req.body;
+    fs.writeFile('data/settings.json', JSON.stringify(updatedSettings, null, 2), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing settings file:', err);
+            return res.status(500).send('Error saving settings');
+        }
+        res.send('Settings updated successfully');
+    });
 });
 
 app.get('/getoffers', (req, res) => {
-    fs.readFile('data/menu.json', (err, data) => {
+    fs.readFile('data/offers.json', (err, data) => {
         if (err) {
             return res.send(err);
         }
@@ -158,7 +181,7 @@ app.get('/panel/media', (req, res) => {
 app.get('/panel/offers', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
-        fs.readFile('data/menu.json', (err, data) => {
+        fs.readFile('data/offers.json', (err, data) => {
             if (err) {
                 return res.status(500).send(err);
             }
@@ -215,7 +238,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 app.get('/panel/offers/edit/:id', (req, res) => {
     const id = req.params.id;
-    fs.readFile('data/menu.json', (err, data) => {
+    fs.readFile('data/offers.json', (err, data) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -292,8 +315,8 @@ app.post('/api/newentry', (req, res) => {
     // Log the received data
     console.log(id, name, price, image, days, visibility);
 
-    // Edit entry in menu.json with the id from the parameters
-    fs.readFile('data/menu.json', (err, data) => {
+    // Edit entry in offers.json with the id from the parameters
+    fs.readFile('data/offers.json', (err, data) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -308,7 +331,7 @@ app.post('/api/newentry', (req, res) => {
             visibility: visibility // Add visibility property
         });
 
-        fs.writeFile('data/menu.json', JSON.stringify(menu, null, 2), (err) => {
+        fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
             if (err) {
                 return res.status(500).send(err);
             }
@@ -329,8 +352,8 @@ app.post('/api/editentry', (req, res) => {
     // Log the received data
     console.log("Received data:", req.body);
 
-    // Edit entry in menu.json with the id from the parameters
-    fs.readFile('data/menu.json', (err, data) => {
+    // Edit entry in offers.json with the id from the parameters
+    fs.readFile('data/offers.json', (err, data) => {
         if (err) {
             return res.status(500).send(err); // Send error response if reading fails
         }
@@ -342,7 +365,7 @@ app.post('/api/editentry', (req, res) => {
                 menu[i].image = image; // Save the image path directly
                 menu[i].days = days;
                 menu[i].visibility = visibility; // Save the visibility state
-                fs.writeFile('data/menu.json', JSON.stringify(menu, null, 2), (err) => {
+                fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
                     if (err) {
                         return res.status(500).send(err); // Send error response if writing fails
                     }
@@ -420,9 +443,9 @@ app.post('/api/deleteentry', (req, res) => {
     console.log('Request body:', req.body);
     console.log(`Received request to delete entry with id: ${id}`);
 
-    fs.readFile('data/menu.json', (err, data) => {
+    fs.readFile('data/offers.json', (err, data) => {
         if (err) {
-            console.error('Error reading menu.json:', err);
+            console.error('Error reading offers.json:', err);
             return res.status(500).send(err);
         }
 
@@ -431,9 +454,9 @@ app.post('/api/deleteentry', (req, res) => {
         menu = menu.filter(item => String(item.id) !== String(id));
         console.log(`Entries before deletion: ${initialLength}, after deletion: ${menu.length}`);
 
-        fs.writeFile('data/menu.json', JSON.stringify(menu, null, 2), (err) => {
+        fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
             if (err) {
-                console.error('Error writing to menu.json:', err);
+                console.error('Error writing to offers.json:', err);
                 return res.status(500).send(err);
             }
             res.send("success");

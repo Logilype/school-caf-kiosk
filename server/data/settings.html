@@ -40,24 +40,26 @@
     <div class="content">
         <h2>Einstellungen</h2>
         <form id="settingsForm">
-            <label for="theme">Thema:</label>
-            <select id="theme" name="theme">
-                <option value="light">Hell</option>
-                <option value="dark">Dunkel</option>
-            </select>
-            <br>
-            <label for="refreshRate">Aktualisierungsrate (Sekunden):</label>
-            <input type="number" id="refreshRate" name="refreshRate" min="1" value="5">
-            <br>
             <label for="pageSwitchInterval">Seitenwechselintervall (Sekunden):</label>
-            <input type="number" id="pageSwitchInterval" name="pageSwitchInterval" min="1" value="10">
+            <input type="number" id="pageSwitchInterval" name="pageSwitchInterval" min="15" value="90" max="300">
             <br>
             <label for="offerDisplayDuration">Angebotsanzeigedauer (Sekunden):</label>
-            <input type="number" id="offerDisplayDuration" name="offerDisplayDuration" min="1" value="15">
+            <input type="number" id="offerDisplayDuration" name="offerDisplayDuration" min="1" value="8" max="30">
+            <br>
+            <label for="language">Sprache (Andere Sprachen werden in Kürze unterstützt) (Placeholder):</label>
+            <select id="language" name="language">
+                <option value="de">Deutsch</option>
+                <!-- Add more languages as needed -->
+            </select>
             <br>
             <input type="submit" value="Einstellungen speichern">
         </form>
         <div id="feedback" style="color: green; margin-top: 10px;"></div>
+        <button id="exportData">Daten exportieren</button>
+        <button id="importData">Daten importieren</button>
+        <button id="backupSettings">Einstellungen sichern</button>
+        <button id="restoreSettings">Einstellungen wiederherstellen</button>
+        <br>
     </div>
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
@@ -68,31 +70,41 @@
             window.location.href = "/ui/login";
         });
 
-        document.getElementById("settingsForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const theme = document.getElementById("theme").value;
-            const refreshRate = document.getElementById("refreshRate").value;
-            const pageSwitchInterval = document.getElementById("pageSwitchInterval").value;
-            const offerDisplayDuration = document.getElementById("offerDisplayDuration").value;
+        // Fetch current settings
+        fetch('/api/settings')
+            .then(response => response.json())
+            .then(settings => {
+                // Populate form fields with current settings
+                document.getElementById('pageSwitchInterval').value = settings.pageSwitchInterval;
+                document.getElementById('offerDisplayDuration').value = settings.offerDisplayDuration;
+                document.getElementById('language').value = settings.language;
+            });
 
-            // Here you would typically send the data to your server or save it locally
-            // For demonstration, we'll just show a success message
-            document.getElementById("feedback").textContent = "Einstellungen erfolgreich gespeichert!";
+        // Handle form submission
+        document.getElementById('settingsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const updatedSettings = {
+                pageSwitchInterval: document.getElementById('pageSwitchInterval').value,
+                offerDisplayDuration: document.getElementById('offerDisplayDuration').value,
+                language: document.getElementById('language').value
+            };
 
-            // Save the refreshRate setting
-            // This could involve sending it to a server or saving it locally
-            console.log("Refresh rate set to:", refreshRate, "seconds");
-
-            // Example: Update a refresh interval in your app
-            // Assuming you have a function updateContent() that refreshes the content
-            clearInterval(window.refreshInterval);
-            window.refreshInterval = setInterval(updateContent, refreshRate * 1000);
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedSettings)
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById('feedback').textContent = message;
+                // Reload the page after 0.5 seconds
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            });
         });
-
-        function updateContent() {
-            // Logic to refresh or update content
-            console.log("Content updated");
-        }
     </script>
 </body>
 </html>

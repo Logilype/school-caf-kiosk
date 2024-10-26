@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
     <style>
-        body{
+        body {
             background-color: black;
             color: white;
             user-select: none;
-            font-family: Verdana, sans-serif;
+            font-family: 'Open Sans', sans-serif;
         }
-        .centeredcontainer{
+        .centeredcontainer {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -19,7 +22,7 @@
             font-size: 30px;
             text-align: center;
         }
-        .copyrightfooter{
+        .copyrightfooter {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -34,11 +37,17 @@
     <div class="centeredcontainer">
         <img src="https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/preview/3-dots-fade-white-36.svg" height="60" alt="loading">
         <div class="subtext">
-            Menü wird geladen...
+            Wird geladen, bitte warten...
         </div>
     </div>
     <div class="copyrightfooter">
-        © 2023 by Gabriel und Max
+        © 2024 by logilype und felixmax_ 
     </div>
+    <script>
+        // Redirect to the main application after a delay
+        setTimeout(() => {
+            window.location.href = '/getoffers'; // Change to your main application URL
+        }, 3000); // 3 seconds delay
+    </script>
 </body>
 </html>

@@ -1,0 +1,573 @@
+:root {
+    /* Dark theme primary colors */
+    --color-primary-a0: #18384b;
+    --color-primary-a10: #314b5d;
+    --color-primary-a20: #496070;
+    --color-primary-a30: #627583;
+    --color-primary-a40: #7a8a96;
+    --color-primary-a50: #94a0ab;
+
+    /* Dark theme surface colors */
+    --color-surface-a0: #141414;
+    --color-surface-a10: #292929;
+    --color-surface-a20: #404040;
+    --color-surface-a30: #585858;
+    --color-surface-a40: #727272;
+    --color-surface-a50: #8c8c8c;
+
+    /* Dark theme mixed surface colors */
+    --color-surface-mixed-a0: #19262e;
+    --color-surface-mixed-a10: #2f3a42;
+    --color-surface-mixed-a20: #465057;
+    --color-surface-mixed-a30: #5e676d;
+    --color-surface-mixed-a40: #767e84;
+    --color-surface-mixed-a50: #90979b;
+}
+
+ /* Examples */ 
+ /*
+.bg-primary {
+ color: var(--color-primary-a50); 
+ background-color: var(--color-surface-a0); 
+} */
+html, body {
+    height: 100%; /* Ensure the body takes the full height of the viewport */
+    margin: 0; /* Remove default margin */
+}
+
+body {
+    background-color: var(--color-surface-a0);
+    color: var(--color-primary-a50);
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    background-color: var(--color-primary-a0);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 2em;
+    position: relative;
+    font-weight: bold;
+}
+
+.navbar {
+    background-color: var(--color-primary-a10);
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.navbar-item, .navbar-item-selected {
+    margin: 0 15px;
+    font-size: 1.2em;
+}
+
+.navbar-item-selected {
+    border-bottom: 2px solid white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer {
+    background-color: var(--color-surface-mixed-a0);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    font-weight: bold;
+    font-size: 12pt;
+
+}
+
+.footer a {
+    padding: 10px 0;
+}
+
+p {
+    font-size: 150%;
+}
+
+.actionbuttons {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+#logoutBtn {
+    position: absolute; /* Position the logout button absolutely */
+    right: 20px; /* Align it to the right */
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 50%;
+    padding: 7px 15px;
+    border-radius: 5px;
+}
+
+#logoutBtn:hover {
+    background-color: #b92929;
+}
+
+/* Updated grid styles */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200pt, 1fr)); /* Flexible grid */
+    gap: 20px; /* Spacing between items */
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center; /* Center the grid items horizontally */
+}
+
+.grid-item {
+    background-color: var(--color-surface-mixed-a0); /* Updated background color */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space items evenly */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for better visibility */
+}
+
+.item-name, .item-price, .item-days {
+    font-size: 18px; /* Updated font size */
+    margin: 10px 0;
+}
+
+.item-name {
+    font-size: 18px; /* Font size */
+    margin: 10px 0;
+    min-height: 40px; /* Adjust this value to ensure it occupies at least 2 lines */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    display: -webkit-box; /* Use flexbox for multi-line */
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    line-clamp: 2; /* Limit to 2 lines, added for compatibility */
+    -webkit-box-orient: vertical; /* Set box orientation */
+}
+
+.grid-item img {
+    width: 100%;
+    height: auto;
+    max-height: 150px; /* Ensure the images are contained */
+    object-fit: cover; /* Cover the container while maintaining aspect ratio */
+    border-radius: 5px; /* Maintain border-radius for images */
+}
+
+.grid-item .buttons {
+    display: flex;
+    justify-content: space-around; /* Space buttons evenly */
+    margin-top: 10px;
+}
+
+.grid-item button {
+    padding: 10px;
+    background-color: var(--color-primary-a20); /* Button background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.grid-item button:hover {
+    background-color: var(--color-primary-a30); /* Button hover color */
+}
+
+.tables {
+    display: flex;
+    flex-direction: column; /* Stack tables vertically */
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.image-container {
+    width: 130pt;
+    height: 130pt;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    margin: 10px 0;
+    border-radius: 10px; /* Apply border-radius to the container */
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Cover the container while maintaining aspect ratio */
+    border-radius: 10px;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: hidden; /* Prevent scrolling */
+    background-color: rgba(0, 0, 0, 0.8); /* Darker background with opacity */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #252525; /* Background color for content */
+    margin: 0; /* Remove default margin */
+    padding: 20px; /* Add padding inside the modal content */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    max-height: 90%; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+    width: 270px; /* Set a responsive width for the modal */
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+#editForm {
+    margin: 20px 0; /* Add margin above and below the form */
+    width: 100%; /* Ensure the form takes the full width of the modal */
+    display: flex; /* Use flexbox for the form */
+    flex-direction: column; /* Stack form elements vertically */
+    align-items: center; /* Center form elements */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #960c0c; /* Change color on hover */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content label {
+    font-weight: bold; /* Bold labels */
+    margin-top: 10px; /* Spacing above labels */
+    display: block; /* Make labels block elements */
+    text-align: center; /* Center the text of labels */
+}
+
+.modal-content input[type="text"] {
+    padding: 10px; /* Padding for input */
+    margin: 5px 0 15px; /* Spacing around inputs */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width calculation */
+    font-family: 'Open Sans', sans-serif;
+    text-align: center; /* Center the text inside the input */
+    font-size: 14pt; /* Set a default font size */
+    width: 270px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    overflow: hidden; /* Hide overflow text */
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Show ellipses for overflow text */
+}
+
+.dropdown-list {
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive grid */
+    gap: 10px; /* Space between grid items */
+    background-color: white; /* Background color */
+    border: 1px solid #ccc; /* Border */
+    border-radius: 4px; /* Rounded corners */
+    max-height: 100%; /* Max height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px; /* Padding inside the dropdown */
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Style for each image option */
+.dropdown-list div {
+    cursor: pointer; /* Pointer cursor on hover */
+    text-align: center; /* Center the text */
+}
+
+.dropdown-list img {
+    max-width: 100%; /* Responsive image */
+    max-height: 100px; /* Set a max height for images */
+    border-radius: 4px; /* Rounded corners for images */
+}
+
+.modal-content button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 16px; /* Font size */
+    margin-top: 10px; /* Spacing above button */
+    display: block; /* Make button block element */
+    width: 100%; /* Full width */
+}
+
+.modal-content button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.custom-dropdown {
+    position: relative;
+}
+
+.selected-image {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the image within the container */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #001d3b; /* Dark background */
+    margin-bottom: 15px; /* Spacing below */
+    height: auto;
+    max-height: 500px;
+    overflow: hidden; /* Hide overflow to prevent image from spilling out */
+    width: auto; /* Allow width to be determined by content */
+}
+
+/* Preview Image */
+#previewImage {
+    max-height: 100%; /* Ensure the image does not exceed the container height */
+    max-width: 100%; /* Ensure the image does not exceed the container width */
+    height: auto; /* Maintain aspect ratio */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Maintain aspect ratio while fitting inside the container */
+    display: block; /* Ensure it behaves like a block element */
+    margin: 0 auto; /* Center the image */
+}
+
+.dropdown-list {
+    position: absolute;
+    z-index: 10;
+    background-color: rgb(58, 58, 58);
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Rounded corners */
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.dropdown-list div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-list div:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+
+/* Increase specificity by using a more specific selector */
+#editModal.modal {
+    display: none; /* Hidden by default */
+}
+
+.tables-media tr {
+    background-color: #1e344b;
+    margin: 10pt;
+    border-radius: 10pt;
+}
+
+.toggle {
+    position: relative;
+}
+
+#toggleVisibilityBtn {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle .onoff {
+    font-size: 30pt;
+    text-align: center;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.slider {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    background-color: #bd2525;
+    transition: 0.4s;
+    width: 80px;
+    height: 40px;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    background-color: #fff;
+    transition: 0.4s;
+    top: 5px;
+    left: 5px;
+}
+
+input:checked + .slider {
+    background-color: #24a82b;
+}
+
+input:checked + .slider:before {
+    transform: translateX(40px);
+}
+
+.slider.round {
+    border-radius: 40px;
+}
+
+.slider.round::before {
+    border-radius: 40px;
+}
+
+.item-visibility {
+    font-weight: bold;
+    color: green; /* Color for active */
+}
+
+.item-visibility.inactive {
+    color: red; /* Color for inactive */
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: var(--color-primary-a50);
+}
+
+form {
+    background-color: var(--color-surface-a10);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input[type="number"],
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    background-color: var(--color-primary-a20);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    width: 100%;
+}
+
+form input[type="submit"]:hover {
+    background-color: var(--color-primary-a30);
+}
+
+#feedback {
+    color: green;
+    margin-top: 10px;
+}
+
+button {
+    background-color: var(--color-primary-a20);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: var(--color-primary-a30);
+}
+
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+}
+
+#newToggleSetting {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #bd2525;
+    transition: 0.4s;
+    width: 100%;
+    height: 100%;
+    border-radius: 40px; /* Make the slider round */
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    background-color: #fff;
+    transition: 0.4s;
+    top: 5px;
+    left: 5px;
+    border-radius: 50%; /* Make the knob round */
+}
+
+input:checked + .slider {
+    background-color: #24a82b;
+}
+
+input:checked + .slider:before {
+    transform: translateX(40px);
+}

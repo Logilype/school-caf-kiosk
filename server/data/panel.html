@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CafDS Dashboard - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="header">
+        CafDS Dashboard
+        <button id="logoutBtn">Ausloggen</button>
+    </div>
+    <div class="navbar" id="navbar">
+        <div class="navbar-item-selected">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/offers">Angebote bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Menü bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menuentries">Menüeinträge bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Medien verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/settings">Einstellungen</a>
+        </div>
+    </div>
+    <div class="content">
+        <p>
+            Hallo 👋
+            <p>
+                Nutzen Sie die Navbar, um einen Menüpunkt auszuwählen.
+            </p>
+        </p>
+    </div>
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
+    </div>
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            // Clear the token cookie
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Redirect to the login page
+            window.location.href = "/ui/login";
+        });
+    </script>
+</body>
+</html>

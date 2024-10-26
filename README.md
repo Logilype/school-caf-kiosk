@@ -1,4 +1,5 @@
-# CafDS
+# CafDS (Cafeteria Digital Signage)
+***WORK IN PROGRESS***
 
 The project is a digital signage system designed for a school cafeteria, which displays current offers and other relevant information on a monitor. It consists of a client-side application built with Electron.js and a server-side application using Express.js.
 
@@ -8,6 +9,7 @@ The project is a digital signage system designed for a school cafeteria, which d
    - The client application is an Electron.js app that runs on a local machine, displaying cafeteria offers and other content in full-screen mode.
    - It cycles through different pages, such as offers and news, based on a configurable interval.
    - The client fetches data from the server to display current offers and other information.
+   - Example: ![2024-10-26 14_24_02-Cafeteria Angebote](https://github.com/user-attachments/assets/7168fe0b-71e8-4c02-b3c1-a2832463e460)
 
 2. **Server-Side Application:**
    - The server is built with Express.js and serves content to the client application.
@@ -17,6 +19,7 @@ The project is a digital signage system designed for a school cafeteria, which d
 3. **Dashboard:**
    - An administrative dashboard allows users to manage offers, including adding, editing, and deleting entries.
    - The dashboard also provides options to upload media files and configure settings like page switch intervals and offer display durations.
+   - Example: ![Screenshot 2024-10-26 at 14-22-16 CafDS Dashboard - Angebote bearbeiten](https://github.com/user-attachments/assets/b001110a-ddeb-4158-9c08-ca23caacbcbf)
 
 4. **Data Management:**
    - Offers and settings are stored in JSON files on the server, which the client fetches to display the latest information.

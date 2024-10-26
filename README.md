@@ -3,7 +3,7 @@
 
 The project is a digital signage system designed for a school cafeteria, which displays current offers and other relevant information on a monitor. It consists of a client-side application built with Electron.js and a server-side application using Express.js.
 
-Thanks to Felixmax_ for providing the starting code/concept. Now I (Logilype) am the only one working on it and I am commited to finishing this project. ETA for the initial 1.0 version is mid November 2024.
+Thanks to Felixmax_ for providing the starting code/concept. Now I (Logilype) am the only one working on it and I am committed to finishing this project. ETA for the initial 1.0 version is mid November 2024.
 
 ### Key Features:
 

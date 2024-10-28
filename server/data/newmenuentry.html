@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafDS Dashboard - Angebote bearbeiten</title>
+    <title>CafDS Dashboard - Neuer Menüeintrag</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
@@ -18,13 +18,13 @@
         <div class="navbar-item">
             <a href="/panel">Home</a>
         </div>
-        <div class="navbar-item-selected">
+        <div class="navbar-item">
             <a href="/panel/offers">Angebote bearbeiten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/menu">Menü bearbeiten</a>
         </div>
-        <div class="navbar-item">
+        <div class="navbar-item-selected">
             <a href="/panel/menuentries">Menüeinträge verwalten</a>
         </div>
         <div class="navbar-item">
@@ -38,23 +38,17 @@
         </div>
     </div>
     <div class="content">
-        <form id="newOfferForm">
-            <h1>Neues Angebot hinzufügen</h1>
+        <form id="newEntryForm">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
+
+            <label for="category">Kategorie:</label>
+            <input type="text" id="category" name="category" required>
 
             <label for="price">Preis:</label>
             <input type="number" id="price" name="price" step="0.01" required>
 
-            <label for="imgkey">Bild:</label>
-            <select id="imgkey" name="image">
-                <!-- Options will be populated dynamically -->
-            </select>
-
-            <label for="days">Tage:</label>
-            <input type="text" id="days" name="days" required>
-
-            <button type="button" id="savebtn">Hinzufügen</button>
+            <button type="submit">Erstellen</button>
         </form>
     </div>
     <div class="footer">
@@ -62,46 +56,35 @@
     </div>
     <script>
         document.getElementById("logoutBtn").addEventListener("click", function() {
+            // Clear the token cookie
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Redirect to the login page
             window.location.href = "/ui/login";
         });
 
-        // Fetch images and populate the dropdown
-        fetch('/api/getImages')
-            .then(response => response.json())
-            .then(images => {
-                const imgSelect = document.getElementById('imgkey');
-                images.forEach(image => {
-                    const option = document.createElement('option');
-                    option.value = image;
-                    option.textContent = image.split('/').pop(); // Display only the file name
-                    imgSelect.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error loading images:', error));
+        document.getElementById('newEntryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        document.getElementById("savebtn").addEventListener("click", function() {
-            var name = document.getElementById("name").value;
-            var price = document.getElementById("price").value;
-            var imgkey = document.getElementById("imgkey").value;
-            var days = document.getElementById("days").value;
+            const name = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            const price = parseFloat(document.getElementById('price').value);
 
-            var data = { name, price, image: imgkey, days };
-            fetch("/api/newentry", {
-                method: "POST",
+            fetch('/api/newmenuentry', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify({ name, category, price }),
             })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = "/panel/offers";
+                    alert('Eintrag erfolgreich erstellt!');
+                    window.location.href = '/panel/menuentries';
                 } else {
-                    alert("Fehler beim Hinzufügen des Angebots.");
+                    alert('Fehler beim Erstellen des Eintrags.');
                 }
             })
-            .catch(error => console.error("Error creating offer:", error));
+            .catch(error => console.error('Error creating menu entry:', error));
         });
     </script>
 </body>

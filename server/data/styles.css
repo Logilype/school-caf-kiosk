@@ -614,10 +614,13 @@ input:checked + .slider:before {
     color: white;
     border: none;
     padding: 10px 20px;
+    margin: 5px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s;
+    width: 100%;
+    max-width: 200px;
 }
 
 .actionbuttons input[type="button"]:hover {

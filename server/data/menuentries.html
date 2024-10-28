@@ -60,6 +60,25 @@
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
     </div>
+
+    <!-- Modal for editing entries -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Eintrag bearbeiten</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId" name="id">
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name" required>
+                <label for="editCategory">Kategorie:</label>
+                <input type="text" id="editCategory" name="category" required>
+                <label for="editPrice">Preis:</label>
+                <input type="number" id="editPrice" name="price" step="0.01" required>
+                <button type="submit">Speichern</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.getElementById("logoutBtn").addEventListener("click", function() {
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -77,8 +96,8 @@
                             <td>${entry.category}</td>
                             <td>${entry.price.toFixed(2)} €</td>
                             <td>
-                                <button onclick="editEntry('${entry.name}')">Bearbeiten</button>
-                                <button onclick="deleteEntry('${entry.name}')">Löschen</button>
+                                <button onclick="openEditModal('${entry.id}', '${entry.name}', '${entry.category}', ${entry.price})">Bearbeiten</button>
+                                <button onclick="deleteEntry('${entry.id}')">Löschen</button>
                             </td>
                         </tr>
                     `).join('');
@@ -86,22 +105,54 @@
                 .catch(error => console.error('Error fetching menu entries:', error));
         }
 
-        function editEntry(entryName) {
-            alert(`Edit entry: ${entryName}`);
+        function openEditModal(id, name, category, price) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editCategory').value = category;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editModal').style.display = 'flex';
         }
 
-        function deleteEntry(entryName) {
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('editId').value;
+            const name = document.getElementById('editName').value;
+            const category = document.getElementById('editCategory').value;
+            const price = parseFloat(document.getElementById('editPrice').value);
+
+            fetch('/api/editmenuentry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id, name, category, price }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    closeModal();
+                    fetchMenuEntries();
+                } else {
+                    alert("Fehler beim Bearbeiten des Eintrags.");
+                }
+            });
+        });
+
+        function deleteEntry(id) {
             if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
-                fetch(`/api/deleteentry`, {
+                fetch(`/api/deletemenuentry`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name: entryName }),
+                    body: JSON.stringify({ id }),
                 })
                 .then(response => {
                     if (response.ok) {
-                        window.location.reload();
+                        fetchMenuEntries();
                     } else {
                         alert("Fehler beim Löschen des Eintrags.");
                     }

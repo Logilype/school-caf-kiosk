@@ -54,27 +54,11 @@
     "days": "Täglich"
   },
   {
-    "id": "5262470110",
-    "name": "Tee",
-    "price": "Kostenlos",
-    "image": "/media/tee.jpg",
-    "days": "Täglich",
-    "visibility": true
-  },
-  {
     "id": "2979288923",
     "name": "Pizza Margherita oder Salami",
     "price": "2,00 €",
     "image": "/media/pizza-salami.jpg",
     "days": "Dienstag"
-  },
-  {
-    "id": "6497796417",
-    "name": "Waffeln mit Nutella oder Marmelade",
-    "price": "1,50 €",
-    "image": "/media/waffeln-nutella-marmelade.jpg",
-    "days": "Donnerstag",
-    "visibility": true
   },
   {
     "id": "9155377890",
@@ -83,5 +67,13 @@
     "image": "/media/waffeln-puderzucker.jpg",
     "days": "Donnerstag",
     "visibility": false
+  },
+  {
+    "id": "3224756719",
+    "name": "Test",
+    "price": "1.00",
+    "image": "/media/belegtes-broetchen-mit-kaese.jpg",
+    "days": "Testtag",
+    "visibility": true
   }
 ]

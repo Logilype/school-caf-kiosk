@@ -290,35 +290,32 @@ app.get('/panel/offers/new', (req, res) => {
 });
 
 app.post('/api/newentry', (req, res) => {
-    var id = makeresultid(10);
-    var name = req.body.name;
-    var price = req.body.price;
-    var image = "/media/" + req.body.image;
-    var days = req.body.days;
-    var visibility = req.body.visibility || true; // Default to true if not provided
+    const { name, price, image, days } = req.body;
+    const id = makeresultid(10); // Generate a new ID
 
-    // Log the received data
-    console.log(id, name, price, image, days, visibility);
+    // Ensure the image path is correctly prefixed
+    const imagePath = image.startsWith('/media/') ? image : `/media/${image}`;
 
-    // Edit entry in offers.json with the id from the parameters
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/offers.json', 'utf8', (err, data) => {
         if (err) {
-            return res.status(500).send(err);
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
         }
-        var menu = JSON.parse(data);
 
-        menu.push({
-            id: id,
-            name: name,
-            price: price,
-            image: image,
-            days: days,
-            visibility: visibility // Add visibility property
+        let offers = JSON.parse(data);
+        offers.push({
+            id,
+            name,
+            price,
+            image: imagePath, // Use the corrected image path
+            days,
+            visibility: true // Default visibility to true
         });
 
-        fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
+        fs.writeFile('data/offers.json', JSON.stringify(offers, null, 2), (err) => {
             if (err) {
-                return res.status(500).send(err);
+                console.error('Error writing to offers.json:', err);
+                return res.status(500).send('Error saving new offer');
             }
             res.send("success");
         });
@@ -423,7 +420,7 @@ function makeresultid(length) {
     return result
 }
 
-app.post('/api/deleteentry', (req, res) => {
+app.post('/api/deleteoffer', (req, res) => {
     const id = req.body.id;
     console.log('Request body:', req.body);
     console.log(`Received request to delete entry with id: ${id}`);
@@ -507,4 +504,98 @@ app.get('/api/menuentries', (req, res) => {
     }
 });
 
+app.post('/api/editmenuentry', (req, res) => {
+    const { id, name, category, price } = req.body;
+
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        let menuEntries = JSON.parse(data);
+        const entryIndex = menuEntries.findIndex(entry => entry.id === id);
+
+        if (entryIndex !== -1) {
+            menuEntries[entryIndex] = { ...menuEntries[entryIndex], name, category, price };
+            fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing to menuentries.json:', err);
+                    return res.status(500).send('Error updating menu entry');
+                }
+                res.send("success");
+            });
+        } else {
+            res.status(404).send('Entry not found');
+        }
+    });
+});
+
+app.post('/api/newmenuentry', (req, res) => {
+    const { name, category, price } = req.body;
+    const id = makeresultid(6); // Generate a new ID
+
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        let menuEntries = JSON.parse(data);
+        menuEntries.push({ id, name, category, price });
+
+        fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing to menuentries.json:', err);
+                return res.status(500).send('Error saving new menu entry');
+            }
+            res.send("success");
+        });
+    });
+});
+
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
+
+app.post('/api/deletemenuentry', (req, res) => {
+    const id = req.body.id;
+    console.log('Request body:', req.body);
+    console.log(`Received request to delete entry with id: ${id}`);
+
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        let menuEntries = JSON.parse(data);
+        const initialLength = menuEntries.length;
+        menuEntries = menuEntries.filter(entry => entry.id !== id);
+
+        console.log(`Entries before deletion: ${initialLength}, after deletion: ${menuEntries.length}`);
+
+        if (menuEntries.length === initialLength) {
+            return res.status(404).send('Entry not found');
+        }
+
+        fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing to menuentries.json:', err);
+                return res.status(500).send('Error deleting menu entry');
+            }
+            res.send("success");
+        });
+    });
+});
+
+app.get('/panel/menuentries/new', (req, res) => {
+    // Get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        // If valid, send newmenuentry.html
+        res.sendFile(path.join(__dirname, 'data', 'newmenuentry.html'));
+    } else {
+        // If not valid, redirect to login page
+        res.redirect('/ui/login');
+    }
+});

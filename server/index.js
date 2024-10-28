@@ -146,7 +146,19 @@ app.get('/panel/upload', (req, res) => {
         //if not valid send login.html
         res.redirect('/ui/login');
     }
+});
     
+app.get('/panel/menu', (req, res) => {
+        //get token from cookies and check if it is valid
+        var token = req.cookies.token;
+        console.log(token);
+        if (checktoken(token)) {
+            //if valid send menuedit.html
+            res.sendFile(__dirname + '/data/menuedit.html');
+        } else {
+            //if not valid send login.html
+            res.redirect('/ui/login');
+        }
 });
 app.get('/panel/media', (req, res) => {
     //get token from cookies and check if it is valid
@@ -235,44 +247,6 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     res.json({ path: filename });
 });
 
-
-app.get('/panel/offers/edit/:id', (req, res) => {
-    const id = req.params.id;
-    fs.readFile('data/offers.json', (err, data) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        const menu = JSON.parse(data);
-        const menuitem = menu.find(item => item.id == id);
-        if (menuitem) {
-            fs.readFile('data/editentry.html', (err, data) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-                let replacementdata = data.toString()
-                    .replace("(id)", menuitem.id)
-                    .replace("(name)", menuitem.name)
-                    .replace("(price)", menuitem.price)
-                    .replace("(days)", menuitem.days);
-
-                // Populate dropdown for images and preselect the current image
-                fs.readdir('media', (err, files) => {
-                    if (err) {
-                        return res.status(500).send(err);
-                    }
-                    let dropdown = files.map(file => {
-                        const selected = `/media/${file}` === menuitem.image ? 'selected' : '';
-                        return `<option value="${file}" ${selected}>${file}</option>`;
-                    }).join('');
-                    replacementdata = replacementdata.replace("(allimgs)", dropdown);
-                    res.send(replacementdata);
-                });
-            });
-        } else {
-            res.send("Entry not found");
-        }
-    });
-});
 
 app.get('/panel/offers/new', (req, res) => {
     //get token from cookies and check if it is valid

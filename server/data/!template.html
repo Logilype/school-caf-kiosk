@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafDS Dashboard - Medien verwalten</title>
+    <title>CafDS Dashboard - Home</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
@@ -15,7 +15,7 @@
         <button id="logoutBtn">Ausloggen</button>
     </div>
     <div class="navbar" id="navbar">
-        <div class="navbar-item">
+        <div class="navbar-item-selected">
             <a href="/panel">Home</a>
         </div>
         <div class="navbar-item">
@@ -30,7 +30,7 @@
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
         </div>
-        <div class="navbar-item-selected">
+        <div class="navbar-item">
             <a href="/panel/media">Medien verwalten</a>
         </div>
         <div class="navbar-item">
@@ -38,44 +38,12 @@
         </div>
     </div>
     <div class="content">
-        <div class="tables-media">
-            <table>
-                <tr>
-                    <th>Name</th>
-                    
-                    <th>Vorschau</th>
-                    
-                    
-                </tr>
-                (renderanchor)
-            </table>
-        </div>
-        <div class="actionbuttons">
-            <input type="button" value="Hochladen" id="newbtn">
-            
-        </div>
+        <!-- Insert content here -->
     </div>
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
     </div>
     <script>
-        document.getElementById("logoutBtn").addEventListener("click", function() {
-            // Clear the token cookie
-            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            // Redirect to the login page
-            window.location.href = "/ui/login";
-        });
-
-        document.querySelector("#newbtn").addEventListener("click", function(){
-            window.location.href = "/panel/upload";
-        });
-        document.querySelector("#uploadimgbtn").addEventListener("click", function(){
-            window.location.href = "/panel/media";
-        });
-        document.querySelector("#refreshbtn").addEventListener("click", function(){
-            
-            window.location.href = "/panel?intent=refresh";
-        });
         document.getElementById("logoutBtn").addEventListener("click", function() {
             // Clear the token cookie
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

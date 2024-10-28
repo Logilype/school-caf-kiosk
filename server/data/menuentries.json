@@ -1,0 +1,50 @@
+{
+    "name": "Schnitzel mit Wedges (Kartoffelecken), dazu Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "Hackfleischküchle mit Kartoffelsalat und buntem Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "Grünkernküchle mit Kartoffelsalat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "6-er Chicken Nuggets mit Pommes und Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "4-er vegane Nuggets mit Pommes und Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "Hackfleisch-Tomaten-Soße mit Spirellinudeln, dazu Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "Spirellinudeln mit Tomatensoße, dazu Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "Döner mit Hähnchenfleisch und Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "vegi. Döner mit Fetakäse und Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+},
+{
+    "name": "Gulasch mit Nudeln, dazu Salat",
+    "price": 3.70,
+    "category": "Cafeteria Menü"
+}

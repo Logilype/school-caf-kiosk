@@ -3,6 +3,7 @@ var XMLHttpRequest = require('xhr2');
 const fs = require('fs');
 const multer = require('multer');
 const cookieParser = require("cookie-parser");
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -161,35 +162,45 @@ app.get('/panel/menu', (req, res) => {
         }
 });
 app.get('/panel/media', (req, res) => {
-    //get token from cookies and check if it is valid
+    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send media.html
-        //index all files in media folder and add them to the table
-        fs.readdir('media', (err, files) => {
+        // If valid, proceed to read the media directory
+        const mediaDir = path.join(__dirname, 'media'); // Corrected path
+        
+        fs.readdir(mediaDir, (err, files) => {
             if (err) {
-                res.send(err);
+                console.error('Error reading media directory:', err);
+                return res.status(500).send('Error loading media');
             }
-            replacementdata = ""
-            for (var i = 0; i < files.length; i++) {
-                replacementdata = replacementdata + "<tr><td>" + files[i] + "</td><td><img src='/media/"+ files[i] +"' style='max-width: 200px; max-height: 200px;'></img></td></tr>";
-            }
-            fs.readFile('data/media.html', (err, data) => {
+
+            // Generate HTML for each image file
+            const imageEntries = files.map(file => `
+                <tr>
+                    <td>${file}</td>
+                    <td><img src="/media/${file}" alt="${file}" style="width: 100px;"></td>
+                    <td><button onclick="deleteImage('${file}')">Löschen</button></td>
+                </tr>
+            `).join('');
+
+            // Read the media.html file and replace the placeholder
+            fs.readFile(path.join(__dirname, 'data', 'media.html'), 'utf8', (err, html) => {
                 if (err) {
-                    res.send(err);
-                };
-                replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
-                res.send(replacementdata);
+                    console.error('Error reading media.html:', err);
+                    return res.status(500).send('Error loading page');
+                }
+
+                const updatedHtml = html.replace('(renderanchor)', imageEntries);
+                res.send(updatedHtml);
             });
-        }
-        );
+        });
     } else {
-        //if not valid send login.html
+        // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
-    
 });
+
 app.get('/panel/offers', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
@@ -450,5 +461,50 @@ app.get('/api/getImages', (req, res) => {
     });
 });
 
-app.listen(port, () => console.log(`Server listening on port ${port}!`));
+app.post('/api/deleteimage', (req, res) => {
+    const imageName = req.body.name;
+    const imagePath = path.join(__dirname, 'media', imageName);
 
+    fs.unlink(imagePath, (err) => {
+        if (err) {
+            console.error('Error deleting image:', err);
+            return res.status(500).send('Error deleting image'); // Ensure response is sent only once
+        }
+        res.send('Image deleted successfully');
+    });
+});
+
+app.get('/panel/menuentries', (req, res) => {
+    // Get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        // If valid, send menuentries.html
+        res.sendFile(path.join(__dirname, 'data', 'menuentries.html'));
+    } else {
+        // If not valid, redirect to login page
+        res.redirect('/ui/login');
+    }
+});
+
+app.get('/api/menuentries', (req, res) => {
+    // Get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        // If valid, read the menuentries.json file
+        fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading menuentries.json:', err);
+                return res.status(500).send('Error reading menu entries');
+            }
+            // Send the parsed JSON data as a response
+            res.json(JSON.parse(data));
+        });
+    } else {
+        // If not valid, redirect to login page
+        res.redirect('/ui/login');
+    }
+});
+
+app.listen(port, () => console.log(`Server listening on port ${port}!`));

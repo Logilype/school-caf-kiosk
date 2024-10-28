@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafDS Dashboard - Medien verwalten</title>
+    <title>CafDS Dashboard - Menüeinträge verwalten</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -24,13 +24,13 @@
         <div class="navbar-item">
             <a href="/panel/menu">Menü bearbeiten</a>
         </div>
-        <div class="navbar-item">
+        <div class="navbar-item-selected">
             <a href="/panel/menuentries">Menüeinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
         </div>
-        <div class="navbar-item-selected">
+        <div class="navbar-item">
             <a href="/panel/media">Medien verwalten</a>
         </div>
         <div class="navbar-item">
@@ -43,17 +43,18 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Vorschau</th>
+                        <th>Kategorie</th>
+                        <th>Preis</th>
                         <th>Aktionen</th>
                     </tr>
                 </thead>
-                <tbody>
-                    (renderanchor)
+                <tbody id="menuEntriesTable">
+                    <!-- Entries will be inserted here -->
                 </tbody>
             </table>
         </div>
         <div class="actionbuttons">
-            <input type="button" value="Hochladen" id="newbtn">
+            <input type="button" value="Neuer Eintrag" id="newEntryBtn">
         </div>
     </div>
     <div class="footer">
@@ -65,41 +66,55 @@
             window.location.href = "/ui/login";
         });
 
-        function deleteImage(imageName) {
-            if (confirm("Möchten Sie dieses Bild wirklich löschen?")) {
-                fetch(`/api/deleteimage`, {
+        function fetchMenuEntries() {
+            fetch('/api/menuentries')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('menuEntriesTable');
+                    tableBody.innerHTML = data.map(entry => `
+                        <tr>
+                            <td>${entry.name}</td>
+                            <td>${entry.category}</td>
+                            <td>${entry.price.toFixed(2)} €</td>
+                            <td>
+                                <button onclick="editEntry('${entry.name}')">Bearbeiten</button>
+                                <button onclick="deleteEntry('${entry.name}')">Löschen</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error fetching menu entries:', error));
+        }
+
+        function editEntry(entryName) {
+            alert(`Edit entry: ${entryName}`);
+        }
+
+        function deleteEntry(entryName) {
+            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
+                fetch(`/api/deleteentry`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name: imageName }),
+                    body: JSON.stringify({ name: entryName }),
                 })
                 .then(response => {
                     if (response.ok) {
                         window.location.reload();
                     } else {
-                        alert("Fehler beim Löschen des Bildes.");
+                        alert("Fehler beim Löschen des Eintrags.");
                     }
                 });
             }
         }
 
-        document.querySelector("#newbtn").addEventListener("click", function(){
-            window.location.href = "/panel/upload";
+        document.querySelector("#newEntryBtn").addEventListener("click", function(){
+            window.location.href = "/panel/menuentries/new";
         });
-        document.querySelector("#uploadimgbtn").addEventListener("click", function(){
-            window.location.href = "/panel/media";
-        });
-        document.querySelector("#refreshbtn").addEventListener("click", function(){
-            
-            window.location.href = "/panel?intent=refresh";
-        });
-        document.getElementById("logoutBtn").addEventListener("click", function() {
-            // Clear the token cookie
-            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            // Redirect to the login page
-            window.location.href = "/ui/login";
-        });
+
+        // Fetch and display menu entries on page load
+        fetchMenuEntries();
     </script>
 </body>
 </html>

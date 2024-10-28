@@ -73,7 +73,8 @@
     "name": "Waffeln mit Nutella oder Marmelade",
     "price": "1,50 €",
     "image": "/media/waffeln-nutella-marmelade.jpg",
-    "days": "Donnerstag"
+    "days": "Donnerstag",
+    "visibility": true
   },
   {
     "id": "9155377890",

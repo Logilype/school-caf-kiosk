@@ -24,6 +24,49 @@
     --color-surface-mixed-a50: #90979b;
 }
 
+/* Fonts */
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: url('/media/fonts/OpenSans-Light.woff2') format('woff2'),
+         url('/media/fonts/OpenSans-Light.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/media/fonts/OpenSans-Regular.woff2') format('woff2'),
+         url('/media/fonts/OpenSans-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: url('/media/fonts/OpenSans-SemiBold.woff2') format('woff2'),
+         url('/media/fonts/OpenSans-SemiBold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/media/fonts/OpenSans-Bold.woff2') format('woff2'),
+         url('/media/fonts/OpenSans-Bold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 800;
+    src: url('/media/fonts/OpenSans-ExtraBold.woff2') format('woff2'),
+         url('/media/fonts/OpenSans-ExtraBold.woff') format('woff');
+}
+
+
  /* Examples */ 
  /*
 .bg-primary {
@@ -243,7 +286,9 @@ p {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
     max-height: 90%; /* Set a maximum height */
     overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
-    width: 270px; /* Set a responsive width for the modal */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    width: 100%; /* Ensure the modal content takes full width */
+    max-width: 500px; /* Set a maximum width for the modal */
     display: flex; /* Use flexbox */
     flex-direction: column; /* Stack children vertically */
     align-items: center; /* Center items horizontally */
@@ -252,6 +297,7 @@ p {
 #editForm {
     margin: 20px 0; /* Add margin above and below the form */
     width: 100%; /* Ensure the form takes the full width of the modal */
+    max-width: 100%; /* Ensure the form does not exceed the modal width */
     display: flex; /* Use flexbox for the form */
     flex-direction: column; /* Stack form elements vertically */
     align-items: center; /* Center form elements */
@@ -627,3 +673,64 @@ input:checked + .slider:before {
     background-color: var(--color-primary-a30);
 }
 
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 1em;
+    font-family: 'Open Sans', sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.styled-table th {
+    background-color: var(--color-primary-a10);
+    color: white;
+}
+
+.styled-table tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tr:nth-of-type(even) {
+    background-color: var(--color-surface-a10);
+}
+
+.styled-table tr:last-of-type {
+    border-bottom: 2px solid var(--color-primary-a10);
+}
+
+.styled-table select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Remove default styling in Firefox */
+    appearance: textfield; /* Remove default styling in other browsers */
+    width: 40px; /* Adjust width as needed */
+    padding: 5px; /* Add padding for better appearance */
+    font-size: 14px; /* Adjust font size */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+    margin: 0; /* Remove margin */
+    display: none; /* Hide the spin buttons */
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"] {
+    width: 100%; /* Ensure inputs take full width of the form */
+    max-width: 100%; /* Prevent inputs from exceeding form width */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    text-align: center; /* Center-align the text */
+}

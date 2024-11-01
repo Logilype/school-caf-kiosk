@@ -13,6 +13,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static('data'));
 
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// If your fonts are in a different directory, add another static middleware
+app.use('/media/fonts', express.static(path.join(__dirname, 'data/fonts')));
+
 tokenst = [];
 
 app.get('/', (req, res) => res.send('i dont get paid enough for this'));
@@ -122,19 +128,20 @@ app.get('/news', (req, res) => {
 });
 
 app.get('/panel', (req, res) => {
-    //get token from cookies and check if it is valid
-    intent = req.query.intent;
+    // Get token from cookies and check if it is valid
+    const intent = req.query.intent;
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send panel.html
+        // If valid, send panel.html
         res.sendFile(__dirname + '/data/panel.html');
-        console.log(intent);
+        if (intent !== undefined) {
+            console.log(intent);
+        }
     } else {
-        //if not valid send login.html
+        // If not valid, send login.html
         res.redirect('/ui/login');
     }
-    
 });
 app.get('/panel/upload', (req, res) => {
     //get token from cookies and check if it is valid
@@ -212,12 +219,12 @@ app.get('/panel/offers', (req, res) => {
             const entries = menu.map(item => `
                 <div class="grid-item">
                     <p class="item-name">${item.name}</p>
-                    <p class="item-price">${item.price}</p>
+                    <p class="item-price">${item.price.toFixed(2).replace('.', ',')}&nbsp;€</p>
                     <div class="image-container">
                         <img src="${item.image}" alt="${item.name}">
                     </div>
                     <p class="item-days">${item.days}</p>
-                    <p class="item-visibility ${item.visibility ? '' : 'inactive'}">${item.visibility ? 'Aktiv' : 'Inaktiv'}</p> <!-- Visibility indicator -->
+                    <p class="item-visibility ${item.visibility ? '' : 'inactive'}">${item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt'}</p>
                     <div class="buttons">
                         <button type="button" onclick="openEditModal({ id: '${item.id}', name: '${item.name}', price: '${item.price}', image: '${item.image}', days: '${item.days}', visibility: ${item.visibility} })">Bearbeiten</button>
                         <button onclick="deleteEntry(${item.id})">Löschen</button>
@@ -598,4 +605,65 @@ app.get('/panel/menuentries/new', (req, res) => {
         // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
+});
+
+app.get('/api/cafeteriaMenuEntries', (req, res) => {
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        const menuEntries = JSON.parse(data);
+        const cafeteriaEntries = menuEntries.filter(entry => entry.category === "Cafeteria Menü");
+        res.json(cafeteriaEntries);
+    });
+});
+
+app.get('/api/dessertEntries', (req, res) => {
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+        const menuEntries = JSON.parse(data);
+        const dessertEntries = menuEntries.filter(entry => entry.category === "Dessert");
+        res.json(dessertEntries);
+    });
+});
+
+app.post('/api/saveMenuSelections', (req, res) => {
+    const selectedOptions = req.body;
+    console.log('Received menu selections:', selectedOptions);
+
+    fs.writeFile('data/menuSelections.json', JSON.stringify(selectedOptions, null, 2), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing menu selections file:', err);
+            return res.status(500).send('Error saving menu selections');
+        }
+        res.send('Ausgewählte Speiseplaneinträge erfolgreich gespeichert. Nachdem Sie auf OK klicken, lädt sich die Seite neu');
+    });
+});
+
+app.get('/api/getMenuSelections', (req, res) => {
+    fs.readFile('data/menuSelections.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menu selections file:', err);
+            return res.status(500).send('Error loading menu selections');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Endpoint to get salat entries
+app.get('/api/salatEntries', (req, res) => {
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+        const menuEntries = JSON.parse(data);
+        const salatEntries = menuEntries.filter(entry => entry.category === "Salat");
+        res.json(salatEntries);
+    });
 });

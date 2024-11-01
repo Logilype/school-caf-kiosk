@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafDS Dashboard - Home</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
+    <title>CafDS Dashboard - Speiseplan verwalten/bearbeiten</title>
+ <!-- Corrected font weights -->
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -25,7 +23,7 @@
             <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
         </div>
         <div class="navbar-item">
-            <a href="/panel/menuentries">Menüeinträge verwalten</a>
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -39,7 +37,7 @@
     </div>
     <div class="content">
         <!-- Insert content here -->
-        <table border="1" style="width: 100%; border-collapse: collapse;">
+        <table class="styled-table" border="1" style="width: 100%; border-collapse: collapse;">
             <tr>
                 <th>---</th>
                 <th>Montag</th>
@@ -49,33 +47,101 @@
             </tr>
             <tr>
                 <td>Cafeteria Menü 1</td>
-                <td>Cafeteria Menü 1, Montag</td>
-                <td>Cafeteria Menü 1, Dienstag</td>
-                <td>Cafeteria Menü 1, Mittwoch</td>
-                <td>Cafeteria Menü 1, Donnerstag</td>
+                <td>
+                    <select id="cafeteriaMenu1Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu1Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu1Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu1Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Thursday">0,00 €</span>
+                </td>
             </tr>
             <tr>
                 <td>Cafeteria Menü 2</td>
-                <td>Cafeteria Menü 2, Montag</td>
-                <td>Cafeteria Menü 2, Dienstag</td>
-                <td>Cafeteria Menü 2, Mittwoch</td>
-                <td>Cafeteria Menü 2, Donnerstag</td>
+                <td>
+                    <select id="cafeteriaMenu2Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu2Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu2Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu2Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Thursday">0,00 €</span>
+                </td>
             </tr>
             <tr>
                 <td>Dessert</td>
-                <td>Dessert, Montag</td>
-                <td>Dessert, Dienstag</td>
-                <td>Dessert, Mittwoch</td>
-                <td>Dessert, Donnerstag</td>
+                <td>
+                    <select id="dessertMonday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertMonday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="dessertTuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertTuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="dessertWednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertWednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="dessertThursday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertThursday">0,00 €</span>
+                </td>
             </tr>
             <tr>
-                <td>ToGo Menü</td>
-                <td>ToGo Menü, Montag</td>
-                <td>ToGo Menü, Dienstag</td>
-                <td>ToGo Menü, Mittwoch</td>
-                <td>ToGo Menü, Donnerstag</td>
+                <td>Salat 1</td>
+                <td>
+                    <select id="salat1Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat1Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat1Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat1Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Thursday">0,00 €</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Salat 2</td>
+                <td>
+                    <select id="salat2Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat2Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat2Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat2Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Thursday">0,00 €</span>
+                </td>
             </tr>
         </table>
+        <button id="saveMenuBtn">Speichern</button>
     </div>
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
@@ -86,6 +152,148 @@
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             // Redirect to the login page
             window.location.href = "/ui/login";
+        });
+
+        const menuEntries = {};
+
+        // Function to update the price display
+        function updatePrice(selectElement) {
+            const selectedId = selectElement.value;
+            const priceSpan = document.getElementById(`price-${selectElement.id}`);
+            const price = menuEntries[selectedId] ? menuEntries[selectedId].price : 0;
+            priceSpan.textContent = price === 0 ? "Im Cafeteriamenü inklusive" : price.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        // Function to populate dropdowns with saved selections
+        function loadMenuSelections() {
+            fetch('/api/getMenuSelections')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Loaded menu selections:', data);
+                    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+                    const menus = ['cafeteriaMenu1', 'cafeteriaMenu2', 'dessert', 'salat1', 'salat2'];
+
+                    menus.forEach(menu => {
+                        days.forEach(day => {
+                            const selectElement = document.getElementById(`${menu}${day}`);
+                            if (selectElement && data[`${menu}${day}`]) {
+                                selectElement.value = data[`${menu}${day}`];
+                                updatePrice(selectElement); // Update price on load
+                            }
+                            selectElement.disabled = false;
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading menu selections:', error));
+        }
+
+        // Function to populate dropdowns with options
+        function populateDropdowns() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+
+            // Fetch cafeteria menu entries and populate dropdowns
+            fetch('/api/cafeteriaMenuEntries')
+                .then(response => response.json())
+                .then(entries => {
+                    entries.forEach(entry => {
+                        menuEntries[entry.id] = entry; // Store entry for price lookup
+                    });
+                    const menus = ['cafeteriaMenu1', 'cafeteriaMenu2'];
+                    menus.forEach(menu => {
+                        days.forEach(day => {
+                            const selectElement = document.getElementById(`${menu}${day}`);
+                            selectElement.innerHTML = '<option value="">---</option>';
+                            selectElement.disabled = true;
+                            entries.forEach(entry => {
+                                const option = document.createElement('option');
+                                option.value = entry.id;
+                                option.textContent = entry.name;
+                                selectElement.appendChild(option);
+                            });
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading menu entries:', error));
+
+            // Fetch dessert entries and populate dropdowns
+            fetch('/api/dessertEntries')
+                .then(response => response.json())
+                .then(entries => {
+                    entries.forEach(entry => {
+                        menuEntries[entry.id] = entry; // Store entry for price lookup
+                    });
+                    days.forEach(day => {
+                        const selectElement = document.getElementById(`dessert${day}`);
+                        selectElement.innerHTML = '<option value="">---</option>';
+                        selectElement.disabled = true;
+                        entries.forEach(entry => {
+                            const option = document.createElement('option');
+                            option.value = entry.id;
+                            option.textContent = entry.name;
+                            selectElement.appendChild(option);
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading dessert entries:', error));
+
+            // Fetch salat entries and populate dropdowns
+            fetch('/api/salatEntries')
+                .then(response => response.json())
+                .then(entries => {
+                    entries.forEach(entry => {
+                        menuEntries[entry.id] = entry; // Store entry for price lookup
+                    });
+                    const menus = ['salat1', 'salat2'];
+                    menus.forEach(menu => {
+                        days.forEach(day => {
+                            const selectElement = document.getElementById(`${menu}${day}`);
+                            selectElement.innerHTML = '<option value="">---</option>';
+                            selectElement.disabled = true;
+                            entries.forEach(entry => {
+                                const option = document.createElement('option');
+                                option.value = entry.id;
+                                option.textContent = entry.name;
+                                selectElement.appendChild(option);
+                            });
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading salat entries:', error));
+        }
+
+        // Load menu selections when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDropdowns();
+            setTimeout(loadMenuSelections, 1000);
+        });
+
+        document.getElementById("saveMenuBtn").addEventListener("click", function() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const menus = ['cafeteriaMenu1', 'cafeteriaMenu2', 'dessert', 'salat1', 'salat2'];
+            const selectedOptions = {};
+
+            menus.forEach(menu => {
+                days.forEach(day => {
+                    const selectElement = document.getElementById(`${menu}${day}`);
+                    selectedOptions[`${menu}${day}`] = selectElement.value;
+                });
+            });
+
+            fetch('/api/saveMenuSelections', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedOptions)
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                setTimeout(() => {
+                    location.reload();
+                }, 100);
+            })
+            .catch(error => console.error('Error saving menu selections:', error));
         });
     </script>
 </body>

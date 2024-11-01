@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafeteria Angebote</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
+ <!-- Corrected font weights -->
     <style>
         body,
         html {
@@ -119,7 +117,7 @@
             setTimeout(function () {
                 offerImage.src = offer.image;
                 offerName.textContent = offer.name;
-                offerPrice.textContent = offer.price;
+                offerPrice.textContent = offer.price.toFixed(2).replace('.', ',') + '&nbsp;€';
                 offerDays.textContent = "Im Angebot: " + offer.days;
                 fadeIn(offerContent);
                 currentOfferIndex = (currentOfferIndex + 1) % offers.length;

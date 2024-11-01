@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafDS Dashboard - Menüeinträge verwalten</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <title>CafDS Dashboard - Speiseplaneinträge verwalten</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -25,7 +22,7 @@
             <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
         </div>
         <div class="navbar-item-selected">
-            <a href="/panel/menuentries">Menüeinträge verwalten</a>
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -73,7 +70,13 @@
                 <label for="editCategory">Kategorie:</label>
                 <input type="text" id="editCategory" name="category" required>
                 <label for="editPrice">Preis:</label>
-                <input type="number" id="editPrice" name="price" step="0.01" required>
+                <div style="display: flex; align-items: center;">
+                    <input type="number" id="editEuro" name="euro" min="0" max="9" style="width: 40px;" required>
+                    <span>,</span>
+                    <input type="number" id="editCent" name="cent" min="0" max="99" maxlength="2" style="width: 50px;" required>
+                    <span>€</span>
+                </div>
+                <p id="saveMessage" style="display: none; margin-top: 10px; font-size: 14px; color: #689e49;">Änderungen werden gespeichert...</p>
                 <button type="submit">Speichern</button>
             </form>
         </div>
@@ -92,9 +95,9 @@
                     const tableBody = document.getElementById('menuEntriesTable');
                     tableBody.innerHTML = data.map(entry => `
                         <tr>
-                            <td>${entry.name}</td>
-                            <td>${entry.category}</td>
-                            <td>${entry.price.toFixed(2)} €</td>
+                            <td class="resizable-text">${entry.name}</td>
+                            <td class="resizable-text">${entry.category}</td>
+                            <td class="resizable-text">${entry.price.toFixed(2).replace('.', ',')}&nbsp;€</td>
                             <td>
                                 <button onclick="openEditModal('${entry.id}', '${entry.name}', '${entry.category}', ${entry.price})">Bearbeiten</button>
                                 <button onclick="deleteEntry('${entry.id}')">Löschen</button>
@@ -109,8 +112,17 @@
             document.getElementById('editId').value = id;
             document.getElementById('editName').value = name;
             document.getElementById('editCategory').value = category;
-            document.getElementById('editPrice').value = price;
+            const euros = Math.floor(price);
+            const cents = Math.round((price - euros) * 100);
+            document.getElementById('editEuro').value = euros;
+            document.getElementById('editCent').value = cents;
             document.getElementById('editModal').style.display = 'flex';
+
+            // Adjust font size for each input
+            adjustInputFontSize(document.getElementById('editName'));
+            adjustInputFontSize(document.getElementById('editCategory'));
+            adjustInputFontSize(document.getElementById('editEuro'));
+            adjustInputFontSize(document.getElementById('editCent'));
         }
 
         function closeModal() {
@@ -119,10 +131,14 @@
 
         document.getElementById('editForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            document.getElementById('saveMessage').style.display = 'block'; // Show the save message
+
             const id = document.getElementById('editId').value;
             const name = document.getElementById('editName').value;
             const category = document.getElementById('editCategory').value;
-            const price = parseFloat(document.getElementById('editPrice').value);
+            const euro = parseInt(document.getElementById('editEuro').value, 10) || 0;
+            const cent = parseInt(document.getElementById('editCent').value, 10) || 0;
+            const price = euro + cent / 100;
 
             fetch('/api/editmenuentry', {
                 method: 'POST',
@@ -133,10 +149,14 @@
             })
             .then(response => {
                 if (response.ok) {
-                    closeModal();
-                    fetchMenuEntries();
+                    setTimeout(() => {
+                        closeModal(); // Close the modal after 0.5 seconds
+                        document.getElementById('saveMessage').style.display = 'none'; // Hide the save message after closing the modal
+                        fetchMenuEntries();
+                    }, 500); // 500 milliseconds = 0.5 seconds
                 } else {
                     alert("Fehler beim Bearbeiten des Eintrags.");
+                    document.getElementById('saveMessage').style.display = 'none'; // Hide the save message if there's an error
                 }
             });
         });
@@ -164,8 +184,68 @@
             window.location.href = "/panel/menuentries/new";
         });
 
+        document.getElementById('editEuro').addEventListener('focus', function() {
+            this.select(); // Automatically select the content when focused
+        });
+
+        document.getElementById('editEuro').addEventListener('input', function() {
+            if (this.value.length >= 1) {
+                const centField = document.getElementById('editCent');
+                centField.focus();
+                centField.select(); // Automatically select the content
+            }
+        });
+
+        document.getElementById('editCent').addEventListener('focus', function() {
+            this.select(); // Automatically select the content when focused
+        });
+
+        document.getElementById('editCent').addEventListener('input', function() {
+            if (this.value.length > 2) {
+                this.value = this.value.slice(0, 2); // Trim the value to two digits
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission
+                document.querySelector('#editForm button[type="submit"]').click(); // Trigger the save button
+            }
+        });
+
         // Fetch and display menu entries on page load
         fetchMenuEntries();
+
+        function adjustInputFontSize(input) {
+            const maxFontSize = 16; // Maximum font size in pixels
+            const minFontSize = 10; // Minimum font size in pixels
+            let fontSize = maxFontSize;
+
+            // Create a temporary span to measure text width
+            const span = document.createElement('span');
+            span.style.visibility = 'hidden';
+            span.style.position = 'absolute';
+            span.style.whiteSpace = 'nowrap';
+            document.body.appendChild(span);
+
+            // Adjust font size
+            while (fontSize >= minFontSize) {
+                span.style.fontSize = fontSize + 'px';
+                span.textContent = input.value || input.placeholder;
+                if (span.offsetWidth <= input.clientWidth) {
+                    break;
+                }
+                fontSize--;
+            }
+
+            input.style.fontSize = fontSize + 'px';
+            document.body.removeChild(span);
+        }
+
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', () => adjustInputFontSize(input));
+            adjustInputFontSize(input); // Initial adjustment
+        });
     </script>
 </body>
 </html>

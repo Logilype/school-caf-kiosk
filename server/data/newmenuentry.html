@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CafDS Dashboard - Neuer Menüeintrag</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
+ <!-- Corrected font weights -->
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -25,7 +23,7 @@
             <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
         </div>
         <div class="navbar-item-selected">
-            <a href="/panel/menuentries">Menüeinträge verwalten</a>
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -45,8 +43,13 @@
             <label for="category">Kategorie:</label>
             <input type="text" id="category" name="category" required>
 
-            <label for="price">Preis:</label>
-            <input type="number" id="price" name="price" step="0.01" required>
+            <label for="newPrice">Preis:</label>
+            <div style="display: flex; align-items: center;">
+                <input type="number" id="newEuro" name="euro" min="0" max="9" style="width: 40px;" required>
+                <span>,</span>
+                <input type="number" id="newCent" name="cent" min="0" max="99" style="width: 50px;" required>
+                <span>€</span>
+            </div>
 
             <button type="submit">Erstellen</button>
         </form>
@@ -67,7 +70,9 @@
 
             const name = document.getElementById('name').value;
             const category = document.getElementById('category').value;
-            const price = parseFloat(document.getElementById('price').value);
+            const euro = parseInt(document.getElementById('newEuro').value, 10) || 0;
+            const cent = parseInt(document.getElementById('newCent').value, 10) || 0;
+            const price = euro + cent / 100;
 
             fetch('/api/newmenuentry', {
                 method: 'POST',

@@ -240,9 +240,39 @@
     "id": "278096"
   },
   {
-    "id": "420667",
-    "name": "test",
-    "category": "ToGo Menü",
-    "price": 1
+    "id": "393505",
+    "name": "Fruchtjoghurt",
+    "category": "Dessert",
+    "price": 0
+  },
+  {
+    "id": "665081",
+    "name": "Schokopudding",
+    "category": "Dessert",
+    "price": 0
+  },
+  {
+    "id": "923452",
+    "name": "Obst",
+    "category": "Dessert",
+    "price": 0
+  },
+  {
+    "id": "101738",
+    "name": "Quarkspeise",
+    "category": "Dessert",
+    "price": 0
+  },
+  {
+    "id": "971589",
+    "name": "Großer Salatteller mit Brötchen",
+    "category": "Salat",
+    "price": 2.5
+  },
+  {
+    "id": "322344",
+    "name": "Beilagensalat",
+    "category": "Salat",
+    "price": 1.2
   }
 ]

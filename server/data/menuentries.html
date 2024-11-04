@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CafDS Dashboard - Speiseplaneinträge verwalten</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
@@ -115,7 +115,7 @@
             const euros = Math.floor(price);
             const cents = Math.round((price - euros) * 100);
             document.getElementById('editEuro').value = euros;
-            document.getElementById('editCent').value = cents;
+            document.getElementById('editCent').value = cents.toString().padStart(2, '0');
             document.getElementById('editModal').style.display = 'flex';
 
             // Adjust font size for each input
@@ -185,24 +185,27 @@
         });
 
         document.getElementById('editEuro').addEventListener('focus', function() {
-            this.select(); // Automatically select the content when focused
+            this.select();
         });
 
-        document.getElementById('editEuro').addEventListener('input', function() {
-            if (this.value.length >= 1) {
+        document.getElementById('editEuro').addEventListener('keydown', function(event) {
+            if (event.key === '.' || event.key === ',') {
+                event.preventDefault();
                 const centField = document.getElementById('editCent');
                 centField.focus();
-                centField.select(); // Automatically select the content
+                centField.select();
             }
-        });
-
-        document.getElementById('editCent').addEventListener('focus', function() {
-            this.select(); // Automatically select the content when focused
         });
 
         document.getElementById('editCent').addEventListener('input', function() {
             if (this.value.length > 2) {
-                this.value = this.value.slice(0, 2); // Trim the value to two digits
+                this.value = this.value.slice(0, 2);
+            }
+        });
+
+        document.getElementById('editCent').addEventListener('blur', function() {
+            if (this.value.length > 0) {
+                this.value = this.value.padStart(2, '0');
             }
         });
 

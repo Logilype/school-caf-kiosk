@@ -66,30 +66,12 @@ app.post('/api/settings', (req, res) => {
 app.get('/getoffers', (req, res) => {
     fs.readFile('data/offers.json', (err, data) => {
         if (err) {
-            return res.send(err);
+            return res.status(500).send(err);
         }
-
-        // Parse the JSON data
-        let menuItems = JSON.parse(data);
-
-        // Filter the items where visibility is true
-        let visibleItems = menuItems.filter(item => item.visibility);
-
-        // Convert the filtered data back to JSON
-        let replacementdata = JSON.stringify(visibleItems, null, 2);
-
-        fs.readFile('data/offers.html', (err, data) => {
-            if (err) {
-                return res.send(err);
-            }
-
-            // Replace the placeholder with the filtered menu data
-            let renderedData = data.toString().replace("(datarenderplace)", replacementdata);
-            res.send(renderedData);
-        });
+        // Just send the parsed JSON data directly
+        res.json(JSON.parse(data));
     });
 });
-
 
 app.get('/getdisplaysequence', (req, res) => {
     res.sendFile(__dirname + '/data/displayseq.json');
@@ -666,4 +648,260 @@ app.get('/api/salatEntries', (req, res) => {
         const salatEntries = menuEntries.filter(entry => entry.category === "Salat");
         res.json(salatEntries);
     });
+});
+
+app.get('/api/offers', (req, res) => {
+    fs.readFile('data/offers.json', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Add or update these endpoints
+
+// Get offers
+app.get('/api/offers', (req, res) => {
+    fs.readFile('data/offers.json', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Edit offer
+app.post('/api/editentry', (req, res) => {
+    const updatedOffer = req.body;
+    
+    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+
+        let offers = JSON.parse(data);
+        const index = offers.findIndex(offer => offer.id === updatedOffer.id);
+        
+        if (index !== -1) {
+            offers[index] = updatedOffer;
+            
+            fs.writeFile('data/offers.json', JSON.stringify(offers, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing offers.json:', err);
+                    return res.status(500).send('Error updating offer');
+                }
+                res.send('success');
+            });
+        } else {
+            res.status(404).send('Offer not found');
+        }
+    });
+});
+
+// Delete offer
+app.post('/api/deleteoffer', (req, res) => {
+    const { id } = req.body;
+    
+    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+
+        let offers = JSON.parse(data);
+        const filteredOffers = offers.filter(offer => offer.id !== id);
+        
+        if (filteredOffers.length === offers.length) {
+            return res.status(404).send('Offer not found');
+        }
+
+        fs.writeFile('data/offers.json', JSON.stringify(filteredOffers, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing offers.json:', err);
+                return res.status(500).send('Error deleting offer');
+            }
+            res.send('success');
+        });
+    });
+});
+
+// Add this new endpoint for the admin panel
+app.get('/api/getadminoffers', (req, res) => {
+    fs.readFile('data/offers.json', (err, data) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        // Just send the parsed JSON data directly
+        res.json(JSON.parse(data));
+    });
+});
+
+// Add this new endpoint for dashboard statistics
+app.get('/api/dashboard/stats', async (req, res) => {
+    try {
+        // Read all necessary files
+        const [offersData, menuEntriesData, settingsData] = await Promise.all([
+            fs.promises.readFile('data/offers.json', 'utf8'),
+            fs.promises.readFile('data/menuentries.json', 'utf8'),
+            fs.promises.readFile('data/settings.json', 'utf8')
+        ]);
+
+        // Parse JSON data
+        const offers = JSON.parse(offersData);
+        const menuEntries = JSON.parse(menuEntriesData);
+        const settings = JSON.parse(settingsData);
+
+        // Calculate statistics
+        const stats = {
+            activeOffers: offers.filter(offer => offer.visibility).length,
+            menuEntries: menuEntries.length,
+            activeAds: settings.advertising ? 1 : 0 // Assuming advertising is a boolean in settings
+        };
+
+        res.json(stats);
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        res.status(500).json({ error: 'Error fetching dashboard statistics' });
+    }
+});
+
+// Endpoint to serve advertisement content
+app.get('/api/advertisement', (req, res) => {
+    fs.readFile('data/advertisement.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading advertisement file:', err);
+            return res.status(500).send('Error reading advertisement');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Endpoint to update advertisement
+app.post('/api/advertisement', (req, res) => {
+    const { header, image, description, enabled } = req.body;
+    const adData = { header, image, description, enabled };
+    
+    fs.writeFile('data/advertisement.json', JSON.stringify(adData, null, 2), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing advertisement file:', err);
+            return res.status(500).send('Error saving advertisement');
+        }
+        res.send('Advertisement updated successfully');
+    });
+});
+
+app.get('/panel/advertising', (req, res) => {
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        res.sendFile(__dirname + '/data/advertising.html');
+    } else {
+        res.redirect('/ui/login');
+    }
+});
+
+// Also add an endpoint to get list of media files for the dropdown
+app.get('/api/media', (req, res) => {
+    const mediaDir = path.join(__dirname, 'media');
+    fs.readdir(mediaDir, (err, files) => {
+        if (err) {
+            console.error('Error reading media directory:', err);
+            return res.status(500).send('Error reading media files');
+        }
+        // Filter for image files if needed
+        const imageFiles = files.filter(file => 
+            file.endsWith('.jpg') || 
+            file.endsWith('.jpeg') || 
+            file.endsWith('.png') || 
+            file.endsWith('.gif')
+        );
+        res.json(imageFiles);
+    });
+});
+
+// Get all advertisements
+app.get('/api/advertisements', (req, res) => {
+    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                return res.json([]);
+            }
+            return res.status(500).send('Error reading advertisements');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Add/Update advertisement
+app.post('/api/advertisement', (req, res) => {
+    const { id, header, image, description, enabled } = req.body;
+    
+    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+        let ads = [];
+        if (!err) {
+            ads = JSON.parse(data);
+        }
+
+        const newAd = {
+            id: id || Date.now().toString(),
+            header,
+            image,
+            description,
+            enabled: enabled || false
+        };
+
+        if (id) {
+            ads = ads.map(ad => ad.id === id ? newAd : ad);
+        } else {
+            ads.push(newAd);
+        }
+
+        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
+            if (err) {
+                return res.status(500).send('Error saving advertisement');
+            }
+            res.send('Advertisement saved successfully');
+        });
+    });
+});
+
+// Delete advertisement
+app.post('/api/advertisement/delete', (req, res) => {
+    var token = req.cookies.token;
+    if (!checktoken(token)) {
+        return res.redirect('/ui/login');
+    }
+
+    const { id } = req.body;
+    
+    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading advertisements file:', err);
+            return res.status(500).send('Error reading advertisements');
+        }
+
+        let ads = JSON.parse(data);
+        ads = ads.filter(ad => ad.id !== id);
+
+        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
+            if (err) {
+                console.error('Error writing advertisements file:', err);
+                return res.status(500).send('Error deleting advertisement');
+            }
+            res.send('Advertisement deleted successfully');
+        });
+    });
+});
+
+// Add route for new advertisement page
+app.get('/panel/advertising/new', (req, res) => {
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        res.sendFile(__dirname + '/data/newadvertisement.html');
+    } else {
+        res.redirect('/ui/login');
+    }
 });

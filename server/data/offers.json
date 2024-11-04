@@ -2,7 +2,7 @@
   {
     "id": "6723224624",
     "name": "Belegtes Brötchen mit Salami",
-    "price": 1,
+    "price": 1.5,
     "image": "/media/belegtes-broetchen-mit-salami.jpg",
     "days": "Täglich",
     "visibility": true
@@ -50,7 +50,8 @@
     "name": "Pizza Margherita oder Salami",
     "price": 2,
     "image": "/media/pizza-salami.jpg",
-    "days": "Dienstag"
+    "days": "Dienstag",
+    "visibility": false
   },
   {
     "id": "9155377890",

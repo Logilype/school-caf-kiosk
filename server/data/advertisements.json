@@ -1,0 +1,9 @@
+[
+  {
+    "id": "1",
+    "header": "Willkommen in der Cafeteria",
+    "image": "/media/default-ad.jpg",
+    "description": "Entdecken Sie unsere vielfältigen Angebote!",
+    "enabled": true
+  }
+] 

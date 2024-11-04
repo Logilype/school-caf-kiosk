@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CafDS Dashboard - Home</title>
  <!-- Corrected font weights -->
     <link rel="stylesheet" href="/styles.css">
@@ -36,12 +36,39 @@
         </div>
     </div>
     <div class="content">
-        <p>
-            Hallo 👋
-            <p>
-                Nutzen Sie die Navbar, um einen Menüpunkt auszuwählen.
-            </p>
-        </p>
+        <h1>Dashboard</h1>
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Aktive Angebote</h3>
+                <p class="stat-number" id="activeOffers">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Speiseplaneinträge</h3>
+                <p class="stat-number" id="menuEntries">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Aktive Werbung</h3>
+                <p class="stat-number" id="activeAds">0</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>Schnellzugriff</h2>
+            <div class="action-buttons">
+                <a href="/panel/offers" class="action-button">
+                    <span class="action-icon">📝</span>
+                    Angebot erstellen
+                </a>
+                <a href="/panel/menu" class="action-button">
+                    <span class="action-icon">🍽️</span>
+                    Speiseplan bearbeiten
+                </a>
+                <a href="/panel/advertising" class="action-button">
+                    <span class="action-icon">📢</span>
+                    Werbung verwalten
+                </a>
+            </div>
+        </div>
     </div>
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
@@ -52,6 +79,18 @@
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             // Redirect to the login page
             window.location.href = "/ui/login";
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch statistics from your backend
+            fetch('/api/dashboard/stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('activeOffers').textContent = data.activeOffers;
+                    document.getElementById('menuEntries').textContent = data.menuEntries;
+                    document.getElementById('activeAds').textContent = data.activeAds;
+                })
+                .catch(error => console.error('Error fetching stats:', error));
         });
     </script>
 </body>

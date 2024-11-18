@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CafDS Dashboard - Neuer Menüeintrag</title>
+ <!-- Corrected font weights -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="header">
+        CafDS Dashboard
+        <button id="logoutBtn">Ausloggen</button>
+    </div>
+    <div class="navbar" id="navbar">
+        <div class="navbar-item">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/offers">Angebote bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
+        </div>
+        <div class="navbar-item-selected">
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Medien verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/settings">Einstellungen</a>
+        </div>
+    </div>
+    <div class="content">
+        <form id="newEntryForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="category">Kategorie:</label>
+            <input type="text" id="category" name="category" required>
+
+            <label for="newPrice">Preis:</label>
+            <div style="display: flex; align-items: center;">
+                <input type="number" id="newEuro" name="euro" min="0" max="9" style="width: 40px;" required>
+                <span>,</span>
+                <input type="number" id="newCent" name="cent" min="0" max="99" style="width: 50px;" required>
+                <span>€</span>
+            </div>
+
+            <button type="submit">Erstellen</button>
+        </form>
+    </div>
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
+    </div>
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            // Clear the token cookie
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Redirect to the login page
+            window.location.href = "/ui/login";
+        });
+
+        document.getElementById('newEntryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            const euro = parseInt(document.getElementById('newEuro').value, 10) || 0;
+            const cent = parseInt(document.getElementById('newCent').value, 10) || 0;
+            const price = euro + cent / 100;
+
+            fetch('/api/newmenuentry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, category, price }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Eintrag erfolgreich erstellt!');
+                    window.location.href = '/panel/menuentries';
+                } else {
+                    alert('Fehler beim Erstellen des Eintrags.');
+                }
+            })
+            .catch(error => console.error('Error creating menu entry:', error));
+        });
+    </script>
+</body>
+</html>

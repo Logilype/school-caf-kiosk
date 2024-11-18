@@ -1,0 +1,17 @@
+[Unit]
+Description=Start CAF Client Electron App
+After=network.target graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/home/user/Desktop/caf-client-linux-arm64/caf-client
+WorkingDirectory=/home/user/Desktop/caf-client-linux-arm64
+Restart=on-failure
+RestartSec=10
+User=user
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/user/.Xauthority
+
+[Install]
+WantedBy=graphical.target

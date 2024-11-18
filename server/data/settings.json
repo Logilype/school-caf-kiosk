@@ -1,5 +1,6 @@
 {
-  "pageSwitchInterval": "30",
-  "offerDisplayDuration": "3",
-  "language": "de"
+  "offerDisplayDuration": 8,
+  "menuDisplayDuration": 15,
+  "scheduleDisplayDuration": 20,
+  "fullscreen": true
 }

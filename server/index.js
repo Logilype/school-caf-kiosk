@@ -4,6 +4,18 @@ const fs = require('fs');
 const multer = require('multer');
 const cookieParser = require("cookie-parser");
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const auth = require('./src/middleware/auth');
+const authRoutes = require('./src/routes/auth');
+const tokenStore = require('./src/utils/tokenStore');
+const offersRoutes = require('./src/routes/offers');
+const advertisementsRoutes = require('./src/routes/advertisements');
+const menuRoutes = require('./src/routes/menu');
+const settingsRoutes = require('./src/routes/settings');
+const displayRoutes = require('./src/routes/display');
+const panelRoutes = require('./src/routes/panel');
+const ensureDirectories = require('./src/utils/ensureDirectories');
 
 const app = express();
 const port = 3000;
@@ -14,30 +26,25 @@ app.use(express.json());
 app.use(express.static('data'));
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // If your fonts are in a different directory, add another static middleware
-app.use('/media/fonts', express.static(path.join(__dirname, 'data/fonts')));
+app.use('/media/fonts', express.static(path.join(__dirname, '../data/fonts')));
 
-tokenst = [];
+// Add this near the top with other static file middleware
+app.use('/favicon.ico', express.static(path.join(__dirname, 'data/favicon.ico')));
 
-app.get('/', (req, res) => res.send('i dont get paid enough for this'));
+// Redirect root to dashboard
+app.get('/', (req, res) => {
+    res.redirect('/panel');
+});
 
 // Set media as static folder
 app.use('/media', express.static('media'));
 
 // Endpoint to serve settings page
 app.get('/panel/settings', (req, res) => {
-    //get token from cookies and check if it is valid
-    var token = req.cookies.token;
-    console.log(token);
-    if (checktoken(token)) {
-        //if valid send settings.html
-        res.sendFile(__dirname + '/data/settings.html');
-    } else {
-        //if not valid send login.html
-        res.redirect('/ui/login');
-    }
+    res.sendFile(path.join(__dirname, '../data/dashboard/templates/settings.html'));
 });
 
 // Endpoint to get current settings
@@ -66,10 +73,37 @@ app.post('/api/settings', (req, res) => {
 app.get('/getoffers', (req, res) => {
     fs.readFile('data/offers.json', (err, data) => {
         if (err) {
-            return res.status(500).send(err);
+            console.error('Error reading offers:', err);
+            return res.status(500).send('Error reading offers');
         }
-        // Just send the parsed JSON data directly
-        res.json(JSON.parse(data));
+        try {
+            const offers = JSON.parse(data);
+            // Filter visible offers and sort by type
+            const dailyOffers = offers.filter(offer => 
+                offer.visibility && offer.type === 'daily'
+            );
+            const weeklyOffers = offers.filter(offer => 
+                offer.visibility && offer.type === 'weekly'
+            );
+            
+            // Read the offers.html template
+            fs.readFile('data/offers.html', 'utf8', (err, template) => {
+                if (err) {
+                    console.error('Error reading offers.html:', err);
+                    return res.status(500).send('Error reading template');
+                }
+                
+                // Replace placeholder with both types of offers
+                const html = template.replace('(datarenderplace)', JSON.stringify({
+                    daily: dailyOffers,
+                    weekly: weeklyOffers
+                }));
+                res.send(html);
+            });
+        } catch (error) {
+            console.error('Error parsing offers:', error);
+            res.status(500).send('Error parsing offers');
+        }
     });
 });
 
@@ -110,20 +144,7 @@ app.get('/news', (req, res) => {
 });
 
 app.get('/panel', (req, res) => {
-    // Get token from cookies and check if it is valid
-    const intent = req.query.intent;
-    var token = req.cookies.token;
-    console.log(token);
-    if (checktoken(token)) {
-        // If valid, send panel.html
-        res.sendFile(__dirname + '/data/panel.html');
-        if (intent !== undefined) {
-            console.log(intent);
-        }
-    } else {
-        // If not valid, send login.html
-        res.redirect('/ui/login');
-    }
+    res.sendFile(path.join(__dirname, '../data/dashboard/templates/panel.html'));
 });
 app.get('/panel/upload', (req, res) => {
     //get token from cookies and check if it is valid
@@ -151,41 +172,10 @@ app.get('/panel/menu', (req, res) => {
         }
 });
 app.get('/panel/media', (req, res) => {
-    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
-    console.log(token);
     if (checktoken(token)) {
-        // If valid, proceed to read the media directory
-        const mediaDir = path.join(__dirname, 'media'); // Corrected path
-        
-        fs.readdir(mediaDir, (err, files) => {
-            if (err) {
-                console.error('Error reading media directory:', err);
-                return res.status(500).send('Error loading media');
-            }
-
-            // Generate HTML for each image file
-            const imageEntries = files.map(file => `
-                <tr>
-                    <td>${file}</td>
-                    <td><img src="/media/${file}" alt="${file}" style="width: 100px;"></td>
-                    <td><button onclick="deleteImage('${file}')">Löschen</button></td>
-                </tr>
-            `).join('');
-
-            // Read the media.html file and replace the placeholder
-            fs.readFile(path.join(__dirname, 'data', 'media.html'), 'utf8', (err, html) => {
-                if (err) {
-                    console.error('Error reading media.html:', err);
-                    return res.status(500).send('Error loading page');
-                }
-
-                const updatedHtml = html.replace('(renderanchor)', imageEntries);
-                res.send(updatedHtml);
-            });
-        });
+        res.sendFile(path.join(__dirname, '../data/dashboard/templates/media.html'));
     } else {
-        // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
 });
@@ -365,7 +355,7 @@ app.post('/api/login', (req, res) => {
         for (var i = 0; i < accounts.length; i++) {
             if (accounts[i].username == username && accounts[i].password == password) {
                 //if correct make a token and send it to the user
-                var token = maketoken();
+                var token = tokenStore.generateToken();
                 res.send(token);
                 return;
             }
@@ -377,25 +367,6 @@ app.post('/api/login', (req, res) => {
 app.get("/ui/login", (req, res) => {
     res.sendFile(__dirname + '/data/login.html');
 });
-
-function maketoken() {
-    var token = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < 32; i++)
-        token += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    tokenst.push(token);
-    return token;
-}
-
-function checktoken(token) {
-    for (var i = 0; i < tokenst.length; i++) {
-        if (tokenst[i] == token) {
-            return true;
-        }
-    }
-    return false;
-}
 
 function makeresultid(length) {
     let result = '';
@@ -474,23 +445,15 @@ app.get('/panel/menuentries', (req, res) => {
 });
 
 app.get('/api/menuentries', (req, res) => {
-    // Get token from cookies and check if it is valid
-    var token = req.cookies.token;
-    console.log(token);
-    if (checktoken(token)) {
-        // If valid, read the menuentries.json file
-        fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
-            if (err) {
-                console.error('Error reading menuentries.json:', err);
-                return res.status(500).send('Error reading menu entries');
-            }
-            // Send the parsed JSON data as a response
-            res.json(JSON.parse(data));
-        });
-    } else {
-        // If not valid, redirect to login page
-        res.redirect('/ui/login');
-    }
+    // Remove token check since this is public data
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+        // Send the parsed JSON data as a response
+        res.json(JSON.parse(data));
+    });
 });
 
 app.post('/api/editmenuentry', (req, res) => {
@@ -824,76 +787,77 @@ app.get('/api/media', (req, res) => {
 
 // Get all advertisements
 app.get('/api/advertisements', (req, res) => {
-    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
-        if (err) {
-            if (err.code === 'ENOENT') {
-                return res.json([]);
-            }
-            return res.status(500).send('Error reading advertisements');
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        try {
+            const ads = JSON.parse(fs.readFileSync('data/advertisements.json', 'utf8'));
+            res.json(ads);
+        } catch (error) {
+            res.status(500).json({ error: 'Error reading advertisements' });
         }
-        res.json(JSON.parse(data));
-    });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
 });
 
-// Add/Update advertisement
-app.post('/api/advertisement', (req, res) => {
-    const { id, header, image, description, enabled } = req.body;
-    
-    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
-        let ads = [];
-        if (!err) {
-            ads = JSON.parse(data);
-        }
-
-        const newAd = {
-            id: id || Date.now().toString(),
-            header,
-            image,
-            description,
-            enabled: enabled || false
-        };
-
-        if (id) {
-            ads = ads.map(ad => ad.id === id ? newAd : ad);
-        } else {
+// Create new advertisement
+app.post('/api/advertisements', (req, res) => {
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        try {
+            const ads = JSON.parse(fs.readFileSync('data/advertisements.json', 'utf8'));
+            const newAd = {
+                id: Date.now().toString(),
+                ...req.body
+            };
             ads.push(newAd);
+            fs.writeFileSync('data/advertisements.json', JSON.stringify(ads, null, 2));
+            res.json(newAd);
+        } catch (error) {
+            res.status(500).json({ error: 'Error creating advertisement' });
         }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
 
-        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
-            if (err) {
-                return res.status(500).send('Error saving advertisement');
+// Update advertisement
+app.put('/api/advertisements/:id', (req, res) => {
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        try {
+            const ads = JSON.parse(fs.readFileSync('data/advertisements.json', 'utf8'));
+            const index = ads.findIndex(ad => ad.id === req.params.id);
+            if (index !== -1) {
+                ads[index] = { ...ads[index], ...req.body };
+                fs.writeFileSync('data/advertisements.json', JSON.stringify(ads, null, 2));
+                res.json(ads[index]);
+            } else {
+                res.status(404).json({ error: 'Advertisement not found' });
             }
-            res.send('Advertisement saved successfully');
-        });
-    });
+        } catch (error) {
+            res.status(500).json({ error: 'Error updating advertisement' });
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
 });
 
 // Delete advertisement
-app.post('/api/advertisement/delete', (req, res) => {
+app.delete('/api/advertisements/:id', (req, res) => {
     var token = req.cookies.token;
-    if (!checktoken(token)) {
-        return res.redirect('/ui/login');
-    }
-
-    const { id } = req.body;
-    
-    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading advertisements file:', err);
-            return res.status(500).send('Error reading advertisements');
+    if (checktoken(token)) {
+        try {
+            const ads = JSON.parse(fs.readFileSync('data/advertisements.json', 'utf8'));
+            const filteredAds = ads.filter(ad => ad.id !== req.params.id);
+            fs.writeFileSync('data/advertisements.json', JSON.stringify(filteredAds, null, 2));
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ error: 'Error deleting advertisement' });
         }
-
-        let ads = JSON.parse(data);
-        ads = ads.filter(ad => ad.id !== id);
-
-        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
-            if (err) {
-                console.error('Error writing advertisements file:', err);
-                return res.status(500).send('Error deleting advertisement');
-            }
-            res.send('Advertisement deleted successfully');
-        });
-    });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
 });
 
 // Add route for new advertisement page
@@ -905,3 +869,105 @@ app.get('/panel/advertising/new', (req, res) => {
         res.redirect('/ui/login');
     }
 });
+
+// Add these routes to handle menu and advertising displays
+
+app.get('/getmenu', (req, res) => {
+    Promise.all([
+        fs.promises.readFile('data/menuentries.json', 'utf8'),
+        fs.promises.readFile('data/menuSelections.json', 'utf8')
+    ])
+    .then(([entriesData, selectionsData]) => {
+        try {
+            const menuEntries = JSON.parse(entriesData);
+            const menuSelections = JSON.parse(selectionsData);
+            
+            // Send the menuSelections directly since that's what our template expects
+            fs.readFile('data/menu.html', 'utf8', (err, template) => {
+                if (err) {
+                    console.error('Error reading menu.html:', err);
+                    return res.status(500).send('Error reading template');
+                }
+                const html = template.replace('(datarenderplace)', JSON.stringify(menuSelections));
+                res.send(html);
+            });
+        } catch (error) {
+            console.error('Error processing menu data:', error);
+            res.status(500).send('Error processing menu data');
+        }
+    })
+    .catch(error => {
+        console.error('Error reading files:', error);
+        res.status(500).send('Error reading files');
+    });
+});
+
+app.get('/getadvertising', (req, res) => {
+    fs.readFile('data/advertisements.json', (err, data) => {
+        if (err) {
+            console.error('Error reading advertisements:', err);
+            return res.status(500).send('Error reading advertisements');
+        }
+        try {
+            const ads = JSON.parse(data);
+            // Filter only enabled advertisements
+            const enabledAds = ads.filter(ad => ad.enabled);
+            
+            // Read the advertising_display.html template
+            fs.readFile('data/advertising_display.html', 'utf8', (err, template) => {
+                if (err) {
+                    console.error('Error reading advertising_display.html:', err);
+                    return res.status(500).send('Error reading template');
+                }
+                
+                // Replace placeholder with JSON data
+                const html = template.replace('(datarenderplace)', JSON.stringify(enabledAds));
+                res.send(html);
+            });
+        } catch (error) {
+            console.error('Error parsing advertisements:', error);
+            res.status(500).send('Error parsing advertisements');
+        }
+    });
+});
+
+// Add security headers
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "blob:"],
+            connectSrc: ["'self'"],
+            fontSrc: ["'self'", "data:"],
+            objectSrc: ["'none'"],
+            mediaSrc: ["'self'"],
+            frameSrc: ["'self'"],
+        }
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Add rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
+// Use auth routes
+app.use('/auth', authRoutes);
+
+// Use routes
+app.use('/api/offers', offersRoutes);
+app.use('/api/advertisements', advertisementsRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/display', displayRoutes);
+app.use('/panel', panelRoutes);
+
+ensureDirectories();
+
+app.listen(port, () => console.log(`Server listening on port ${port}!`));

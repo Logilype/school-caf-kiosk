@@ -1,278 +1,278 @@
 [
-  {
-    "name": "Schnitzel mit Wedges (Kartoffelecken), dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "403017"
-  },
-  {
-    "name": "Hackfleischküchle mit Kartoffelsalat und buntem Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "459275"
-  },
-  {
-    "name": "Grünkernküchle mit Kartoffelsalat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "289348"
-  },
-  {
-    "name": "6-er Chicken Nuggets mit Pommes und Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "492206"
-  },
-  {
-    "name": "4-er vegane Nuggets mit Pommes und Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "572523"
-  },
-  {
-    "name": "Hackfleisch-Tomaten-Soße mit Spirellinudeln, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "740582"
-  },
-  {
-    "name": "Spirellinudeln mit Tomatensoße, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "874242"
-  },
-  {
-    "name": "Döner mit Hähnchenfleisch und Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "170394"
-  },
-  {
-    "name": "vegi. Döner mit Fetakäse und Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "458819"
-  },
-  {
-    "name": "Gulasch mit Nudeln, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "763302"
-  },
-  {
-    "name": "Pizza Salami mit Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "548907"
-  },
-  {
-    "name": "Pizza Margherita mit Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "441327"
-  },
-  {
-    "name": "Spaghetti Bolognese, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "117520"
-  },
-  {
-    "name": "Kaiserschmarrn mit Vanillesoße",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "431416"
-  },
-  {
-    "name": "Hamburger mit Pommes, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "050700"
-  },
-  {
-    "name": "vegi. Burger mit Pommes, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "662562"
-  },
-  {
-    "name": "Linsen mit Spätzle und Wienerle",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "248647"
-  },
-  {
-    "name": "Linsen mit Spätzle, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "766136"
-  },
-  {
-    "name": "Schaschlik mit Reis, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "955210"
-  },
-  {
-    "name": "vegi. Schaschlik mit Reis, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "363243"
-  },
-  {
-    "name": "Gemüse-Knusperschnitzel mit Kartoffelwedges, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "536736"
-  },
-  {
-    "name": "Geschnetzeltes mit Nudeln, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "214420"
-  },
-  {
-    "name": "Chili con Carne mit Reis, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "746105"
-  },
-  {
-    "name": "Gemüsepfanne mit Reis, dazu Salat",
-    "price": 3.7,
-    "category": "Cafeteria Menü",
-    "id": "695351"
-  },
-  {
-    "name": "Currywurst mit Brötchen",
-    "price": 2.5,
-    "category": "ToGo Menü",
-    "id": "700329"
-  },
-  {
-    "name": "Portion Pommes",
-    "price": 1.5,
-    "category": "ToGo Menü",
-    "id": "984184"
-  },
-  {
-    "name": "Chicken Nuggets Burger",
-    "price": 1.5,
-    "category": "ToGo Menü",
-    "id": "198583"
-  },
-  {
-    "name": "Wienerle im Brötchen",
-    "price": 1.5,
-    "category": "ToGo Menü",
-    "id": "597827"
-  },
-  {
-    "name": "Döner",
-    "price": 3,
-    "category": "ToGo Menü",
-    "id": "627519"
-  },
-  {
-    "name": "vegi. Döner",
-    "price": 2.5,
-    "category": "ToGo Menü",
-    "id": "174853"
-  },
-  {
-    "name": "Bratwurst mit Brötchen",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "193710"
-  },
-  {
-    "name": "Fleischkäse mit Brötchen",
-    "price": 1.5,
-    "category": "ToGo Menü",
-    "id": "078652"
-  },
-  {
-    "name": "Pizza Salami",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "337854"
-  },
-  {
-    "name": "Pizza Margherita",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "451275"
-  },
-  {
-    "name": "Hamburger",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "543983"
-  },
-  {
-    "name": "vegi. Burger",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "967604"
-  },
-  {
-    "name": "Schaschlik mit Brötchen",
-    "price": 2.5,
-    "category": "ToGo Menü",
-    "id": "739708"
-  },
-  {
-    "name": "Schnitzelburger",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "583457"
-  },
-  {
-    "name": "vegi. Schnitzelburger",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "974500"
-  },
-  {
-    "name": "Hotdog",
-    "price": 2,
-    "category": "ToGo Menü",
-    "id": "278096"
-  },
-  {
-    "id": "393505",
-    "name": "Fruchtjoghurt",
-    "category": "Dessert",
-    "price": 0
-  },
-  {
-    "id": "665081",
-    "name": "Schokopudding",
-    "category": "Dessert",
-    "price": 0
-  },
-  {
-    "id": "923452",
-    "name": "Obst",
-    "category": "Dessert",
-    "price": 0
-  },
-  {
-    "id": "101738",
-    "name": "Quarkspeise",
-    "category": "Dessert",
-    "price": 0
-  },
-  {
-    "id": "971589",
-    "name": "Großer Salatteller mit Brötchen",
-    "category": "Salat",
-    "price": 2.5
-  },
-  {
-    "id": "322344",
-    "name": "Beilagensalat",
-    "category": "Salat",
-    "price": 1.2
-  }
-]
+    {
+      "name": "Schnitzel mit Wedges (Kartoffelecken), dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "403017"
+    },
+    {
+      "name": "Hackfleischküchle mit Kartoffelsalat und buntem Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "459275"
+    },
+    {
+      "name": "Grünkernküchle mit Kartoffelsalat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "289348"
+    },
+    {
+      "name": "6-er Chicken Nuggets mit Pommes und Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "492206"
+    },
+    {
+      "name": "4-er vegane Nuggets mit Pommes und Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "572523"
+    },
+    {
+      "name": "Hackfleisch-Tomaten-Soße mit Spirellinudeln, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "740582"
+    },
+    {
+      "name": "Spirellinudeln mit Tomatensoße, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "874242"
+    },
+    {
+      "name": "Döner mit Hähnchenfleisch und Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "170394"
+    },
+    {
+      "name": "vegi. Döner mit Fetakäse und Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "458819"
+    },
+    {
+      "name": "Gulasch mit Nudeln, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "763302"
+    },
+    {
+      "name": "Pizza Salami mit Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "548907"
+    },
+    {
+      "name": "Pizza Margherita mit Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "441327"
+    },
+    {
+      "name": "Spaghetti Bolognese, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "117520"
+    },
+    {
+      "name": "Kaiserschmarrn mit Vanillesoße",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "431416"
+    },
+    {
+      "name": "Hamburger mit Pommes, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "050700"
+    },
+    {
+      "name": "vegi. Burger mit Pommes, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "662562"
+    },
+    {
+      "name": "Linsen mit Spätzle und Wienerle",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "248647"
+    },
+    {
+      "name": "Linsen mit Spätzle, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "766136"
+    },
+    {
+      "name": "Schaschlik mit Reis, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "955210"
+    },
+    {
+      "name": "vegi. Schaschlik mit Reis, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "363243"
+    },
+    {
+      "name": "Gemüse-Knusperschnitzel mit Kartoffelwedges, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "536736"
+    },
+    {
+      "name": "Geschnetzeltes mit Nudeln, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "214420"
+    },
+    {
+      "name": "Chili con Carne mit Reis, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "746105"
+    },
+    {
+      "name": "Gemüsepfanne mit Reis, dazu Salat",
+      "price": 3.7,
+      "category": "Cafeteria Menü",
+      "id": "695351"
+    },
+    {
+      "name": "Currywurst mit Brötchen",
+      "price": 2.5,
+      "category": "ToGo Menü",
+      "id": "700329"
+    },
+    {
+      "name": "Portion Pommes",
+      "price": 1.5,
+      "category": "ToGo Menü",
+      "id": "984184"
+    },
+    {
+      "name": "Chicken Nuggets Burger",
+      "price": 1.5,
+      "category": "ToGo Menü",
+      "id": "198583"
+    },
+    {
+      "name": "Wienerle im Brötchen",
+      "price": 1.5,
+      "category": "ToGo Menü",
+      "id": "597827"
+    },
+    {
+      "name": "Döner",
+      "price": 3,
+      "category": "ToGo Menü",
+      "id": "627519"
+    },
+    {
+      "name": "vegi. Döner",
+      "price": 2.5,
+      "category": "ToGo Menü",
+      "id": "174853"
+    },
+    {
+      "name": "Bratwurst mit Brötchen",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "193710"
+    },
+    {
+      "name": "Fleischkäse mit Brötchen",
+      "price": 1.5,
+      "category": "ToGo Menü",
+      "id": "078652"
+    },
+    {
+      "name": "Pizza Salami",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "337854"
+    },
+    {
+      "name": "Pizza Margherita",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "451275"
+    },
+    {
+      "name": "Hamburger",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "543983"
+    },
+    {
+      "name": "vegi. Burger",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "967604"
+    },
+    {
+      "name": "Schaschlik mit Brötchen",
+      "price": 2.5,
+      "category": "ToGo Menü",
+      "id": "739708"
+    },
+    {
+      "name": "Schnitzelburger",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "583457"
+    },
+    {
+      "name": "vegi. Schnitzelburger",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "974500"
+    },
+    {
+      "name": "Hotdog",
+      "price": 2,
+      "category": "ToGo Menü",
+      "id": "278096"
+    },
+    {
+      "id": "393505",
+      "name": "Fruchtjoghurt",
+      "category": "Dessert",
+      "price": 0
+    },
+    {
+      "id": "665081",
+      "name": "Schokopudding",
+      "category": "Dessert",
+      "price": 0
+    },
+    {
+      "id": "923452",
+      "name": "Obst",
+      "category": "Dessert",
+      "price": 0
+    },
+    {
+      "id": "101738",
+      "name": "Quarkspeise",
+      "category": "Dessert",
+      "price": 0
+    },
+    {
+      "id": "971589",
+      "name": "Großer Salatteller mit Brötchen",
+      "category": "Salat",
+      "price": 2.5
+    },
+    {
+      "id": "322344",
+      "name": "Beilagensalat",
+      "category": "Salat",
+      "price": 1.2
+    }
+  ]

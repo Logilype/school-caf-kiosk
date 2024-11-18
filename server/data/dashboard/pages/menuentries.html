@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CafDS Dashboard - Speiseplaneinträge verwalten</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="header">
+        CafDS Dashboard
+        <button id="logoutBtn">Ausloggen</button>
+    </div>
+    <div class="navbar" id="navbar">
+        <div class="navbar-item">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/offers">Angebote bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
+        </div>
+        <div class="navbar-item-selected">
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Medien verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/settings">Einstellungen</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="tables-media">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Kategorie</th>
+                        <th>Preis</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody id="menuEntriesTable">
+                    <!-- Entries will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="actionbuttons">
+            <input type="button" value="Neuer Eintrag" id="newEntryBtn">
+        </div>
+    </div>
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
+    </div>
+
+    <!-- Modal for editing entries -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Eintrag bearbeiten</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId" name="id">
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name" required>
+                <label for="editCategory">Kategorie:</label>
+                <input type="text" id="editCategory" name="category" required>
+                <label for="editPrice">Preis:</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="number" id="editEuro" name="euro" min="0" max="9" style="width: 40px;" required>
+                    <span>,</span>
+                    <input type="number" id="editCent" name="cent" min="0" max="99" maxlength="2" style="width: 50px;" required>
+                    <span>€</span>
+                </div>
+                <p id="saveMessage" style="display: none; margin-top: 10px; font-size: 14px; color: #689e49;">Änderungen werden gespeichert...</p>
+                <button type="submit">Speichern</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/ui/login";
+        });
+
+        function fetchMenuEntries() {
+            fetch('/api/menuentries')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('menuEntriesTable');
+                    tableBody.innerHTML = data.map(entry => `
+                        <tr>
+                            <td class="resizable-text">${entry.name}</td>
+                            <td class="resizable-text">${entry.category}</td>
+                            <td class="resizable-text">${entry.price.toFixed(2).replace('.', ',')}&nbsp;€</td>
+                            <td>
+                                <button onclick="openEditModal('${entry.id}', '${entry.name}', '${entry.category}', ${entry.price})">Bearbeiten</button>
+                                <button onclick="deleteEntry('${entry.id}')">Löschen</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error fetching menu entries:', error));
+        }
+
+        function openEditModal(id, name, category, price) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editCategory').value = category;
+            const euros = Math.floor(price);
+            const cents = Math.round((price - euros) * 100);
+            document.getElementById('editEuro').value = euros;
+            document.getElementById('editCent').value = cents.toString().padStart(2, '0');
+            document.getElementById('editModal').style.display = 'flex';
+
+            // Adjust font size for each input
+            adjustInputFontSize(document.getElementById('editName'));
+            adjustInputFontSize(document.getElementById('editCategory'));
+            adjustInputFontSize(document.getElementById('editEuro'));
+            adjustInputFontSize(document.getElementById('editCent'));
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('saveMessage').style.display = 'block'; // Show the save message
+
+            const id = document.getElementById('editId').value;
+            const name = document.getElementById('editName').value;
+            const category = document.getElementById('editCategory').value;
+            const euro = parseInt(document.getElementById('editEuro').value, 10) || 0;
+            const cent = parseInt(document.getElementById('editCent').value, 10) || 0;
+            const price = euro + cent / 100;
+
+            fetch('/api/editmenuentry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id, name, category, price }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    setTimeout(() => {
+                        closeModal(); // Close the modal after 0.5 seconds
+                        document.getElementById('saveMessage').style.display = 'none'; // Hide the save message after closing the modal
+                        fetchMenuEntries();
+                    }, 500); // 500 milliseconds = 0.5 seconds
+                } else {
+                    alert("Fehler beim Bearbeiten des Eintrags.");
+                    document.getElementById('saveMessage').style.display = 'none'; // Hide the save message if there's an error
+                }
+            });
+        });
+
+        function deleteEntry(id) {
+            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
+                fetch(`/api/deletemenuentry`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        fetchMenuEntries();
+                    } else {
+                        alert("Fehler beim Löschen des Eintrags.");
+                    }
+                });
+            }
+        }
+
+        document.querySelector("#newEntryBtn").addEventListener("click", function(){
+            window.location.href = "/panel/menuentries/new";
+        });
+
+        document.getElementById('editEuro').addEventListener('focus', function() {
+            this.select();
+        });
+
+        document.getElementById('editEuro').addEventListener('keydown', function(event) {
+            if (event.key === '.' || event.key === ',') {
+                event.preventDefault();
+                const centField = document.getElementById('editCent');
+                centField.focus();
+                centField.select();
+            }
+        });
+
+        document.getElementById('editCent').addEventListener('input', function() {
+            if (this.value.length > 2) {
+                this.value = this.value.slice(0, 2);
+            }
+        });
+
+        document.getElementById('editCent').addEventListener('blur', function() {
+            if (this.value.length > 0) {
+                this.value = this.value.padStart(2, '0');
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission
+                document.querySelector('#editForm button[type="submit"]').click(); // Trigger the save button
+            }
+        });
+
+        // Fetch and display menu entries on page load
+        fetchMenuEntries();
+
+        function adjustInputFontSize(input) {
+            const maxFontSize = 16; // Maximum font size in pixels
+            const minFontSize = 10; // Minimum font size in pixels
+            let fontSize = maxFontSize;
+
+            // Create a temporary span to measure text width
+            const span = document.createElement('span');
+            span.style.visibility = 'hidden';
+            span.style.position = 'absolute';
+            span.style.whiteSpace = 'nowrap';
+            document.body.appendChild(span);
+
+            // Adjust font size
+            while (fontSize >= minFontSize) {
+                span.style.fontSize = fontSize + 'px';
+                span.textContent = input.value || input.placeholder;
+                if (span.offsetWidth <= input.clientWidth) {
+                    break;
+                }
+                fontSize--;
+            }
+
+            input.style.fontSize = fontSize + 'px';
+            document.body.removeChild(span);
+        }
+
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', () => adjustInputFontSize(input));
+            adjustInputFontSize(input); // Initial adjustment
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cafeteria Werbung</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Open Sans', sans-serif;
+            user-select: none;
+            background-color: #f0f0f0;
+            font-size: 150%;
+            text-align: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .title-of-caf-institute-thing {
+            position: absolute;
+            top: 0.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            font-size: 10pt;
+        }
+
+        .ad-container {
+            width: 80%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        .ad-content {
+            text-align: center;
+        }
+
+        .ad-content img {
+            max-width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 50px;
+            margin: 20px 0;
+        }
+
+        .ad-content h2 {
+            font-size: 225%;
+            margin: 20px 0;
+        }
+
+        .ad-content p {
+            font-size: 150%;
+            margin: 15px 0;
+        }
+
+        /* Apply transition for opacity */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h3 class="title-of-caf-institute-thing">Cafeteria im Schulzentrum</h3>
+    <div class="ad-container fade-in">
+        <div class="ad-content" id="adContent">
+            <!-- Advertisement content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        var ads = (datarenderplace);
+        var currentAdIndex = 0;
+        var adContent = document.getElementById("adContent");
+        const adContainer = document.querySelector('.ad-container');
+
+        function updateContent(ad) {
+            let html = `<h2>${ad.title}</h2>`;
+            if (ad.image) {
+                html += `<img src="${ad.image}" alt="${ad.title}">`;
+            }
+            if (ad.description) {
+                html += `<p>${ad.description}</p>`;
+            }
+            adContent.innerHTML = html;
+            
+            if (!adContainer.classList.contains('visible')) {
+                adContainer.classList.add('visible');
+            }
+        }
+
+        function fadeIn(element, ad) {
+            element.style.opacity = 0;
+            setTimeout(() => {
+                updateContent(ad);
+                element.style.opacity = 1;
+            }, 500);
+        }
+
+        function updateAd() {
+            var ad = ads[currentAdIndex];
+            if (ad.image) {
+                const img = new Image();
+                img.onload = function() {
+                    fadeIn(adContent, ad);
+                    currentAdIndex = (currentAdIndex + 1) % ads.length;
+                };
+                img.src = ad.image;
+            } else {
+                fadeIn(adContent, ad);
+                currentAdIndex = (currentAdIndex + 1) % ads.length;
+            }
+        }
+
+        // Fetch settings from the server
+        fetch('/api/settings')
+            .then(response => response.json())
+            .then(settings => {
+                var adDisplayDuration = parseInt(settings.advertisingDisplayDuration, 10) * 1000;
+                updateAd();
+                setInterval(updateAd, adDisplayDuration);
+            })
+            .catch(error => {
+                console.error('Error fetching settings:', error);
+                var defaultDuration = 12000; // 12 seconds default
+                updateAd();
+                setInterval(updateAd, defaultDuration);
+            });
+    </script>
+</body>
+</html> 

@@ -1,9 +1,9 @@
 [
   {
-    "id": "1",
-    "header": "Willkommen in der Cafeteria",
-    "image": "/media/default-ad.jpg",
-    "description": "Entdecken Sie unsere vielfältigen Angebote!",
+    "id": "1701234567890",
+    "title": "Nikolausaktion im Schulhaus",
+    "image": "/media/butterbrezel.jpg",
+    "description": "Der Nikolaus hat schon wieder Geschenke im Schulhaus versteckt. Findet sie! Aktion von der SMV",
     "enabled": true
   }
-] 
+]

@@ -1,24 +1,16 @@
 [
   {
-    "id": "3160894994",
-    "name": "Belegtes Brötchen mit Käse",
-    "price": "1,00 €",
-    "image": "/media/belegtes-broetchen-mit-kaese.jpg",
-    "days": "Täglich",
-    "visibility": false
-  },
-  {
     "id": "6723224624",
     "name": "Belegtes Brötchen mit Salami",
-    "price": "1,00 €",
+    "price": 1.5,
     "image": "/media/belegtes-broetchen-mit-salami.jpg",
     "days": "Täglich",
-    "visibility": false
+    "visibility": true
   },
   {
     "id": "7889351367",
     "name": "Bratwurst",
-    "price": "1,50 €",
+    "price": 1.5,
     "image": "/media/bratwurst.jpg",
     "days": "Täglich",
     "visibility": true
@@ -26,15 +18,15 @@
   {
     "id": "0025652579",
     "name": "Butterbrezel",
-    "price": "1,10 €",
+    "price": 1.1,
     "image": "/media/butterbrezel.jpg",
     "days": "Täglich",
     "visibility": true
   },
   {
     "id": "2621227561",
-    "name": "Döner Kebab mit Fleisch oder Fetakäse",
-    "price": "3,00 €; 2,50 €",
+    "name": "Döner Kebab mit Fleisch",
+    "price": 3,
     "image": "/media/doener.jpg",
     "days": "Donnerstag",
     "visibility": true
@@ -42,45 +34,47 @@
   {
     "id": "3289878573",
     "name": "Donuts, verschiedene Sorten",
-    "price": "0,90 €",
+    "price": 0.9,
     "image": "/media/donuts.jpg",
     "days": "Täglich"
   },
   {
     "id": "0132142145",
     "name": "Durstlöscher, verschiedene Sorten",
-    "price": "0,80 €",
+    "price": 0.8,
     "image": "/media/durstloescher.jpg",
     "days": "Täglich"
   },
   {
-    "id": "5262470110",
-    "name": "Tee",
-    "price": "Kostenlos",
-    "image": "/media/tee.jpg",
-    "days": "Täglich",
-    "visibility": true
-  },
-  {
     "id": "2979288923",
     "name": "Pizza Margherita oder Salami",
-    "price": "2,00 €",
+    "price": 2,
     "image": "/media/pizza-salami.jpg",
-    "days": "Dienstag"
-  },
-  {
-    "id": "6497796417",
-    "name": "Waffeln mit Nutella oder Marmelade",
-    "price": "1,50 €",
-    "image": "/media/waffeln-nutella-marmelade.jpg",
-    "days": "Donnerstag"
+    "days": "Dienstag",
+    "visibility": false
   },
   {
     "id": "9155377890",
     "name": "Waffeln mit Puderzucker",
-    "price": "1,00 €",
+    "price": 1,
     "image": "/media/waffeln-puderzucker.jpg",
     "days": "Donnerstag",
     "visibility": false
+  },
+  {
+    "id": "3224756719",
+    "name": "Test",
+    "price": 1,
+    "image": "/media/belegtes-broetchen-mit-kaese.jpg",
+    "days": "Testtag",
+    "visibility": true
+  },
+  {
+    "id": "1452255710",
+    "name": "Currywurst mit Brötchen",
+    "price": 2.5,
+    "image": "/media/belegtes-broetchen-mit-kaese.jpg",
+    "days": "Montag",
+    "visibility": true
   }
 ]

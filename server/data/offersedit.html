@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CafDS Dashboard - Angebote bearbeiten</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -22,10 +19,10 @@
             <a href="/panel/offers">Angebote bearbeiten</a>
         </div>
         <div class="navbar-item">
-            <a href="/panel/menu">Menü bearbeiten</a>
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
         </div>
         <div class="navbar-item">
-            <a href="/panel/menuentries">Menüeinträge bearbeiten</a>
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -47,154 +44,136 @@
             <input type="button" value="Hinzufügen" id="newbtn">
             <input type="button" value="Aktualisieren Senden" id="refreshbtn">
         </div>
+        
+        <!-- Move the modal inside content -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2 id="modalTitle">Eintrag bearbeiten</h2>
+                </div>
+                <form id="editForm">
+                    <input type="hidden" id="editId" name="id">
+                    <label for="editName">Name:</label>
+                    <input type="text" id="editName" name="name" required>
+                    <label for="editPrice">Preis:</label>
+                    <div style="display: flex; align-items: center;">
+                        <input type="number" id="editEuro" name="euro" min="0" max="9" style="width: 40px;" required>
+                        <span>,</span>
+                        <input type="number" id="editCent" name="cent" min="0" max="99" maxlength="2" style="width: 50px;" required>
+                        <span>€</span>
+                    </div>
+                    <label for="editImage">Bild:</label>
+                    <div class="custom-dropdown">
+                        <div class="selected-image" id="selectedImage" onclick="toggleDropdown()">
+                            <img id="previewImage" src="" alt="Selected Image" style="display: none;">
+                        </div>
+                        <div class="dropdown-list" id="imageDropdownList" style="display: none;">
+                            <!-- Options will be populated dynamically -->
+                        </div>
+                    </div>
+                    <input type="hidden" id="editImage" name="image">
+                    <label for="editDays">Tage:</label>
+                    <input type="text" id="editDays" name="days" required>
+                    <input type="hidden" id="editVisibility" name="visibility">
+                    <span class="toggleVisibilityTxt">Wird nicht angezeigt</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="toggleVisibilityBtn">
+                        <span class="slider round"></span>
+                    </label>
+                    <p id="saveMessage" style="display: none; margin-top: 10px; font-size: 14px; color: #689e49;">Änderungen werden gespeichert...</p>
+                    <button type="submit" id="saveEditBtn">Speichern</button>
+                </form>
+            </div>
+        </div>
     </div>
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage">© Logilype & Felixmax_ 2024</a>
     </div>
-    <!-- Modal for editing entry -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Eintrag bearbeiten</h2>
-            <form id="editForm">
-                <label for="editName">Name:</label>
-                <input type="text" id="editName" name="name" required>
-                <label for="editPrice">Preis:</label>
-                <input type="text" id="editPrice" name="price" required>
-                <label for="editImage">Bild:</label>
-                <div class="custom-dropdown">
-                    <div class="selected-image" id="selectedImage" onclick="toggleDropdown()">
-                        <img id="previewImage" src="" alt="Selected Image" style="display: none;">
-                    </div>
-                    <div class="dropdown-list" id="imageDropdownList" style="display: none;">
-                        <!-- Options will be populated dynamically -->
-                    </div>
-                </div>
-                <input type="hidden" id="editImage" name="image"> <!-- Hidden input to store the selected image path -->
-                <label for="editDays">Tage:</label>
-                <input type="text" id="editDays" name="days" required>
-                <input type="hidden" id="editId" name="id">
-                <input type="hidden" id="editVisibility" name="visibility"> <!-- Hidden input to store the visibility state -->
-                <span class="toggleVisibilityTxt">Wird nicht angezeigt</span>
-                <label class="toggle">
-                    <input type="checkbox" id="toggleVisibilityBtn">
-                    <span class="slider round"></span>
-                </label>
-                <button type="button" id="saveEditBtn">Speichern</button>
-            </form>
-        </div>
-    </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const modal = document.getElementById("editModal");
-            const closeModal = document.getElementsByClassName("close")[0];
+            const closeBtn = document.getElementsByClassName("close")[0];
 
             // Function to open the modal
             window.openEditModal = function(item) {
-                console.log("Opening modal for item:", item); // Debugging line
-                document.getElementById("editName").value = item.name; // Set name
-                document.getElementById("editPrice").value = item.price; // Set price
-                document.getElementById("editDays").value = item.days; // Set days
-                document.getElementById("editId").value = item.id; // Set ID
-                document.getElementById("editVisibility").value = item.visibility; // Set visibility state
-                document.getElementById("toggleVisibilityBtn").checked = item.visibility; // Set toggle state
+                const modal = document.getElementById("editModal");
+                
+                // Reset scroll position and display modal
+                window.scrollTo(0, 0);
+                modal.scrollTop = 0;
+                modal.style.display = 'flex';
+                
+                // Set form values
+                document.getElementById("editId").value = item.id;
+                document.getElementById("editName").value = item.name;
+                const euros = Math.floor(item.price);
+                const cents = Math.round((item.price - euros) * 100);
+                document.getElementById('editEuro').value = euros;
+                document.getElementById('editCent').value = cents.toString().padStart(2, '0');
+                document.getElementById("editDays").value = item.days;
+                document.getElementById("editVisibility").value = item.visibility;
+                document.getElementById("toggleVisibilityBtn").checked = item.visibility;
 
-                // Update the visibility text based on the current state
                 const toggleText = document.querySelector('.toggleVisibilityTxt');
                 toggleText.textContent = item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt';
 
-                // Clear and fetch images for the dropdown
+                // Handle image dropdown
                 const imageDropdownList = document.getElementById("imageDropdownList");
-                imageDropdownList.innerHTML = ''; // Clear existing options
+                imageDropdownList.innerHTML = '';
 
-                // Fetch images from the server
+                // Fetch and handle images
                 fetch('/api/getImages')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(images => {
-                        const dropdownList = document.getElementById("imageDropdownList");
-                        dropdownList.innerHTML = ''; // Clear existing options
                         images.forEach(image => {
                             const option = document.createElement("div");
-                            option.innerHTML = `<img src="${image}" alt="${image}">`; // Add image to the option
+                            option.innerHTML = `<img src="${image}" alt="${image}">`;
                             option.onclick = function() {
-                                const selectedImagePath = image; // Get the image path directly
-                                document.getElementById("previewImage").src = selectedImagePath; // Set the preview image
-                                document.getElementById("previewImage").style.display = "block"; // Show the preview
-                                document.getElementById("editImage").value = selectedImagePath; // Store the selected image path in the hidden input
-                                console.log("Selected image path:", selectedImagePath); // Log the selected image path
-                                dropdownList.style.display = "none"; // Hide the dropdown
+                                document.getElementById("previewImage").src = image;
+                                document.getElementById("previewImage").style.display = "block";
+                                document.getElementById("editImage").value = image;
+                                imageDropdownList.style.display = "none";
                             };
-                            dropdownList.appendChild(option);
+                            imageDropdownList.appendChild(option);
                         });
 
-                        // Set the current image as selected
                         const currentImage = item.image;
-                        document.getElementById("previewImage").src = currentImage; // Set the preview image
-                        document.getElementById("previewImage").style.display = "block"; // Show the preview
-                        document.getElementById("editImage").value = currentImage; // Set the hidden input with the current image path
+                        document.getElementById("previewImage").src = currentImage;
+                        document.getElementById("previewImage").style.display = "block";
+                        document.getElementById("editImage").value = currentImage;
                     })
-                    .catch(error => {
-                        console.error('Error fetching images:', error);
-                        alert("Could not load images. Please try again later.");
-                    });
-
-                modal.style.display = "flex"; // Show the modal
-
-                // Check for overflow on input fields
-                checkTextOverflow("editName");
-                checkTextOverflow("editPrice");
-                checkTextOverflow("editDays");
+                    .catch(error => console.error('Error fetching images:', error));
             };
 
-            // Function to check and adjust text overflow
-            function checkTextOverflow(elementId) {
-                var container = document.getElementById(elementId);
-                let originalFontSize = 14; // Set the original font size in pt
-                const minFontSize = 10; // Set a minimum font size in pt
-
-                // Reset font-size to original
-                container.style.fontSize = `${originalFontSize}pt`;
-
-                // Check if the text is wider than its container
-                while (container.scrollWidth > container.clientWidth && originalFontSize > minFontSize) {
-                    originalFontSize -= 1; // Decrease font size by 1pt
-                    container.style.fontSize = `${originalFontSize}pt`; // Apply new font size
-                }
-            }
-
-            // Close the modal when the close button is clicked
-            closeModal.onclick = function() {
-                clearModalFields(); // Clear fields before hiding
-                modal.style.display = "none"; // Hide the modal
+            window.closeModal = function() {
+                modal.style.display = "none";
             };
 
-            // Close the modal when clicking outside of it
+            closeBtn.onclick = closeModal;
+
             window.onclick = function(event) {
                 if (event.target == modal) {
-                    clearModalFields(); // Clear fields before hiding
-                    modal.style.display = "none"; // Hide the modal if clicked outside
+                    closeModal();
                 }
             };
 
-            // Save button functionality
-            document.getElementById("saveEditBtn").addEventListener("click", function() {
+            // Handle form submission
+            document.getElementById("editForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                document.getElementById('saveMessage').style.display = 'block';
+
                 const id = document.getElementById("editId").value;
                 const name = document.getElementById("editName").value;
-                const price = document.getElementById("editPrice").value;
-                const image = document.getElementById("editImage").value; // Get the selected image
+                const euro = parseInt(document.getElementById("editEuro").value, 10) || 0;
+                const cent = parseInt(document.getElementById("editCent").value, 10) || 0;
+                const price = euro + cent / 100;
+                const image = document.getElementById("editImage").value;
                 const days = document.getElementById("editDays").value;
-                const visibility = document.getElementById("toggleVisibilityBtn").checked; // Get visibility state
+                const visibility = document.getElementById("toggleVisibilityBtn").checked;
 
-                const data = { id, name, price, image, days, visibility }; // Include visibility in the data
+                const data = { id, name, price, image, days, visibility };
 
-                console.log("Data being sent to server:", data); // Log the data
-
-                // Send the data to the server
                 fetch('/api/editentry', {
                     method: 'POST',
                     headers: {
@@ -204,94 +183,167 @@
                 })
                 .then(response => {
                     if (response.ok) {
-                        clearModalFields(); // Clear fields after saving
-                        modal.style.display = "none"; // Hide the modal
-                        window.location.reload(); // Reload the page to see changes
+                        setTimeout(() => {
+                            modal.style.display = "none";
+                            document.getElementById('saveMessage').style.display = 'none';
+                            fetchOffers();
+                        }, 500);
                     } else {
-                        alert("Fehler beim Speichern des Eintrags."); // Error message
+                        alert("Fehler beim Speichern des Eintrags.");
+                        document.getElementById('saveMessage').style.display = 'none';
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert("Ein Fehler ist aufgetreten."); // General error message
+                    console.error('Error saving offer:', error);
+                    document.getElementById('saveMessage').style.display = 'block';
+                    document.getElementById('saveMessage').style.color = '#bd2525';
+                    document.getElementById('saveMessage').textContent = 'Fehler beim Speichern. Bitte versuchen Sie es erneut.';
                 });
             });
 
-            // Function to clear modal fields
-            function clearModalFields() {
-                document.getElementById("editName").value = '';
-                document.getElementById("editPrice").value = '';
-                document.getElementById("editDays").value = '';
-                document.getElementById("editImage").value = ''; // Clear the hidden input
-                document.getElementById("previewImage").src = ''; // Clear the preview image
-                document.getElementById("previewImage").style.display = "none"; // Hide the preview
-                document.getElementById("toggleVisibilityBtn").checked = false; // Reset toggle state
-                document.querySelector('.toggleVisibilityTxt').textContent = 'Wird nicht angezeigt'; // Reset visibility text
-            }
-
-            // Attach input event listeners to check for overflow
-            const inputs = document.querySelectorAll('.modal-content input[type="text"]');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    checkTextOverflow(input.id); // Check overflow on input change
-                });
+            document.getElementById('editEuro').addEventListener('focus', function() {
+                this.select();
             });
-        });
 
-        document.getElementById("newbtn").addEventListener("click", function() {
-            window.location.href = "/panel/offers/new"; // Redirect to new entry page
-        });
+            document.getElementById('editEuro').addEventListener('keydown', function(event) {
+                if (event.key === '.' || event.key === ',') {
+                    event.preventDefault();
+                    const centField = document.getElementById('editCent');
+                    centField.focus();
+                    centField.select();
+                }
+            });
 
-        document.getElementById("refreshbtn").addEventListener("click", function() {
-            window.location.href = "/panel?intent=refresh"; // Refresh the page
-        });
+            document.getElementById('editCent').addEventListener('focus', function() {
+                this.select();
+            });
 
-        function deleteEntry(id) {
-            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
-                fetch(`/api/deleteentry`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id: id }),
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.reload(); // Reload the page to see changes
-                    } else {
-                        alert("Fehler beim Löschen des Eintrags.");
-                    }
-                });
+            document.getElementById('editCent').addEventListener('input', function() {
+                if (this.value.length > 2) {
+                    this.value = this.value.slice(0, 2);
+                }
+            });
+
+            document.getElementById('editCent').addEventListener('blur', function() {
+                if (this.value.length > 0) {
+                    this.value = this.value.padStart(2, '0');
+                }
+            });
+
+            document.getElementById("logoutBtn").addEventListener("click", function() {
+                document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/ui/login";
+            });
+
+            // Replace the existing fetchOffers function
+            function fetchOffers() {
+                // Add loading state
+                const gridContainer = document.querySelector('.grid-container');
+                gridContainer.classList.add('loading');
+                
+                fetch('/api/getadminoffers')
+                    .then(response => response.json())
+                    .then(data => {
+                        const gridContainer = document.querySelector('.grid-container');
+                        gridContainer.innerHTML = data.map(item => {
+                            const itemJson = JSON.stringify(item).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+                            return `
+                                <article class="grid-item">
+                                    <div class="grid-item-content">
+                                        <header>
+                                            <div class="image-container">
+                                                <img src="${item.image}" alt="${item.name}">
+                                            </div>
+                                            <h3 class="item-name">${item.name}</h3>
+                                        </header>
+                                        <div class="item-details">
+                                            <div class="price-container">
+                                                <p class="item-price">Preis: ${item.price.toFixed(2).replace('.', ',')}&nbsp;€</p>
+                                            </div>
+                                            <div class="days-container">
+                                                <p class="item-days">Verfügbar an: ${item.days}</p>
+                                            </div>
+                                            <div class="visibility-container">
+                                                <p class="item-visibility ${item.visibility ? '' : 'inactive'}">${item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt'}</p>
+                                            </div>
+                                        </div>
+                                        <footer class="buttons">
+                                            <button onclick='openEditModal(${itemJson})' aria-label="Bearbeiten ${item.name}">Bearbeiten</button>
+                                            <button onclick="deleteEntry('${item.id}')" aria-label="Löschen ${item.name}">Löschen</button>
+                                        </footer>
+                                    </div>
+                                </article>
+                            `;
+                        }).join('');
+                    })
+                    .finally(() => {
+                        gridContainer.classList.remove('loading');
+                    });
             }
-        }
 
-        document.getElementById("logoutBtn").addEventListener("click", function() {
-            // Clear the token cookie
-            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            // Redirect to the login page
-            window.location.href = "/ui/login";
+            // Make fetchOffers available globally
+            window.fetchOffers = fetchOffers;
+
+            // Initial fetch
+            fetchOffers();
+
+            // Move these event listeners and functions inside DOMContentLoaded
+            document.getElementById("newbtn").addEventListener("click", function() {
+                window.location.href = "/panel/offers/new";
+            });
+
+            document.getElementById("refreshbtn").addEventListener("click", function() {
+                fetchOffers();
+            });
+
+            window.deleteEntry = function(id) {
+                if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
+                    fetch(`/api/deleteoffer`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id: id }),
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            fetchOffers();
+                        } else {
+                            alert("Fehler beim Löschen des Eintrags.");
+                        }
+                    });
+                }
+            };
+
+            window.toggleDropdown = function() {
+                const dropdownList = document.getElementById("imageDropdownList");
+                dropdownList.style.display = dropdownList.style.display === "none" ? "block" : "none";
+            };
+
+            document.getElementById("selectedImage").onclick = toggleDropdown;
+
+            const toggle = document.querySelector('#toggleVisibilityBtn');
+            toggle.addEventListener('change', () => {
+                const toggleText = document.querySelector('.toggleVisibilityTxt');
+                toggleText.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt';
+            });
+
+            // Check localStorage
+            if (localStorage.getItem('modalOpen') === 'true') {
+                localStorage.removeItem('modalOpen');
+            }
         });
 
-        // On page load, check if the modal should be opened
-        if (localStorage.getItem('modalOpen') === 'true') {
-            // Open the modal if needed
-            // You can call openEditModal with the appropriate item here
-            localStorage.removeItem('modalOpen'); // Clear the flag after opening
+        function showError(message, duration = 3000) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, duration);
         }
-        function toggleDropdown() {
-            const dropdownList = document.getElementById("imageDropdownList");
-            dropdownList.style.display = dropdownList.style.display === "none" ? "block" : "none";
-        }
-
-        // Attach the toggle function to the selected image area
-        document.getElementById("selectedImage").onclick = toggleDropdown;
-
-        const toggle = document.querySelector('#toggleVisibilityBtn'); // Get the toggle input
-
-        toggle.addEventListener('change', () => {
-            const toggleText = document.querySelector('.toggleVisibilityTxt');
-            toggleText.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt';
-        });
     </script>
 </body>
 </html>

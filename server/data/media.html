@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CafDS Dashboard - Medien verwalten</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -22,10 +19,10 @@
             <a href="/panel/offers">Angebote bearbeiten</a>
         </div>
         <div class="navbar-item">
-            <a href="/panel/menu">Menü bearbeiten</a>
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
         </div>
         <div class="navbar-item">
-            <a href="/panel/menuentries">Menüeinträge bearbeiten</a>
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -40,25 +37,50 @@
     <div class="content">
         <div class="tables-media">
             <table>
-                <tr>
-                    <th>Name</th>
-                    
-                    <th>Vorschau</th>
-                    
-                    
-                </tr>
-                (renderanchor)
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Vorschau</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    (renderanchor)
+                </tbody>
             </table>
         </div>
         <div class="actionbuttons">
             <input type="button" value="Hochladen" id="newbtn">
-            
         </div>
     </div>
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
     </div>
     <script>
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/ui/login";
+        });
+
+        function deleteImage(imageName) {
+            if (confirm("Möchten Sie dieses Bild wirklich löschen?")) {
+                fetch(`/api/deleteimage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: imageName }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Fehler beim Löschen des Bildes.");
+                    }
+                });
+            }
+        }
+
         document.querySelector("#newbtn").addEventListener("click", function(){
             window.location.href = "/panel/upload";
         });

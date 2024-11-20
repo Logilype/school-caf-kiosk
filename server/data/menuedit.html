@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CafDS Dashboard - Angebote bearbeiten</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"> <!-- Corrected font weights -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CafDS Dashboard - Speiseplan verwalten/bearbeiten</title>
+ <!-- Corrected font weights -->
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -22,10 +20,10 @@
             <a href="/panel/offers">Angebote bearbeiten</a>
         </div>
         <div class="navbar-item-selected">
-            <a href="/panel/menu">Menü bearbeiten</a>
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
         </div>
         <div class="navbar-item">
-            <a href="/panel/menuentries">Menüeinträge bearbeiten</a>
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
         </div>
         <div class="navbar-item">
             <a href="/panel/advertising">Werbung bearbeiten</a>
@@ -38,233 +36,117 @@
         </div>
     </div>
     <div class="content">
-        <div class="tables">
-            <div class="grid-container">
-                (renderanchor) <!-- This will be replaced with the actual entries -->
-            </div>
-        </div>
-        <div class="actionbuttons">
-            <input type="button" value="Hinzufügen" id="newbtn">
-            <input type="button" value="Aktualisieren Senden" id="refreshbtn">
-        </div>
+        <!-- Insert content here -->
+        <table class="styled-table" border="1" style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <th>---</th>
+                <th>Montag</th>
+                <th>Dienstag</th>
+                <th>Mittwoch</th>
+                <th>Donnerstag</th>
+            </tr>
+            <tr>
+                <td>Cafeteria Menü 1</td>
+                <td>
+                    <select id="cafeteriaMenu1Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu1Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu1Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu1Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu1Thursday">0,00 €</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Cafeteria Menü 2</td>
+                <td>
+                    <select id="cafeteriaMenu2Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu2Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu2Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="cafeteriaMenu2Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-cafeteriaMenu2Thursday">0,00 €</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Dessert</td>
+                <td>
+                    <select id="dessertMonday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertMonday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="dessertTuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertTuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="dessertWednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertWednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="dessertThursday" onchange="updatePrice(this)"></select>
+                    <span id="price-dessertThursday">0,00 €</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Salat 1</td>
+                <td>
+                    <select id="salat1Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat1Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat1Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat1Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat1Thursday">0,00 €</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Salat 2</td>
+                <td>
+                    <select id="salat2Monday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Monday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat2Tuesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Tuesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat2Wednesday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Wednesday">0,00 €</span>
+                </td>
+                <td>
+                    <select id="salat2Thursday" onchange="updatePrice(this)"></select>
+                    <span id="price-salat2Thursday">0,00 €</span>
+                </td>
+            </tr>
+        </table>
+        <button id="saveMenuBtn">Speichern</button>
     </div>
     <div class="footer">
-        <a href="https://github.com/logilype/cafeteria-digital-signage">© Logilype & Felixmax_ 2024</a>
-    </div>
-    <!-- Modal for editing entry -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Eintrag bearbeiten</h2>
-            <form id="editForm">
-                <label for="editName">Name:</label>
-                <input type="text" id="editName" name="name" required>
-                <label for="editPrice">Preis:</label>
-                <input type="text" id="editPrice" name="price" required>
-                <label for="editImage">Bild:</label>
-                <div class="custom-dropdown">
-                    <div class="selected-image" id="selectedImage" onclick="toggleDropdown()">
-                        <img id="previewImage" src="" alt="Selected Image" style="display: none;">
-                    </div>
-                    <div class="dropdown-list" id="imageDropdownList" style="display: none;">
-                        <!-- Options will be populated dynamically -->
-                    </div>
-                </div>
-                <input type="hidden" id="editImage" name="image"> <!-- Hidden input to store the selected image path -->
-                <label for="editDays">Tage:</label>
-                <input type="text" id="editDays" name="days" required>
-                <input type="hidden" id="editId" name="id">
-                <input type="hidden" id="editVisibility" name="visibility"> <!-- Hidden input to store the visibility state -->
-                <span class="toggleVisibilityTxt">Wird nicht angezeigt</span>
-                <label class="toggle">
-                    <input type="checkbox" id="toggleVisibilityBtn">
-                    <span class="slider round"></span>
-                </label>
-                <button type="button" id="saveEditBtn">Speichern</button>
-            </form>
-        </div>
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const modal = document.getElementById("editModal");
-            const closeModal = document.getElementsByClassName("close")[0];
-
-            // Function to open the modal
-            window.openEditModal = function(item) {
-                console.log("Opening modal for item:", item); // Debugging line
-                document.getElementById("editName").value = item.name; // Set name
-                document.getElementById("editPrice").value = item.price; // Set price
-                document.getElementById("editDays").value = item.days; // Set days
-                document.getElementById("editId").value = item.id; // Set ID
-                document.getElementById("editVisibility").value = item.visibility; // Set visibility state
-                document.getElementById("toggleVisibilityBtn").checked = item.visibility; // Set toggle state
-
-                // Update the visibility text based on the current state
-                const toggleText = document.querySelector('.toggleVisibilityTxt');
-                toggleText.textContent = item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt';
-
-                // Clear and fetch images for the dropdown
-                const imageDropdownList = document.getElementById("imageDropdownList");
-                imageDropdownList.innerHTML = ''; // Clear existing options
-
-                // Fetch images from the server
-                fetch('/api/getImages')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(images => {
-                        const dropdownList = document.getElementById("imageDropdownList");
-                        dropdownList.innerHTML = ''; // Clear existing options
-                        images.forEach(image => {
-                            const option = document.createElement("div");
-                            option.innerHTML = `<img src="${image}" alt="${image}">`; // Add image to the option
-                            option.onclick = function() {
-                                const selectedImagePath = image; // Get the image path directly
-                                document.getElementById("previewImage").src = selectedImagePath; // Set the preview image
-                                document.getElementById("previewImage").style.display = "block"; // Show the preview
-                                document.getElementById("editImage").value = selectedImagePath; // Store the selected image path in the hidden input
-                                console.log("Selected image path:", selectedImagePath); // Log the selected image path
-                                dropdownList.style.display = "none"; // Hide the dropdown
-                            };
-                            dropdownList.appendChild(option);
-                        });
-
-                        // Set the current image as selected
-                        const currentImage = item.image;
-                        document.getElementById("previewImage").src = currentImage; // Set the preview image
-                        document.getElementById("previewImage").style.display = "block"; // Show the preview
-                        document.getElementById("editImage").value = currentImage; // Set the hidden input with the current image path
-                    })
-                    .catch(error => {
-                        console.error('Error fetching images:', error);
-                        alert("Could not load images. Please try again later.");
-                    });
-
-                modal.style.display = "flex"; // Show the modal
-
-                // Check for overflow on input fields
-                checkTextOverflow("editName");
-                checkTextOverflow("editPrice");
-                checkTextOverflow("editDays");
-            };
-
-            // Function to check and adjust text overflow
-            function checkTextOverflow(elementId) {
-                var container = document.getElementById(elementId);
-                let originalFontSize = 14; // Set the original font size in pt
-                const minFontSize = 10; // Set a minimum font size in pt
-
-                // Reset font-size to original
-                container.style.fontSize = `${originalFontSize}pt`;
-
-                // Check if the text is wider than its container
-                while (container.scrollWidth > container.clientWidth && originalFontSize > minFontSize) {
-                    originalFontSize -= 1; // Decrease font size by 1pt
-                    container.style.fontSize = `${originalFontSize}pt`; // Apply new font size
-                }
-            }
-
-            // Close the modal when the close button is clicked
-            closeModal.onclick = function() {
-                clearModalFields(); // Clear fields before hiding
-                modal.style.display = "none"; // Hide the modal
-            };
-
-            // Close the modal when clicking outside of it
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    clearModalFields(); // Clear fields before hiding
-                    modal.style.display = "none"; // Hide the modal if clicked outside
-                }
-            };
-
-            // Save button functionality
-            document.getElementById("saveEditBtn").addEventListener("click", function() {
-                const id = document.getElementById("editId").value;
-                const name = document.getElementById("editName").value;
-                const price = document.getElementById("editPrice").value;
-                const image = document.getElementById("editImage").value; // Get the selected image
-                const days = document.getElementById("editDays").value;
-                const visibility = document.getElementById("toggleVisibilityBtn").checked; // Get visibility state
-
-                const data = { id, name, price, image, days, visibility }; // Include visibility in the data
-
-                console.log("Data being sent to server:", data); // Log the data
-
-                // Send the data to the server
-                fetch('/api/editentry', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                })
-                .then(response => {
-                    if (response.ok) {
-                        clearModalFields(); // Clear fields after saving
-                        modal.style.display = "none"; // Hide the modal
-                        window.location.reload(); // Reload the page to see changes
-                    } else {
-                        alert("Fehler beim Speichern des Eintrags."); // Error message
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("Ein Fehler ist aufgetreten."); // General error message
-                });
-            });
-
-            // Function to clear modal fields
-            function clearModalFields() {
-                document.getElementById("editName").value = '';
-                document.getElementById("editPrice").value = '';
-                document.getElementById("editDays").value = '';
-                document.getElementById("editImage").value = ''; // Clear the hidden input
-                document.getElementById("previewImage").src = ''; // Clear the preview image
-                document.getElementById("previewImage").style.display = "none"; // Hide the preview
-                document.getElementById("toggleVisibilityBtn").checked = false; // Reset toggle state
-                document.querySelector('.toggleVisibilityTxt').textContent = 'Wird nicht angezeigt'; // Reset visibility text
-            }
-
-            // Attach input event listeners to check for overflow
-            const inputs = document.querySelectorAll('.modal-content input[type="text"]');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    checkTextOverflow(input.id); // Check overflow on input change
-                });
-            });
-        });
-
-        document.getElementById("newbtn").addEventListener("click", function() {
-            window.location.href = "/panel/offers/new"; // Redirect to new entry page
-        });
-
-        document.getElementById("refreshbtn").addEventListener("click", function() {
-            window.location.href = "/panel?intent=refresh"; // Refresh the page
-        });
-
-        function deleteEntry(id) {
-            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
-                fetch(`/api/deleteentry`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id: id }),
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.reload(); // Reload the page to see changes
-                    } else {
-                        alert("Fehler beim Löschen des Eintrags.");
-                    }
-                });
-            }
-        }
-
         document.getElementById("logoutBtn").addEventListener("click", function() {
             // Clear the token cookie
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -272,25 +154,146 @@
             window.location.href = "/ui/login";
         });
 
-        // On page load, check if the modal should be opened
-        if (localStorage.getItem('modalOpen') === 'true') {
-            // Open the modal if needed
-            // You can call openEditModal with the appropriate item here
-            localStorage.removeItem('modalOpen'); // Clear the flag after opening
+        const menuEntries = {};
+
+        // Function to update the price display
+        function updatePrice(selectElement) {
+            const selectedId = selectElement.value;
+            const priceSpan = document.getElementById(`price-${selectElement.id}`);
+            const price = menuEntries[selectedId] ? menuEntries[selectedId].price : 0;
+            priceSpan.textContent = price === 0 ? "Im Cafeteriamenü inklusive" : price.toFixed(2).replace('.', ',') + ' €';
         }
-        function toggleDropdown() {
-            const dropdownList = document.getElementById("imageDropdownList");
-            dropdownList.style.display = dropdownList.style.display === "none" ? "block" : "none";
+
+        // Function to populate dropdowns with saved selections
+        function loadMenuSelections() {
+            fetch('/api/getMenuSelections')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Loaded menu selections:', data);
+                    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+                    const menus = ['cafeteriaMenu1', 'cafeteriaMenu2', 'dessert', 'salat1', 'salat2'];
+
+                    menus.forEach(menu => {
+                        days.forEach(day => {
+                            const selectElement = document.getElementById(`${menu}${day}`);
+                            if (selectElement && data[`${menu}${day}`]) {
+                                selectElement.value = data[`${menu}${day}`];
+                                updatePrice(selectElement); // Update price on load
+                            }
+                            selectElement.disabled = false;
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading menu selections:', error));
         }
 
-        // Attach the toggle function to the selected image area
-        document.getElementById("selectedImage").onclick = toggleDropdown;
+        // Function to populate dropdowns with options
+        function populateDropdowns() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
 
-        const toggle = document.querySelector('#toggleVisibilityBtn'); // Get the toggle input
+            // Fetch cafeteria menu entries and populate dropdowns
+            fetch('/api/cafeteriaMenuEntries')
+                .then(response => response.json())
+                .then(entries => {
+                    entries.forEach(entry => {
+                        menuEntries[entry.id] = entry; // Store entry for price lookup
+                    });
+                    const menus = ['cafeteriaMenu1', 'cafeteriaMenu2'];
+                    menus.forEach(menu => {
+                        days.forEach(day => {
+                            const selectElement = document.getElementById(`${menu}${day}`);
+                            selectElement.innerHTML = '<option value="">---</option>';
+                            selectElement.disabled = true;
+                            entries.forEach(entry => {
+                                const option = document.createElement('option');
+                                option.value = entry.id;
+                                option.textContent = entry.name;
+                                selectElement.appendChild(option);
+                            });
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading menu entries:', error));
 
-        toggle.addEventListener('change', () => {
-            const toggleText = document.querySelector('.toggleVisibilityTxt');
-            toggleText.textContent = toggle.checked ? 'Wird angezeigt' : 'Wird nicht angezeigt';
+            // Fetch dessert entries and populate dropdowns
+            fetch('/api/dessertEntries')
+                .then(response => response.json())
+                .then(entries => {
+                    entries.forEach(entry => {
+                        menuEntries[entry.id] = entry; // Store entry for price lookup
+                    });
+                    days.forEach(day => {
+                        const selectElement = document.getElementById(`dessert${day}`);
+                        selectElement.innerHTML = '<option value="">---</option>';
+                        selectElement.disabled = true;
+                        entries.forEach(entry => {
+                            const option = document.createElement('option');
+                            option.value = entry.id;
+                            option.textContent = entry.name;
+                            selectElement.appendChild(option);
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading dessert entries:', error));
+
+            // Fetch salat entries and populate dropdowns
+            fetch('/api/salatEntries')
+                .then(response => response.json())
+                .then(entries => {
+                    entries.forEach(entry => {
+                        menuEntries[entry.id] = entry; // Store entry for price lookup
+                    });
+                    const menus = ['salat1', 'salat2'];
+                    menus.forEach(menu => {
+                        days.forEach(day => {
+                            const selectElement = document.getElementById(`${menu}${day}`);
+                            selectElement.innerHTML = '<option value="">---</option>';
+                            selectElement.disabled = true;
+                            entries.forEach(entry => {
+                                const option = document.createElement('option');
+                                option.value = entry.id;
+                                option.textContent = entry.name;
+                                selectElement.appendChild(option);
+                            });
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading salat entries:', error));
+        }
+
+        // Load menu selections when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDropdowns();
+            setTimeout(loadMenuSelections, 1000);
+        });
+
+        document.getElementById("saveMenuBtn").addEventListener("click", function() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+            const menus = ['cafeteriaMenu1', 'cafeteriaMenu2', 'dessert', 'salat1', 'salat2'];
+            const selectedOptions = {};
+
+            menus.forEach(menu => {
+                days.forEach(day => {
+                    const selectElement = document.getElementById(`${menu}${day}`);
+                    selectedOptions[`${menu}${day}`] = selectElement.value;
+                });
+            });
+
+            fetch('/api/saveMenuSelections', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedOptions)
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                setTimeout(() => {
+                    location.reload();
+                }, 100);
+            })
+            .catch(error => console.error('Error saving menu selections:', error));
         });
     </script>
 </body>

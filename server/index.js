@@ -3,6 +3,7 @@ var XMLHttpRequest = require('xhr2');
 const fs = require('fs');
 const multer = require('multer');
 const cookieParser = require("cookie-parser");
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -11,6 +12,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static('data'));
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// If your fonts are in a different directory, add another static middleware
+app.use('/media/fonts', express.static(path.join(__dirname, 'data/fonts')));
 
 tokenst = [];
 
@@ -59,30 +66,12 @@ app.post('/api/settings', (req, res) => {
 app.get('/getoffers', (req, res) => {
     fs.readFile('data/offers.json', (err, data) => {
         if (err) {
-            return res.send(err);
+            return res.status(500).send(err);
         }
-
-        // Parse the JSON data
-        let menuItems = JSON.parse(data);
-
-        // Filter the items where visibility is true
-        let visibleItems = menuItems.filter(item => item.visibility);
-
-        // Convert the filtered data back to JSON
-        let replacementdata = JSON.stringify(visibleItems, null, 2);
-
-        fs.readFile('data/offers.html', (err, data) => {
-            if (err) {
-                return res.send(err);
-            }
-
-            // Replace the placeholder with the filtered menu data
-            let renderedData = data.toString().replace("(datarenderplace)", replacementdata);
-            res.send(renderedData);
-        });
+        // Just send the parsed JSON data directly
+        res.json(JSON.parse(data));
     });
 });
-
 
 app.get('/getdisplaysequence', (req, res) => {
     res.sendFile(__dirname + '/data/displayseq.json');
@@ -121,19 +110,20 @@ app.get('/news', (req, res) => {
 });
 
 app.get('/panel', (req, res) => {
-    //get token from cookies and check if it is valid
-    intent = req.query.intent;
+    // Get token from cookies and check if it is valid
+    const intent = req.query.intent;
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send panel.html
+        // If valid, send panel.html
         res.sendFile(__dirname + '/data/panel.html');
-        console.log(intent);
+        if (intent !== undefined) {
+            console.log(intent);
+        }
     } else {
-        //if not valid send login.html
+        // If not valid, send login.html
         res.redirect('/ui/login');
     }
-    
 });
 app.get('/panel/upload', (req, res) => {
     //get token from cookies and check if it is valid
@@ -146,38 +136,60 @@ app.get('/panel/upload', (req, res) => {
         //if not valid send login.html
         res.redirect('/ui/login');
     }
+});
     
+app.get('/panel/menu', (req, res) => {
+        //get token from cookies and check if it is valid
+        var token = req.cookies.token;
+        console.log(token);
+        if (checktoken(token)) {
+            //if valid send menuedit.html
+            res.sendFile(__dirname + '/data/menuedit.html');
+        } else {
+            //if not valid send login.html
+            res.redirect('/ui/login');
+        }
 });
 app.get('/panel/media', (req, res) => {
-    //get token from cookies and check if it is valid
+    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send media.html
-        //index all files in media folder and add them to the table
-        fs.readdir('media', (err, files) => {
+        // If valid, proceed to read the media directory
+        const mediaDir = path.join(__dirname, 'media'); // Corrected path
+        
+        fs.readdir(mediaDir, (err, files) => {
             if (err) {
-                res.send(err);
+                console.error('Error reading media directory:', err);
+                return res.status(500).send('Error loading media');
             }
-            replacementdata = ""
-            for (var i = 0; i < files.length; i++) {
-                replacementdata = replacementdata + "<tr><td>" + files[i] + "</td><td><img src='/media/"+ files[i] +"' style='max-width: 200px; max-height: 200px;'></img></td></tr>";
-            }
-            fs.readFile('data/media.html', (err, data) => {
+
+            // Generate HTML for each image file
+            const imageEntries = files.map(file => `
+                <tr>
+                    <td>${file}</td>
+                    <td><img src="/media/${file}" alt="${file}" style="width: 100px;"></td>
+                    <td><button onclick="deleteImage('${file}')">Löschen</button></td>
+                </tr>
+            `).join('');
+
+            // Read the media.html file and replace the placeholder
+            fs.readFile(path.join(__dirname, 'data', 'media.html'), 'utf8', (err, html) => {
                 if (err) {
-                    res.send(err);
-                };
-                replacementdata = data.toString().replace("(renderanchor)", replacementdata.toString());
-                res.send(replacementdata);
+                    console.error('Error reading media.html:', err);
+                    return res.status(500).send('Error loading page');
+                }
+
+                const updatedHtml = html.replace('(renderanchor)', imageEntries);
+                res.send(updatedHtml);
             });
-        }
-        );
+        });
     } else {
-        //if not valid send login.html
+        // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
-    
 });
+
 app.get('/panel/offers', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
@@ -189,12 +201,12 @@ app.get('/panel/offers', (req, res) => {
             const entries = menu.map(item => `
                 <div class="grid-item">
                     <p class="item-name">${item.name}</p>
-                    <p class="item-price">${item.price}</p>
+                    <p class="item-price">${item.price.toFixed(2).replace('.', ',')}&nbsp;€</p>
                     <div class="image-container">
                         <img src="${item.image}" alt="${item.name}">
                     </div>
                     <p class="item-days">${item.days}</p>
-                    <p class="item-visibility ${item.visibility ? '' : 'inactive'}">${item.visibility ? 'Aktiv' : 'Inaktiv'}</p> <!-- Visibility indicator -->
+                    <p class="item-visibility ${item.visibility ? '' : 'inactive'}">${item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt'}</p>
                     <div class="buttons">
                         <button type="button" onclick="openEditModal({ id: '${item.id}', name: '${item.name}', price: '${item.price}', image: '${item.image}', days: '${item.days}', visibility: ${item.visibility} })">Bearbeiten</button>
                         <button onclick="deleteEntry(${item.id})">Löschen</button>
@@ -236,44 +248,6 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 
-app.get('/panel/offers/edit/:id', (req, res) => {
-    const id = req.params.id;
-    fs.readFile('data/offers.json', (err, data) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        const menu = JSON.parse(data);
-        const menuitem = menu.find(item => item.id == id);
-        if (menuitem) {
-            fs.readFile('data/editentry.html', (err, data) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-                let replacementdata = data.toString()
-                    .replace("(id)", menuitem.id)
-                    .replace("(name)", menuitem.name)
-                    .replace("(price)", menuitem.price)
-                    .replace("(days)", menuitem.days);
-
-                // Populate dropdown for images and preselect the current image
-                fs.readdir('media', (err, files) => {
-                    if (err) {
-                        return res.status(500).send(err);
-                    }
-                    let dropdown = files.map(file => {
-                        const selected = `/media/${file}` === menuitem.image ? 'selected' : '';
-                        return `<option value="${file}" ${selected}>${file}</option>`;
-                    }).join('');
-                    replacementdata = replacementdata.replace("(allimgs)", dropdown);
-                    res.send(replacementdata);
-                });
-            });
-        } else {
-            res.send("Entry not found");
-        }
-    });
-});
-
 app.get('/panel/offers/new', (req, res) => {
     //get token from cookies and check if it is valid
     var token = req.cookies.token;
@@ -305,35 +279,32 @@ app.get('/panel/offers/new', (req, res) => {
 });
 
 app.post('/api/newentry', (req, res) => {
-    var id = makeresultid(10);
-    var name = req.body.name;
-    var price = req.body.price;
-    var image = "/media/" + req.body.image;
-    var days = req.body.days;
-    var visibility = req.body.visibility || true; // Default to true if not provided
+    const { name, price, image, days } = req.body;
+    const id = makeresultid(10); // Generate a new ID
 
-    // Log the received data
-    console.log(id, name, price, image, days, visibility);
+    // Ensure the image path is correctly prefixed
+    const imagePath = image.startsWith('/media/') ? image : `/media/${image}`;
 
-    // Edit entry in offers.json with the id from the parameters
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/offers.json', 'utf8', (err, data) => {
         if (err) {
-            return res.status(500).send(err);
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
         }
-        var menu = JSON.parse(data);
 
-        menu.push({
-            id: id,
-            name: name,
-            price: price,
-            image: image,
-            days: days,
-            visibility: visibility // Add visibility property
+        let offers = JSON.parse(data);
+        offers.push({
+            id,
+            name,
+            price,
+            image: imagePath, // Use the corrected image path
+            days,
+            visibility: true // Default visibility to true
         });
 
-        fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
+        fs.writeFile('data/offers.json', JSON.stringify(offers, null, 2), (err) => {
             if (err) {
-                return res.status(500).send(err);
+                console.error('Error writing to offers.json:', err);
+                return res.status(500).send('Error saving new offer');
             }
             res.send("success");
         });
@@ -438,7 +409,7 @@ function makeresultid(length) {
     return result
 }
 
-app.post('/api/deleteentry', (req, res) => {
+app.post('/api/deleteoffer', (req, res) => {
     const id = req.body.id;
     console.log('Request body:', req.body);
     console.log(`Received request to delete entry with id: ${id}`);
@@ -476,5 +447,461 @@ app.get('/api/getImages', (req, res) => {
     });
 });
 
+app.post('/api/deleteimage', (req, res) => {
+    const imageName = req.body.name;
+    const imagePath = path.join(__dirname, 'media', imageName);
+
+    fs.unlink(imagePath, (err) => {
+        if (err) {
+            console.error('Error deleting image:', err);
+            return res.status(500).send('Error deleting image'); // Ensure response is sent only once
+        }
+        res.send('Image deleted successfully');
+    });
+});
+
+app.get('/panel/menuentries', (req, res) => {
+    // Get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        // If valid, send menuentries.html
+        res.sendFile(path.join(__dirname, 'data', 'menuentries.html'));
+    } else {
+        // If not valid, redirect to login page
+        res.redirect('/ui/login');
+    }
+});
+
+app.get('/api/menuentries', (req, res) => {
+    // Get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        // If valid, read the menuentries.json file
+        fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading menuentries.json:', err);
+                return res.status(500).send('Error reading menu entries');
+            }
+            // Send the parsed JSON data as a response
+            res.json(JSON.parse(data));
+        });
+    } else {
+        // If not valid, redirect to login page
+        res.redirect('/ui/login');
+    }
+});
+
+app.post('/api/editmenuentry', (req, res) => {
+    const { id, name, category, price } = req.body;
+
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        let menuEntries = JSON.parse(data);
+        const entryIndex = menuEntries.findIndex(entry => entry.id === id);
+
+        if (entryIndex !== -1) {
+            menuEntries[entryIndex] = { ...menuEntries[entryIndex], name, category, price };
+            fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing to menuentries.json:', err);
+                    return res.status(500).send('Error updating menu entry');
+                }
+                res.send("success");
+            });
+        } else {
+            res.status(404).send('Entry not found');
+        }
+    });
+});
+
+app.post('/api/newmenuentry', (req, res) => {
+    const { name, category, price } = req.body;
+    const id = makeresultid(6); // Generate a new ID
+
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        let menuEntries = JSON.parse(data);
+        menuEntries.push({ id, name, category, price });
+
+        fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing to menuentries.json:', err);
+                return res.status(500).send('Error saving new menu entry');
+            }
+            res.send("success");
+        });
+    });
+});
+
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
 
+app.post('/api/deletemenuentry', (req, res) => {
+    const id = req.body.id;
+    console.log('Request body:', req.body);
+    console.log(`Received request to delete entry with id: ${id}`);
+
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        let menuEntries = JSON.parse(data);
+        const initialLength = menuEntries.length;
+        menuEntries = menuEntries.filter(entry => entry.id !== id);
+
+        console.log(`Entries before deletion: ${initialLength}, after deletion: ${menuEntries.length}`);
+
+        if (menuEntries.length === initialLength) {
+            return res.status(404).send('Entry not found');
+        }
+
+        fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing to menuentries.json:', err);
+                return res.status(500).send('Error deleting menu entry');
+            }
+            res.send("success");
+        });
+    });
+});
+
+app.get('/panel/menuentries/new', (req, res) => {
+    // Get token from cookies and check if it is valid
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        // If valid, send newmenuentry.html
+        res.sendFile(path.join(__dirname, 'data', 'newmenuentry.html'));
+    } else {
+        // If not valid, redirect to login page
+        res.redirect('/ui/login');
+    }
+});
+
+app.get('/api/cafeteriaMenuEntries', (req, res) => {
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+
+        const menuEntries = JSON.parse(data);
+        const cafeteriaEntries = menuEntries.filter(entry => entry.category === "Cafeteria Menü");
+        res.json(cafeteriaEntries);
+    });
+});
+
+app.get('/api/dessertEntries', (req, res) => {
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+        const menuEntries = JSON.parse(data);
+        const dessertEntries = menuEntries.filter(entry => entry.category === "Dessert");
+        res.json(dessertEntries);
+    });
+});
+
+app.post('/api/saveMenuSelections', (req, res) => {
+    const selectedOptions = req.body;
+    console.log('Received menu selections:', selectedOptions);
+
+    fs.writeFile('data/menuSelections.json', JSON.stringify(selectedOptions, null, 2), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing menu selections file:', err);
+            return res.status(500).send('Error saving menu selections');
+        }
+        res.send('Ausgewählte Speiseplaneinträge erfolgreich gespeichert. Nachdem Sie auf OK klicken, lädt sich die Seite neu');
+    });
+});
+
+app.get('/api/getMenuSelections', (req, res) => {
+    fs.readFile('data/menuSelections.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menu selections file:', err);
+            return res.status(500).send('Error loading menu selections');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Endpoint to get salat entries
+app.get('/api/salatEntries', (req, res) => {
+    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading menuentries.json:', err);
+            return res.status(500).send('Error reading menu entries');
+        }
+        const menuEntries = JSON.parse(data);
+        const salatEntries = menuEntries.filter(entry => entry.category === "Salat");
+        res.json(salatEntries);
+    });
+});
+
+app.get('/api/offers', (req, res) => {
+    fs.readFile('data/offers.json', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Add or update these endpoints
+
+// Get offers
+app.get('/api/offers', (req, res) => {
+    fs.readFile('data/offers.json', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Edit offer
+app.post('/api/editentry', (req, res) => {
+    const updatedOffer = req.body;
+    
+    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+
+        let offers = JSON.parse(data);
+        const index = offers.findIndex(offer => offer.id === updatedOffer.id);
+        
+        if (index !== -1) {
+            offers[index] = updatedOffer;
+            
+            fs.writeFile('data/offers.json', JSON.stringify(offers, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing offers.json:', err);
+                    return res.status(500).send('Error updating offer');
+                }
+                res.send('success');
+            });
+        } else {
+            res.status(404).send('Offer not found');
+        }
+    });
+});
+
+// Delete offer
+app.post('/api/deleteoffer', (req, res) => {
+    const { id } = req.body;
+    
+    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading offers.json:', err);
+            return res.status(500).send('Error reading offers');
+        }
+
+        let offers = JSON.parse(data);
+        const filteredOffers = offers.filter(offer => offer.id !== id);
+        
+        if (filteredOffers.length === offers.length) {
+            return res.status(404).send('Offer not found');
+        }
+
+        fs.writeFile('data/offers.json', JSON.stringify(filteredOffers, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing offers.json:', err);
+                return res.status(500).send('Error deleting offer');
+            }
+            res.send('success');
+        });
+    });
+});
+
+// Add this new endpoint for the admin panel
+app.get('/api/getadminoffers', (req, res) => {
+    fs.readFile('data/offers.json', (err, data) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        // Just send the parsed JSON data directly
+        res.json(JSON.parse(data));
+    });
+});
+
+// Add this new endpoint for dashboard statistics
+app.get('/api/dashboard/stats', async (req, res) => {
+    try {
+        // Read all necessary files
+        const [offersData, menuEntriesData, settingsData] = await Promise.all([
+            fs.promises.readFile('data/offers.json', 'utf8'),
+            fs.promises.readFile('data/menuentries.json', 'utf8'),
+            fs.promises.readFile('data/settings.json', 'utf8')
+        ]);
+
+        // Parse JSON data
+        const offers = JSON.parse(offersData);
+        const menuEntries = JSON.parse(menuEntriesData);
+        const settings = JSON.parse(settingsData);
+
+        // Calculate statistics
+        const stats = {
+            activeOffers: offers.filter(offer => offer.visibility).length,
+            menuEntries: menuEntries.length,
+            activeAds: settings.advertising ? 1 : 0 // Assuming advertising is a boolean in settings
+        };
+
+        res.json(stats);
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        res.status(500).json({ error: 'Error fetching dashboard statistics' });
+    }
+});
+
+// Endpoint to serve advertisement content
+app.get('/api/advertisement', (req, res) => {
+    fs.readFile('data/advertisement.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading advertisement file:', err);
+            return res.status(500).send('Error reading advertisement');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Endpoint to update advertisement
+app.post('/api/advertisement', (req, res) => {
+    const { header, image, description, enabled } = req.body;
+    const adData = { header, image, description, enabled };
+    
+    fs.writeFile('data/advertisement.json', JSON.stringify(adData, null, 2), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing advertisement file:', err);
+            return res.status(500).send('Error saving advertisement');
+        }
+        res.send('Advertisement updated successfully');
+    });
+});
+
+app.get('/panel/advertising', (req, res) => {
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        res.sendFile(__dirname + '/data/advertising.html');
+    } else {
+        res.redirect('/ui/login');
+    }
+});
+
+// Also add an endpoint to get list of media files for the dropdown
+app.get('/api/media', (req, res) => {
+    const mediaDir = path.join(__dirname, 'media');
+    fs.readdir(mediaDir, (err, files) => {
+        if (err) {
+            console.error('Error reading media directory:', err);
+            return res.status(500).send('Error reading media files');
+        }
+        // Filter for image files if needed
+        const imageFiles = files.filter(file => 
+            file.endsWith('.jpg') || 
+            file.endsWith('.jpeg') || 
+            file.endsWith('.png') || 
+            file.endsWith('.gif')
+        );
+        res.json(imageFiles);
+    });
+});
+
+// Get all advertisements
+app.get('/api/advertisements', (req, res) => {
+    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                return res.json([]);
+            }
+            return res.status(500).send('Error reading advertisements');
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
+// Add/Update advertisement
+app.post('/api/advertisement', (req, res) => {
+    const { id, header, image, description, enabled } = req.body;
+    
+    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+        let ads = [];
+        if (!err) {
+            ads = JSON.parse(data);
+        }
+
+        const newAd = {
+            id: id || Date.now().toString(),
+            header,
+            image,
+            description,
+            enabled: enabled || false
+        };
+
+        if (id) {
+            ads = ads.map(ad => ad.id === id ? newAd : ad);
+        } else {
+            ads.push(newAd);
+        }
+
+        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
+            if (err) {
+                return res.status(500).send('Error saving advertisement');
+            }
+            res.send('Advertisement saved successfully');
+        });
+    });
+});
+
+// Delete advertisement
+app.post('/api/advertisement/delete', (req, res) => {
+    var token = req.cookies.token;
+    if (!checktoken(token)) {
+        return res.redirect('/ui/login');
+    }
+
+    const { id } = req.body;
+    
+    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading advertisements file:', err);
+            return res.status(500).send('Error reading advertisements');
+        }
+
+        let ads = JSON.parse(data);
+        ads = ads.filter(ad => ad.id !== id);
+
+        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
+            if (err) {
+                console.error('Error writing advertisements file:', err);
+                return res.status(500).send('Error deleting advertisement');
+            }
+            res.send('Advertisement deleted successfully');
+        });
+    });
+});
+
+// Add route for new advertisement page
+app.get('/panel/advertising/new', (req, res) => {
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        res.sendFile(__dirname + '/data/newadvertisement.html');
+    } else {
+        res.redirect('/ui/login');
+    }
+});

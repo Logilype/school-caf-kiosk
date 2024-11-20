@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CafDS Dashboard - Login</title>
+ <!-- Corrected font weights -->
+    <style>
+
+        body {
+            background-color: rgb(36, 36, 36);
+            color: white;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .window {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20%;
+            
+        }
+
+        .header {
+            font-size: 300%;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            width: 50%;
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        input {
+            width: 300px;
+            height: 40px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: none;
+            padding-left: 10px;
+            font-size: 100%;
+        }
+
+        input [type="button"] {
+            background-color: rgb(71, 71, 71);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            width: 315px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="window">
+
+        <div class="header">
+            CafDS Dashboard
+        </div>
+
+        <div class="content">
+            <input type="text" name="username" placeholder="Nutzername" required>
+            <input type="password" name="password" placeholder="Passwort" required>
+            <input type="button" value="Anmelden">
+        </div>
+
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype und Felixmax_ 2024</a>
+    </div>
+
+    <script>
+        document.querySelector("input[type='button']").addEventListener("click", function(){
+            var username = document.querySelector("input[name='username']").value;
+            var password = document.querySelector("input[name='password']").value;
+            console.log(username);
+            console.log(password);
+            xml = new XMLHttpRequest();
+            xml.open("POST", "/api/login", true);    
+            xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xml.send("username="+username+"&password="+password);
+            xml.onreadystatechange = function(){
+                if(xml.readyState == 4 && xml.status == 200){
+                    console.log(xml.responseText);
+                    // set response as across domains token in cookie
+                    document.cookie = "token="+xml.responseText + ";path=/";
+                    window.location.href = "/panel?intent=authorize";
+                }
+                else if(xml.readyState == 4 && xml.status == 401){
+                    alert("Falscher Nutzername oder Passwort");
+                }
+                else if(xml.readyState == 4 && xml.status == 500){
+                    alert("Interner Serverfehler");
+                }
+            }
+        });
+    </script>
+</body>
+</html>

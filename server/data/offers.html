@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cafeteria Angebote</title>
+ <!-- Corrected font weights -->
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Open Sans', sans-serif;
+            user-select: none;
+            background-color: #f0f0f0;
+            font-size: 150%;
+            text-align: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .container-table {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .offers-container {
+            width: 80%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        .offer-content {
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 50px;
+        }
+
+        h2 {
+            font-size: 225%;
+        }
+
+        /* Apply transition for opacity */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .title-of-caf-institute-thing {
+            /* Mainly make the title of caf institute thing overlay on top of other things */
+            position: absolute;
+            top: 0.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            font-size: 10pt;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h3 class="title-of-caf-institute-thing">Cafeteria im Schulzentrum</h3>
+    <div class="container-table">
+        <div class="offers-container">
+            <h2>Angebote</h2>
+            <div class="offer-content" id="offerContent">
+                <img id="offerImage" src="" alt="Angebotsbild">
+                <p id="offerName"></p>
+                <p id="offerPrice"></p>
+                <p id="offerDays"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var offers = (datarenderplace);
+        var currentOfferIndex = 0;
+        var offerContent = document.getElementById("offerContent");
+        var offerImage = document.getElementById("offerImage");
+        var offerName = document.getElementById("offerName");
+        var offerPrice = document.getElementById("offerPrice");
+        var offerDays = document.getElementById("offerDays");
+
+        function fadeIn(element) {
+            element.style.opacity = 0;
+            element.style.transition = 'opacity 0s';
+            requestAnimationFrame(function () {
+                element.style.transition = 'opacity 0.5s';
+                element.style.opacity = 1;
+            });
+        }
+
+        function updateOffer() {
+            var offer = offers[currentOfferIndex];
+
+            offerContent.style.opacity = 0;
+
+            setTimeout(function () {
+                offerImage.src = offer.image;
+                offerName.textContent = offer.name;
+                offerPrice.textContent = offer.price.toFixed(2).replace('.', ',') + '&nbsp;€';
+                offerDays.textContent = "Im Angebot: " + offer.days;
+                fadeIn(offerContent);
+                currentOfferIndex = (currentOfferIndex + 1) % offers.length;
+            }, 500);
+        }
+
+        // Fetch settings from the server
+        fetch('http://localhost:3000/api/settings')
+            .then(response => response.json())
+            .then(settings => {
+                var offerDisplayDuration = parseInt(settings.offerDisplayDuration, 10) * 1000; // Convert to milliseconds
+                // Initial call to set the first offer
+                updateOffer();
+                // Set an interval to cycle through offers
+                setInterval(updateOffer, offerDisplayDuration);
+            })
+            .catch(error => {
+                console.error('Error fetching settings:', error);
+                // Fallback to a default duration if fetching settings fails
+                var defaultDuration = 8000; // 8 seconds
+                updateOffer();
+                setInterval(updateOffer, defaultDuration);
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CafDS Dashboard - Einstellungen</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="header">
+        CafDS Dashboard
+        <button id="logoutBtn">Ausloggen</button>
+    </div>
+    <div class="navbar" id="navbar">
+        <div class="navbar-item">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/offers">Angebote bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Medien verwalten</a>
+        </div>
+        <div class="navbar-item-selected">
+            <a href="/panel/settings">Einstellungen</a>
+        </div>
+    </div>
+    <div class="content">
+        <h2>Einstellungen</h2>
+        <form id="settingsForm">
+            <label for="pageSwitchInterval">Seitenwechselintervall (Sekunden):</label>
+            <input type="number" id="pageSwitchInterval" name="pageSwitchInterval" min="15" value="90" max="300">
+            <br>
+            <label for="offerDisplayDuration">Angebotsanzeigedauer (Sekunden):</label>
+            <input type="number" id="offerDisplayDuration" name="offerDisplayDuration" min="1" value="8" max="30">
+            <br>
+            <label for="language">Sprache (Andere Sprachen werden in Kürze unterstützt) (Placeholder):</label>
+            <select id="language" name="language">
+                <option value="de">Deutsch</option>
+                <!-- Add more languages as needed -->
+            </select>
+            <br>
+            <input type="submit" value="Einstellungen speichern">
+        </form>
+        <div id="feedback" style="color: green; margin-top: 10px;"></div>
+        <button id="exportData">Daten exportieren</button>
+        <button id="importData">Daten importieren</button>
+        <button id="backupSettings">Einstellungen sichern</button>
+        <button id="restoreSettings">Einstellungen wiederherstellen</button>
+        <br>
+    </div>
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">© Logilype & Felixmax_ 2024</a>
+    </div>
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/ui/login";
+        });
+
+        // Fetch current settings
+        fetch('/api/settings')
+            .then(response => response.json())
+            .then(settings => {
+                // Populate form fields with current settings
+                document.getElementById('pageSwitchInterval').value = settings.pageSwitchInterval;
+                document.getElementById('offerDisplayDuration').value = settings.offerDisplayDuration;
+                document.getElementById('language').value = settings.language;
+            });
+
+        // Handle form submission
+        document.getElementById('settingsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const updatedSettings = {
+                pageSwitchInterval: document.getElementById('pageSwitchInterval').value,
+                offerDisplayDuration: document.getElementById('offerDisplayDuration').value,
+                language: document.getElementById('language').value
+            };
+
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedSettings)
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById('feedback').textContent = message;
+                // Reload the page after 0.5 seconds
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

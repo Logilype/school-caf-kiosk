@@ -19,30 +19,47 @@ app.use(express.static(path.join(__dirname, 'public')));
 // If your fonts are in a different directory, add another static middleware
 app.use('/media/fonts', express.static(path.join(__dirname, 'data/fonts')));
 
+// Update static file serving middleware
+app.use('/dashboard', express.static(path.join(__dirname, 'data/dashboard')));
+
+// Update font serving middleware
+app.use('/dashboard/fonts', express.static(path.join(__dirname, 'data/dashboard/fonts')));
+
+// Update media serving middleware
+app.use('/dashboard/assets', express.static(path.join(__dirname, 'data/dashboard/assets')));
+
 tokenst = [];
 
-app.get('/', (req, res) => res.send('i dont get paid enough for this'));
+app.get('/', (req, res) => {
+    // Check if user is logged in by verifying token
+    var token = req.cookies.token;
+    if (checktoken(token)) {
+        // If logged in, redirect to dashboard home
+        res.redirect('/panel');
+    } else {
+        // If not logged in, redirect to login page
+        res.redirect('/ui/login');
+    }
+});
 
 // Set media as static folder
+
 app.use('/media', express.static('media'));
 
 // Endpoint to serve settings page
 app.get('/panel/settings', (req, res) => {
-    //get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send settings.html
-        res.sendFile(__dirname + '/data/settings.html');
+        res.sendFile(__dirname + '/data/dashboard/settings.html');
     } else {
-        //if not valid send login.html
         res.redirect('/ui/login');
     }
 });
 
 // Endpoint to get current settings
 app.get('/api/settings', (req, res) => {
-    fs.readFile('data/settings.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/settings.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading settings file:', err);
             return res.status(500).send('Error reading settings');
@@ -54,7 +71,7 @@ app.get('/api/settings', (req, res) => {
 // Endpoint to update settings
 app.post('/api/settings', (req, res) => {
     const updatedSettings = req.body;
-    fs.writeFile('data/settings.json', JSON.stringify(updatedSettings, null, 2), 'utf8', (err) => {
+    fs.writeFile('data/configs/settings.json', JSON.stringify(updatedSettings, null, 2), 'utf8', (err) => {
         if (err) {
             console.error('Error writing settings file:', err);
             return res.status(500).send('Error saving settings');
@@ -64,17 +81,16 @@ app.post('/api/settings', (req, res) => {
 });
 
 app.get('/getoffers', (req, res) => {
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/configs/offers.json', (err, data) => {
         if (err) {
             return res.status(500).send(err);
         }
-        // Just send the parsed JSON data directly
         res.json(JSON.parse(data));
     });
 });
 
 app.get('/getdisplaysequence', (req, res) => {
-    res.sendFile(__dirname + '/data/displayseq.json');
+    res.sendFile(__dirname + '/data/configs/displayseq.json');
     
 });
 
@@ -110,53 +126,42 @@ app.get('/news', (req, res) => {
 });
 
 app.get('/panel', (req, res) => {
-    // Get token from cookies and check if it is valid
     const intent = req.query.intent;
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        // If valid, send panel.html
-        res.sendFile(__dirname + '/data/panel.html');
+        res.sendFile(__dirname + '/data/dashboard/panel.html');
         if (intent !== undefined) {
             console.log(intent);
         }
     } else {
-        // If not valid, send login.html
         res.redirect('/ui/login');
     }
 });
 app.get('/panel/upload', (req, res) => {
-    //get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send uploadmedia.html
-        res.sendFile(__dirname + '/data/uploadmedia.html');
+        res.sendFile(__dirname + '/data/dashboard/uploadmedia.html');
     } else {
-        //if not valid send login.html
         res.redirect('/ui/login');
     }
 });
     
 app.get('/panel/menu', (req, res) => {
-        //get token from cookies and check if it is valid
-        var token = req.cookies.token;
-        console.log(token);
-        if (checktoken(token)) {
-            //if valid send menuedit.html
-            res.sendFile(__dirname + '/data/menuedit.html');
-        } else {
-            //if not valid send login.html
-            res.redirect('/ui/login');
-        }
-});
-app.get('/panel/media', (req, res) => {
-    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        // If valid, proceed to read the media directory
-        const mediaDir = path.join(__dirname, 'media'); // Corrected path
+        res.sendFile(__dirname + '/data/dashboard/menuedit.html');
+    } else {
+        res.redirect('/ui/login');
+    }
+});
+app.get('/panel/media', (req, res) => {
+    var token = req.cookies.token;
+    console.log(token);
+    if (checktoken(token)) {
+        const mediaDir = path.join(__dirname, 'media');
         
         fs.readdir(mediaDir, (err, files) => {
             if (err) {
@@ -164,7 +169,6 @@ app.get('/panel/media', (req, res) => {
                 return res.status(500).send('Error loading media');
             }
 
-            // Generate HTML for each image file
             const imageEntries = files.map(file => `
                 <tr>
                     <td>${file}</td>
@@ -173,8 +177,7 @@ app.get('/panel/media', (req, res) => {
                 </tr>
             `).join('');
 
-            // Read the media.html file and replace the placeholder
-            fs.readFile(path.join(__dirname, 'data', 'media.html'), 'utf8', (err, html) => {
+            fs.readFile(path.join(__dirname, 'data/dashboard', 'media.html'), 'utf8', (err, html) => {
                 if (err) {
                     console.error('Error reading media.html:', err);
                     return res.status(500).send('Error loading page');
@@ -185,7 +188,6 @@ app.get('/panel/media', (req, res) => {
             });
         });
     } else {
-        // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
 });
@@ -193,7 +195,7 @@ app.get('/panel/media', (req, res) => {
 app.get('/panel/offers', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
-        fs.readFile('data/offers.json', (err, data) => {
+        fs.readFile('data/configs/offers.json', (err, data) => {
             if (err) {
                 return res.status(500).send(err);
             }
@@ -214,7 +216,7 @@ app.get('/panel/offers', (req, res) => {
                 </div>
             `).join('');
             
-            const html = fs.readFileSync('data/offersedit.html', 'utf8').replace('(renderanchor)', entries);
+            const html = fs.readFileSync('data/dashboard/offersedit.html', 'utf8').replace('(renderanchor)', entries);
             res.send(html);
         });
     } else {
@@ -249,12 +251,10 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 
 app.get('/panel/offers/new', (req, res) => {
-    //get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        //if valid send newentry.html
-        fs.readFile('data/newentry.html', (err, data) => {
+        fs.readFile('data/dashboard/newofferentry.html', (err, data) => {
             if (err) {
                 res.send(err);
             };
@@ -272,10 +272,8 @@ app.get('/panel/offers/new', (req, res) => {
             });
         });
     } else {
-        //if not valid send login.html
         res.redirect('/ui/login');
     }
-    
 });
 
 app.post('/api/newentry', (req, res) => {
@@ -285,7 +283,7 @@ app.post('/api/newentry', (req, res) => {
     // Ensure the image path is correctly prefixed
     const imagePath = image.startsWith('/media/') ? image : `/media/${image}`;
 
-    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/offers.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading offers.json:', err);
             return res.status(500).send('Error reading offers');
@@ -301,7 +299,7 @@ app.post('/api/newentry', (req, res) => {
             visibility: true // Default visibility to true
         });
 
-        fs.writeFile('data/offers.json', JSON.stringify(offers, null, 2), (err) => {
+        fs.writeFile('data/configs/offers.json', JSON.stringify(offers, null, 2), (err) => {
             if (err) {
                 console.error('Error writing to offers.json:', err);
                 return res.status(500).send('Error saving new offer');
@@ -324,7 +322,7 @@ app.post('/api/editentry', (req, res) => {
     console.log("Received data:", req.body);
 
     // Edit entry in offers.json with the id from the parameters
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/configs/offers.json', (err, data) => {
         if (err) {
             return res.status(500).send(err); // Send error response if reading fails
         }
@@ -336,7 +334,7 @@ app.post('/api/editentry', (req, res) => {
                 menu[i].image = image; // Save the image path directly
                 menu[i].days = days;
                 menu[i].visibility = visibility; // Save the visibility state
-                fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
+                fs.writeFile('data/configs/offers.json', JSON.stringify(menu, null, 2), (err) => {
                     if (err) {
                         return res.status(500).send(err); // Send error response if writing fails
                     }
@@ -355,7 +353,7 @@ app.post('/api/login', (req, res) => {
     var password = req.body.password;
     //check if username and pw are correct
     //read accounts.json
-    fs.readFile('data/accounts.json', (err, data) => {
+    fs.readFile('data/configs/accounts.json', (err, data) => {
         if (err) {
             res.send(err);
         };
@@ -375,7 +373,7 @@ app.post('/api/login', (req, res) => {
     });
 });
 app.get("/ui/login", (req, res) => {
-    res.sendFile(__dirname + '/data/login.html');
+    res.sendFile(__dirname + '/data/dashboard/login.html');
 });
 
 function maketoken() {
@@ -414,7 +412,7 @@ app.post('/api/deleteoffer', (req, res) => {
     console.log('Request body:', req.body);
     console.log(`Received request to delete entry with id: ${id}`);
 
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/configs/offers.json', (err, data) => {
         if (err) {
             console.error('Error reading offers.json:', err);
             return res.status(500).send(err);
@@ -425,7 +423,7 @@ app.post('/api/deleteoffer', (req, res) => {
         menu = menu.filter(item => String(item.id) !== String(id));
         console.log(`Entries before deletion: ${initialLength}, after deletion: ${menu.length}`);
 
-        fs.writeFile('data/offers.json', JSON.stringify(menu, null, 2), (err) => {
+        fs.writeFile('data/configs/offers.json', JSON.stringify(menu, null, 2), (err) => {
             if (err) {
                 console.error('Error writing to offers.json:', err);
                 return res.status(500).send(err);
@@ -461,25 +459,21 @@ app.post('/api/deleteimage', (req, res) => {
 });
 
 app.get('/panel/menuentries', (req, res) => {
-    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        // If valid, send menuentries.html
-        res.sendFile(path.join(__dirname, 'data', 'menuentries.html'));
+        res.sendFile(path.join(__dirname, 'data/dashboard', 'menuentries.html'));
     } else {
-        // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
 });
 
 app.get('/api/menuentries', (req, res) => {
-    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
         // If valid, read the menuentries.json file
-        fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+        fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
             if (err) {
                 console.error('Error reading menuentries.json:', err);
                 return res.status(500).send('Error reading menu entries');
@@ -496,7 +490,7 @@ app.get('/api/menuentries', (req, res) => {
 app.post('/api/editmenuentry', (req, res) => {
     const { id, name, category, price } = req.body;
 
-    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menuentries.json:', err);
             return res.status(500).send('Error reading menu entries');
@@ -507,7 +501,7 @@ app.post('/api/editmenuentry', (req, res) => {
 
         if (entryIndex !== -1) {
             menuEntries[entryIndex] = { ...menuEntries[entryIndex], name, category, price };
-            fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+            fs.writeFile('data/configs/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
                 if (err) {
                     console.error('Error writing to menuentries.json:', err);
                     return res.status(500).send('Error updating menu entry');
@@ -524,7 +518,7 @@ app.post('/api/newmenuentry', (req, res) => {
     const { name, category, price } = req.body;
     const id = makeresultid(6); // Generate a new ID
 
-    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menuentries.json:', err);
             return res.status(500).send('Error reading menu entries');
@@ -533,7 +527,7 @@ app.post('/api/newmenuentry', (req, res) => {
         let menuEntries = JSON.parse(data);
         menuEntries.push({ id, name, category, price });
 
-        fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+        fs.writeFile('data/configs/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
             if (err) {
                 console.error('Error writing to menuentries.json:', err);
                 return res.status(500).send('Error saving new menu entry');
@@ -550,7 +544,7 @@ app.post('/api/deletemenuentry', (req, res) => {
     console.log('Request body:', req.body);
     console.log(`Received request to delete entry with id: ${id}`);
 
-    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menuentries.json:', err);
             return res.status(500).send('Error reading menu entries');
@@ -566,7 +560,7 @@ app.post('/api/deletemenuentry', (req, res) => {
             return res.status(404).send('Entry not found');
         }
 
-        fs.writeFile('data/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
+        fs.writeFile('data/configs/menuentries.json', JSON.stringify(menuEntries, null, 2), (err) => {
             if (err) {
                 console.error('Error writing to menuentries.json:', err);
                 return res.status(500).send('Error deleting menu entry');
@@ -577,20 +571,17 @@ app.post('/api/deletemenuentry', (req, res) => {
 });
 
 app.get('/panel/menuentries/new', (req, res) => {
-    // Get token from cookies and check if it is valid
     var token = req.cookies.token;
     console.log(token);
     if (checktoken(token)) {
-        // If valid, send newmenuentry.html
-        res.sendFile(path.join(__dirname, 'data', 'newmenuentry.html'));
+        res.sendFile(path.join(__dirname, 'data/dashboard', 'newmenuentry.html'));
     } else {
-        // If not valid, redirect to login page
         res.redirect('/ui/login');
     }
 });
 
 app.get('/api/cafeteriaMenuEntries', (req, res) => {
-    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menuentries.json:', err);
             return res.status(500).send('Error reading menu entries');
@@ -603,7 +594,7 @@ app.get('/api/cafeteriaMenuEntries', (req, res) => {
 });
 
 app.get('/api/dessertEntries', (req, res) => {
-    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menuentries.json:', err);
             return res.status(500).send('Error reading menu entries');
@@ -618,7 +609,7 @@ app.post('/api/saveMenuSelections', (req, res) => {
     const selectedOptions = req.body;
     console.log('Received menu selections:', selectedOptions);
 
-    fs.writeFile('data/menuSelections.json', JSON.stringify(selectedOptions, null, 2), 'utf8', (err) => {
+    fs.writeFile('data/configs/menuSelections.json', JSON.stringify(selectedOptions, null, 2), 'utf8', (err) => {
         if (err) {
             console.error('Error writing menu selections file:', err);
             return res.status(500).send('Error saving menu selections');
@@ -628,7 +619,7 @@ app.post('/api/saveMenuSelections', (req, res) => {
 });
 
 app.get('/api/getMenuSelections', (req, res) => {
-    fs.readFile('data/menuSelections.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuSelections.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menu selections file:', err);
             return res.status(500).send('Error loading menu selections');
@@ -639,7 +630,7 @@ app.get('/api/getMenuSelections', (req, res) => {
 
 // Endpoint to get salat entries
 app.get('/api/salatEntries', (req, res) => {
-    fs.readFile('data/menuentries.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/menuentries.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading menuentries.json:', err);
             return res.status(500).send('Error reading menu entries');
@@ -651,7 +642,7 @@ app.get('/api/salatEntries', (req, res) => {
 });
 
 app.get('/api/offers', (req, res) => {
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/configs/offers.json', (err, data) => {
         if (err) {
             console.error('Error reading offers.json:', err);
             return res.status(500).send('Error reading offers');
@@ -664,7 +655,7 @@ app.get('/api/offers', (req, res) => {
 
 // Get offers
 app.get('/api/offers', (req, res) => {
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/configs/offers.json', (err, data) => {
         if (err) {
             console.error('Error reading offers.json:', err);
             return res.status(500).send('Error reading offers');
@@ -677,7 +668,7 @@ app.get('/api/offers', (req, res) => {
 app.post('/api/editentry', (req, res) => {
     const updatedOffer = req.body;
     
-    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/offers.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading offers.json:', err);
             return res.status(500).send('Error reading offers');
@@ -689,7 +680,7 @@ app.post('/api/editentry', (req, res) => {
         if (index !== -1) {
             offers[index] = updatedOffer;
             
-            fs.writeFile('data/offers.json', JSON.stringify(offers, null, 2), (err) => {
+            fs.writeFile('data/configs/offers.json', JSON.stringify(offers, null, 2), (err) => {
                 if (err) {
                     console.error('Error writing offers.json:', err);
                     return res.status(500).send('Error updating offer');
@@ -706,7 +697,7 @@ app.post('/api/editentry', (req, res) => {
 app.post('/api/deleteoffer', (req, res) => {
     const { id } = req.body;
     
-    fs.readFile('data/offers.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/offers.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading offers.json:', err);
             return res.status(500).send('Error reading offers');
@@ -719,7 +710,7 @@ app.post('/api/deleteoffer', (req, res) => {
             return res.status(404).send('Offer not found');
         }
 
-        fs.writeFile('data/offers.json', JSON.stringify(filteredOffers, null, 2), (err) => {
+        fs.writeFile('data/configs/offers.json', JSON.stringify(filteredOffers, null, 2), (err) => {
             if (err) {
                 console.error('Error writing offers.json:', err);
                 return res.status(500).send('Error deleting offer');
@@ -731,7 +722,7 @@ app.post('/api/deleteoffer', (req, res) => {
 
 // Add this new endpoint for the admin panel
 app.get('/api/getadminoffers', (req, res) => {
-    fs.readFile('data/offers.json', (err, data) => {
+    fs.readFile('data/configs/offers.json', (err, data) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -740,38 +731,47 @@ app.get('/api/getadminoffers', (req, res) => {
     });
 });
 
-// Add this new endpoint for dashboard statistics
+// Update the dashboard stats endpoint
 app.get('/api/dashboard/stats', async (req, res) => {
     try {
         // Read all necessary files
-        const [offersData, menuEntriesData, settingsData] = await Promise.all([
-            fs.promises.readFile('data/offers.json', 'utf8'),
-            fs.promises.readFile('data/menuentries.json', 'utf8'),
-            fs.promises.readFile('data/settings.json', 'utf8')
+        const [offersData, menuEntriesData, advertisementsData] = await Promise.all([
+            fs.promises.readFile('data/configs/offers.json', 'utf8'),
+            fs.promises.readFile('data/configs/menuentries.json', 'utf8'),
+            fs.promises.readFile('data/configs/advertisements.json', 'utf8')
         ]);
 
         // Parse JSON data
         const offers = JSON.parse(offersData);
         const menuEntries = JSON.parse(menuEntriesData);
-        const settings = JSON.parse(settingsData);
+        const advertisements = JSON.parse(advertisementsData);
 
         // Calculate statistics
         const stats = {
             activeOffers: offers.filter(offer => offer.visibility).length,
             menuEntries: menuEntries.length,
-            activeAds: settings.advertising ? 1 : 0 // Assuming advertising is a boolean in settings
+            activeAds: advertisements.filter(ad => ad.enabled).length
         };
 
         res.json(stats);
     } catch (error) {
         console.error('Error fetching dashboard stats:', error);
+        // If advertisements.json doesn't exist yet, return 0 active ads
+        if (error.code === 'ENOENT') {
+            const stats = {
+                activeOffers: 0,
+                menuEntries: 0,
+                activeAds: 0
+            };
+            return res.json(stats);
+        }
         res.status(500).json({ error: 'Error fetching dashboard statistics' });
     }
 });
 
 // Endpoint to serve advertisement content
 app.get('/api/advertisement', (req, res) => {
-    fs.readFile('data/advertisement.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/advertisement.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading advertisement file:', err);
             return res.status(500).send('Error reading advertisement');
@@ -780,24 +780,48 @@ app.get('/api/advertisement', (req, res) => {
     });
 });
 
-// Endpoint to update advertisement
+// Update the advertisement endpoint to handle both new and edit requests
 app.post('/api/advertisement', (req, res) => {
-    const { header, image, description, enabled } = req.body;
-    const adData = { header, image, description, enabled };
+    const { id, header, image, description, enabled } = req.body;
     
-    fs.writeFile('data/advertisement.json', JSON.stringify(adData, null, 2), 'utf8', (err) => {
-        if (err) {
-            console.error('Error writing advertisement file:', err);
-            return res.status(500).send('Error saving advertisement');
+    fs.readFile('data/configs/advertisements.json', 'utf8', (err, data) => {
+        let advertisements = [];
+        if (!err) {
+            advertisements = JSON.parse(data);
         }
-        res.send('Advertisement updated successfully');
+
+        if (id) {
+            // Edit existing advertisement
+            const index = advertisements.findIndex(ad => ad.id === id);
+            if (index !== -1) {
+                advertisements[index] = { id, header, image, description, enabled };
+            }
+        } else {
+            // Create new advertisement
+            const newAd = {
+                id: Date.now().toString(), // Generate new ID
+                header,
+                image,
+                description,
+                enabled: enabled || false
+            };
+            advertisements.push(newAd);
+        }
+
+        fs.writeFile('data/configs/advertisements.json', JSON.stringify(advertisements, null, 2), 'utf8', (err) => {
+            if (err) {
+                console.error('Error saving advertisement:', err);
+                return res.status(500).send('Error saving advertisement');
+            }
+            res.send('Advertisement saved successfully');
+        });
     });
 });
 
 app.get('/panel/advertising', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
-        res.sendFile(__dirname + '/data/advertising.html');
+        res.sendFile(__dirname + '/data/dashboard/advertising.html');
     } else {
         res.redirect('/ui/login');
     }
@@ -824,7 +848,7 @@ app.get('/api/media', (req, res) => {
 
 // Get all advertisements
 app.get('/api/advertisements', (req, res) => {
-    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/advertisements.json', 'utf8', (err, data) => {
         if (err) {
             if (err.code === 'ENOENT') {
                 return res.json([]);
@@ -832,39 +856,6 @@ app.get('/api/advertisements', (req, res) => {
             return res.status(500).send('Error reading advertisements');
         }
         res.json(JSON.parse(data));
-    });
-});
-
-// Add/Update advertisement
-app.post('/api/advertisement', (req, res) => {
-    const { id, header, image, description, enabled } = req.body;
-    
-    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
-        let ads = [];
-        if (!err) {
-            ads = JSON.parse(data);
-        }
-
-        const newAd = {
-            id: id || Date.now().toString(),
-            header,
-            image,
-            description,
-            enabled: enabled || false
-        };
-
-        if (id) {
-            ads = ads.map(ad => ad.id === id ? newAd : ad);
-        } else {
-            ads.push(newAd);
-        }
-
-        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
-            if (err) {
-                return res.status(500).send('Error saving advertisement');
-            }
-            res.send('Advertisement saved successfully');
-        });
     });
 });
 
@@ -877,7 +868,7 @@ app.post('/api/advertisement/delete', (req, res) => {
 
     const { id } = req.body;
     
-    fs.readFile('data/advertisements.json', 'utf8', (err, data) => {
+    fs.readFile('data/configs/advertisements.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading advertisements file:', err);
             return res.status(500).send('Error reading advertisements');
@@ -886,7 +877,7 @@ app.post('/api/advertisement/delete', (req, res) => {
         let ads = JSON.parse(data);
         ads = ads.filter(ad => ad.id !== id);
 
-        fs.writeFile('data/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
+        fs.writeFile('data/configs/advertisements.json', JSON.stringify(ads, null, 2), 'utf8', (err) => {
             if (err) {
                 console.error('Error writing advertisements file:', err);
                 return res.status(500).send('Error deleting advertisement');
@@ -900,7 +891,7 @@ app.post('/api/advertisement/delete', (req, res) => {
 app.get('/panel/advertising/new', (req, res) => {
     var token = req.cookies.token;
     if (checktoken(token)) {
-        res.sendFile(__dirname + '/data/newadvertisement.html');
+        res.sendFile(__dirname + '/data/dashboard/newadvertisement.html');
     } else {
         res.redirect('/ui/login');
     }

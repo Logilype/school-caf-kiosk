@@ -1,0 +1,89 @@
+TODO List for CafDS Dashboard
+
+1. Image Selection & Preview
+- [ ] Add image dropdown list to edit modal (like in new advertisement form)
+- [ ] Add image preview in new advertisement form
+- [ ] Standardize image selection UI across all forms
+- [ ] Add image size validation
+- [ ] Add image format validation
+
+2. Loading States
+- [ ] Add loading indicators when fetching advertisements
+- [ ] Show loading spinners during save/delete operations
+- [ ] Add loading states for image uploads
+- [ ] Add loading indicators for all API calls
+
+3. Error Handling
+- [ ] Improve error messages with specific feedback
+- [ ] Add error states for failed API calls
+- [ ] Implement form input validation
+- [ ] Add network error handling
+- [ ] Add graceful fallbacks for missing data
+
+4. UI/UX Improvements
+- [ ] Add sorting options for advertisements (by date, status, etc.)
+- [ ] Add filtering options (active/inactive, date range)
+- [ ] Add success confirmation messages for all operations
+- [ ] Implement pagination for large lists
+- [ ] Add keyboard shortcuts for common actions
+- [ ] Improve modal interactions
+
+5. Code Organization
+- [ ] Move JavaScript to separate files
+- [ ] Implement proper error boundaries
+- [ ] Add consistent input validation across forms
+- [ ] Create reusable components for common elements
+- [ ] Standardize API response handling
+
+6. Security Enhancements
+- [ ] Add CSRF protection
+- [ ] Implement input sanitization
+- [ ] Improve token handling and validation
+- [ ] Add session timeout handling
+- [ ] Implement rate limiting
+- [ ] Add request validation middleware
+
+7. Advertisement Management Features
+- [ ] Add bulk delete functionality
+- [ ] Implement duplicate advertisement feature
+- [ ] Add advertisement scheduling
+- [ ] Add preview mode for advertisements
+- [ ] Add archive functionality for old advertisements
+- [ ] Implement advertisement categories/tags
+
+8. Responsive Design
+- [ ] Improve mobile layout
+- [ ] Add better touch support
+- [ ] Optimize image loading for mobile
+- [ ] Improve modal behavior on small screens
+- [ ] Add responsive tables
+
+9. Performance Optimization
+- [ ] Implement image optimization
+- [ ] Add caching for frequently accessed data
+- [ ] Optimize API calls
+- [ ] Implement lazy loading for images
+- [ ] Add request debouncing
+
+10. Documentation
+- [ ] Add inline code documentation
+- [ ] Create API documentation
+- [ ] Add setup instructions
+- [ ] Create user guide
+- [ ] Document configuration options
+
+11. Testing
+- [ ] Add unit tests
+- [ ] Implement integration tests
+- [ ] Add end-to-end testing
+- [ ] Create test documentation
+- [ ] Add performance testing
+
+12. Accessibility
+- [ ] Add ARIA labels
+- [ ] Improve keyboard navigation
+- [ ] Add screen reader support
+- [ ] Implement focus management
+- [ ] Add high contrast mode
+
+Note: Items can be marked as completed by changing [ ] to [x] 

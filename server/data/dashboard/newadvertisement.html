@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CafDS Dashboard - Neue Werbung</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/dashboard/styles.css">
+    <link rel="icon" type="image/x-icon" href="/dashboard/assets/favicon.ico">
 </head>
 <body>
     <div class="header">
-        CafDS Dashboard
+        <div class="header-left">
+            <img src="/dashboard/assets/logo.png" alt="CafDS Logo" class="header-logo">
+            <span class="header-title">CafDS Dashboard</span>
+        </div>
         <button id="logoutBtn">Ausloggen</button>
     </div>
     <div class="navbar">
@@ -64,7 +68,7 @@
 
     <div class="footer">
         <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">
-            © Logilype & Felixmax_ 2024
+            © Logilype & Felixmax_ 2025
         </a>
     </div>
 
@@ -83,7 +87,7 @@
             })
             .catch(error => console.error('Error loading images:', error));
 
-        // Handle form submission
+        // Update form submission handler
         document.getElementById('newAdForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -102,11 +106,14 @@
                 body: JSON.stringify(formData)
             })
             .then(response => {
-                if (response.ok) {
-                    window.location.href = '/panel/advertising';
-                } else {
-                    throw new Error('Failed to save advertisement');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                return response.text();
+            })
+            .then(() => {
+                alert('Werbung erfolgreich hinzugefügt!');
+                window.location.href = '/panel/advertising';
             })
             .catch(error => {
                 console.error('Error:', error);

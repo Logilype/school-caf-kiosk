@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CafDS Dashboard - Angebote bearbeiten</title>
+    <link rel="stylesheet" href="/dashboard/styles.css">
+    <link rel="icon" type="image/x-icon" href="/dashboard/assets/favicon.ico">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="/dashboard/assets/logo.png" alt="CafDS Logo" class="header-logo">
+            <span class="header-title">CafDS Dashboard</span>
+        </div>
+        <button id="logoutBtn">Ausloggen</button>
+    </div>
+    <div class="navbar" id="navbar">
+        <div class="navbar-item">
+            <a href="/panel">Home</a>
+        </div>
+        <div class="navbar-item-selected">
+            <a href="/panel/offers">Angebote bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menu">Speiseplan verwalten/bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/menuentries">Speiseplaneinträge verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/advertising">Werbung bearbeiten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/media">Medien verwalten</a>
+        </div>
+        <div class="navbar-item">
+            <a href="/panel/settings">Einstellungen</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="tables">
+            <div class="grid-container">
+                (renderanchor) <!-- This will be replaced with the actual entries -->
+            </div>
+        </div>
+        <div class="actionbuttons">
+            <input type="button" value="Hinzufügen" id="newbtn">
+            <input type="button" value="Aktualisieren" onclick="fetchOffers()">
+        </div>
+        
+        <!-- Add Edit Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Eintrag bearbeiten</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="editForm">
+                    <input type="hidden" id="editId" name="id">
+                    
+                    <div class="form-group">
+                        <label for="editName">Name:</label>
+                        <input type="text" id="editName" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPrice">Preis:</label>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <input type="number" id="editEuro" name="euro" min="0" max="9" style="width: 60px;" required>
+                            <span>,</span>
+                            <input type="number" id="editCent" name="cent" min="0" max="99" style="width: 60px;" required>
+                            <span>&nbsp;€</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Bild:</label>
+                        <div class="selected-image">
+                            <img id="previewImage" src="" alt="">
+                        </div>
+                        <button type="button" class="image-select-btn" onclick="toggleDropdown()">Bild auswählen</button>
+                        <div id="imageDropdownList" class="dropdown-list" style="display: none;"></div>
+                        <input type="hidden" id="editImage" name="image">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editDays">Tage:</label>
+                        <input type="text" id="editDays" name="days" required>
+                    </div>
+                    
+                    <div class="form-group toggle-group">
+                        <span class="toggleVisibilityTxt">Wird nicht angezeigt</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="toggleVisibilityBtn">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <p id="saveMessage" style="display: none;">Änderungen werden gespeichert...</p>
+                        <button type="submit">Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add toast container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="footer">
+        <a href="https://github.com/logilype/cafeteria-digital-signage" style="color: white; text-decoration: none;">
+            © Logilype & Felixmax_ 2025
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setupModalHandlers();
+            fetchOffers();
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            const container = document.getElementById('toastContainer');
+            container.appendChild(toast);
+
+            // Remove toast after delay
+            setTimeout(() => {
+                // Add slideOut class instead of setting animation directly
+                toast.classList.add('slideOut');
+                
+                // Wait for animation to complete before removing element
+                toast.addEventListener('animationend', () => {
+                    container.removeChild(toast);
+                });
+            }, 3000);
+        }
+
+        // Modal handling
+        function showModal(modal) {
+            modal.style.display = 'block';
+            modal.offsetHeight; // Trigger reflow
+            modal.classList.add('show');
+        }
+
+        function hideModal(modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        function setupModalHandlers() {
+            const modal = document.getElementById("editModal");
+            const closeBtn = document.querySelector(".close");
+            
+            closeBtn.onclick = () => hideModal(modal);
+            window.onclick = (e) => {
+                if (e.target === modal) hideModal(modal);
+            };
+
+            // Add escape key handler
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    hideModal(modal);
+                }
+            });
+
+            document.getElementById("toggleVisibilityBtn").addEventListener("change", function() {
+                const text = document.querySelector(".toggleVisibilityTxt");
+                text.textContent = this.checked ? "Wird angezeigt" : "Wird nicht angezeigt";
+            });
+
+            document.getElementById("editForm").addEventListener("submit", handleFormSubmit);
+        }
+
+        function openEditModal(item) {
+            document.getElementById("editId").value = item.id;
+            document.getElementById("editName").value = item.name;
+            
+            const price = parseFloat(item.price);
+            const euros = Math.floor(price);
+            const cents = Math.round((price - euros) * 100);
+            document.getElementById("editEuro").value = euros;
+            document.getElementById("editCent").value = cents.toString().padStart(2, '0');
+            
+            document.getElementById("editImage").value = item.image;
+            document.getElementById("previewImage").src = item.image;
+            document.getElementById("editDays").value = item.days;
+            document.getElementById("toggleVisibilityBtn").checked = item.visibility;
+            
+            document.querySelector(".toggleVisibilityTxt").textContent = 
+                item.visibility ? "Wird angezeigt" : "Wird nicht angezeigt";
+            
+            // Reset save message when opening modal
+            document.getElementById('saveMessage').style.display = 'none';
+            
+            showModal(document.getElementById("editModal"));
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const saveMessage = document.getElementById('saveMessage');
+            saveMessage.style.display = 'block';
+
+            const euros = parseInt(document.getElementById("editEuro").value) || 0;
+            const cents = parseInt(document.getElementById("editCent").value) || 0;
+            const price = euros + cents / 100;
+
+            const formData = {
+                id: document.getElementById("editId").value,
+                name: document.getElementById("editName").value,
+                price: price,
+                image: document.getElementById("editImage").value,
+                days: document.getElementById("editDays").value,
+                visibility: document.getElementById("toggleVisibilityBtn").checked
+            };
+
+            try {
+                const response = await fetch('/api/editentry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    hideModal(document.getElementById("editModal"));
+                    showToast('Angebot erfolgreich gespeichert');
+                    fetchOffers();
+                } else {
+                    throw new Error('Failed to save');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Fehler beim Speichern des Angebots.', 'error');
+            } finally {
+                saveMessage.style.display = 'none'; // Hide message regardless of outcome
+            }
+        }
+
+        async function deleteEntry(id) {
+            if (!confirm('Möchten Sie diesen Eintrag wirklich löschen?')) return;
+            
+            try {
+                const response = await fetch('/api/deleteoffer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                
+                if (response.ok) {
+                    showToast('Angebot erfolgreich gelöscht');
+                    fetchOffers();
+                } else {
+                    throw new Error('Failed to delete');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Fehler beim Löschen des Angebots.', 'error');
+            }
+        }
+
+        // Add image dropdown functionality
+        function toggleDropdown() {
+            const dropdownList = document.getElementById("imageDropdownList");
+            if (dropdownList.style.display === "none") {
+                fetch('/api/getImages')
+                    .then(response => response.json())
+                    .then(images => {
+                        dropdownList.innerHTML = images.map(image => `
+                            <div onclick="selectImage('${image}')">
+                                <img src="${image}" alt="${image.split('/').pop()}">
+                            </div>
+                        `).join('');
+                        dropdownList.style.display = "block";
+                    })
+                    .catch(error => console.error('Error loading images:', error));
+            } else {
+                dropdownList.style.display = "none";
+            }
+        }
+
+        function selectImage(image) {
+            document.getElementById("previewImage").src = image;
+            document.getElementById("editImage").value = image;
+            document.getElementById("imageDropdownList").style.display = "none";
+        }
+
+        document.getElementById("newbtn").addEventListener("click", function() {
+            window.location.href = "/panel/offers/new";
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/ui/login";
+        });
+
+        async function fetchOffers() {
+            try {
+                const response = await fetch('/api/getadminoffers');
+                const offers = await response.json();
+                
+                const gridContainer = document.querySelector('.grid-container');
+                gridContainer.innerHTML = offers.map(item => `
+                    <article class="grid-item">
+                        <div class="grid-item-content">
+                            <header>
+                                <div class="image-container">
+                                    <img src="${item.image}" alt="${item.name}">
+                                </div>
+                                <h3 class="item-name">${item.name}</h3>
+                            </header>
+                            <div class="item-details">
+                                <p class="item-price">${item.price.toFixed(2)} €</p>
+                                <p class="item-days">Tage: ${item.days}</p>
+                                <p class="item-visibility ${item.visibility ? '' : 'inactive'}">
+                                    ${item.visibility ? 'Wird angezeigt' : 'Wird nicht angezeigt'}
+                                </p>
+                            </div>
+                            <footer class="buttons">
+                                <button onclick='openEditModal(${JSON.stringify(item)})'>Bearbeiten</button>
+                                <button onclick="deleteEntry('${item.id}')">Löschen</button>
+                            </footer>
+                        </div>
+                    </article>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching offers:', error);
+                showToast('Fehler beim Laden der Angebote', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
